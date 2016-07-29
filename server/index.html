@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+	<head>
+		
+		<title>AngularJS Application</title>
+
+		<!-- application css -->
+		<link rel="stylesheet" href="static/styles/app.css" />
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+		
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<script data-main="static\scripts\main" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.js"></script>
+		
+
+	</head>
+	<body>
+		<div class="row" ng-controller="ctrlShell">
+			<div class="col-md-8">
+				  <select class="pull-right" ng-model="language">
+					<option value="en">English</option>
+					<option value="fr-fr">French</option>
+				  </select>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="container-fluid" ng-view></div>	
+				</div>
+			</div>
+		</div>
+		
+	</body>
+</html>

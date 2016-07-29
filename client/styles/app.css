@@ -1,0 +1,63 @@
+#books-screen .header-row{
+	font-weight: bold;
+}
+
+#book-details-screen .book-details-container{
+	margin-left: 15px;
+	padding: 5px 5px 5px 5px;
+	border: 1px Solid #000;
+}
+
+#book-details-screen .book-details-container .book-cover{
+	width: 200px;
+	height: 250px;
+}
+
+/* ---- Home ----- */
+.ju-home-screen .header-row{
+	background-color: #f0f0f0;
+}
+
+#board-screen div.row > div{
+	border: 1px Solid #000;
+	height: 100%;
+}
+
+#board-screen .trump-suit-container{
+	font-size: 12px;
+}
+
+#board-screen .card{
+	border-radius: 4px;
+	margin-right:1px;
+	display: inline-block;
+	width: 40px;
+	height:50px; 
+	border: 1px Solid #000
+}
+
+
+#board-screen .card.Heart, #board-screen .card.Diamond {
+	color: #ff0000;
+	position: relative;
+}
+
+#board-screen .card .rank-name{
+	font-size: 12px;
+    font-weight: bold;
+    position: relative;
+    left: 3px;
+}
+
+#board-screen .card .suit-symbol{
+	font-size: 27px;
+    position: relative;
+    top: -10px;
+    left: 10px;
+}
+
+#board-screen .card .suit-symbol.trump-suit{
+	font-size: 40px;
+    position: relative;
+    left: 7px;
+}

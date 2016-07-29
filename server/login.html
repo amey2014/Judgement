@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+	<head>
+		
+		<title>AngularJS Application</title>
+
+	</head>
+	<body>
+		<form action="/login" method="post">
+			  <fieldset class="form-group">
+			    <label for="exampleInputEmail1">Email address</label>
+			    <input type="email" class="form-control" 
+			    	id="exampleInputEmail1" placeholder="Enter email"
+			    	data-ng-model="home.email">
+			  </fieldset>
+			  <fieldset class="form-group">
+			    <label for="exampleInputPassword1">Password</label>
+			    <input type="password" 
+			    	class="form-control" id="exampleInputPassword1" 
+			    	placeholder="Password" data-ng-model="home.password">
+			  </fieldset>
+			  <button type="button" class="btn">Reset</button>
+			  <button type="submit" class="btn btn-primary" >Submit</button>
+			  <a href="#/ju_home_reg">Sign Up</a>
+			</form>
+		
+	</body>
+</html>

@@ -1,0 +1,25 @@
+<div id="ju-home-screen" class="ju-home-screen">
+	<header class="row header-row">
+		<div class="col-xs-12">
+			<h1>Judgement</h1>
+		</div>
+	</header>
+	<div class="row" >
+		<div class="col-md-12" >
+			<h2>Welcome: {{ home.username }}</h2>
+			<h3>Go to Room</h3>
+			
+		    <input type="text" class="form-control" 
+		    	id="inputName" placeholder="Room Name"
+		    	data-ng-model="home.roomName" ng-hide="!home.isAdmin">
+
+			<select ng-model="home.roomName" ng-hide="home.isAdmin">
+				<option ng-repeat="room in home.rooms">{{ room.name }}</option>
+			</select>
+		  	<button type="submit" class="btn btn-primary" ng-click="home.goToRoom()" >{{ home.isAdmin ? 'Create' : 'Join' }}</button>
+			  
+			<button ng-click="home.ping()">Ping</button>
+		</div>
+	</div>
+</div>
+

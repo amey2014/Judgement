@@ -1,0 +1,42 @@
+[
+  {
+    "id": "B1",
+    "title": "Book 1",
+    "author": "Author A",
+    "price": "$100.00",
+    "category": "C1",
+    "createDate": "2015-01-02"
+  },
+  {
+    "id": "B4",
+    "title": "Book 4",
+    "author": "Author A",
+    "price": "$40.00",
+    "category": "C1",
+    "createDate": "2015-01-03"
+  },
+  {
+    "id": "B7",
+    "title": "Book 7",
+    "author": "Author A",
+	  "price": "$70.00",
+    "category": "C1",
+    "createDate": "2015-01-04"
+  },
+  {
+    "id": "B5",
+    "title": "Book 5",
+    "author": "Author A",
+	  "price": "$50.00",
+    "category": "C1",
+    "createDate": "2015-01-05"
+  },
+  {
+    "id": "B2",
+    "title": "Book 2",
+    "author": "Author A",
+	  "price": "$30.00",
+    "category": "C1",
+    "createDate": "2015-01-01"
+  }
+]

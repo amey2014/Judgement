@@ -1,3 +1,6 @@
+body{
+	font-family: sans-serif;
+}
 #books-screen .header-row{
 	font-weight: bold;
 }
@@ -18,11 +21,151 @@
 	background-color: #f0f0f0;
 }
 
-#board-screen div.row > div{
-	border: 1px Solid #000;
+#board-screen{
+	width: 100%;
+	height: 100%;
+} 
+
+#board-screen div.row{
+	margin-right: 0px;
+    margin-left: 0px;
+}
+
+#board-screen div[class^=col-]{
+	padding-left: 0px;
+	padding-right: 0px;
+	border: 1px Solid #fbfbfb;
+	height: 90px;
+}
+
+#board-screen .logged-in-player-row div[class^=col-]{
+	padding-left: 0px;
+	padding-right: 0px;
+	border: 1px Solid #fbfbfb;
 	height: 100%;
 }
 
+#board-screen div.player-card{
+	background-color: rgba(236, 248, 251, 1);
+	height: 100%;
+	border: 1px Solid #8e8e8e;
+	border-radius: 2px;
+}
+
+#board-screen div.player-card.current-turn{
+	border: 3px Solid #ffa604;
+}
+
+#board-screen div.player-card .player-details{
+	background-color: rgba(153, 217, 234, 1);
+	border-bottom: 1px Solid #8e8e8e;
+}
+
+#board-screen div.player-card .player-details .player-pic{
+	min-width: 30%;
+    width: 40%;
+    max-width: 40%;
+    height: 65px;
+    background-color: #f0f0f0;
+}
+
+#board-screen div.player-card.loggedin-player-card .player-details .player-pic{
+	min-width: 10%;
+    width: 20%;
+    max-width: 30%;
+    height: 65px;
+    background-color: #f0f0f0;
+}
+
+#board-screen div.player-card .player-details  .player-score-container{
+    text-align: right;
+}
+
+#board-screen div.player-card .player-details  .player-score-container .total-score-label{
+    font-size: 0.8em;
+}
+
+#board-screen div.player-card .player-details  .player-score-container .total-score{
+    padding-right: 5px;
+    /* padding-left: 5px; */
+    /* background-color: rgb(222, 0, 0); */
+    font-weight: bold;
+    color: rgb(222, 0, 0);
+    /* vertical-align: top; */
+    font-size: 0.9em;
+}
+
+#board-screen div.player-card .player-details  .player-cards-container{
+    padding-top: 10px;
+}
+
+#board-screen div.player-card .player-details .player-cards-container .player-cards{
+   	height: 35px;
+   	text-align: right;
+   	border: 0px Solid #8e8e8e;
+   	overflow: hidden;
+}
+
+#board-screen div.player-card .player-details .player-cards-container .player-cards .playing-card{
+   	width: 20px;
+   	height: 35px;
+   	border: 1px Solid #8e8e8e;
+   	display: inline-block;
+   	margin-left: -18px;
+   	margin-top: 5px;
+   	background-color: rgba(239,228,176,1);
+   	border-radius: 2px;
+}
+
+#board-screen div.loggedin-player-card.player-card .player-details .player-cards-container .player-cards .playing-card{
+	margin-left: 0px;
+}
+
+#board-screen div.player-card .player-card-footer {
+	text-align: center;
+	font-weight: bold;
+	
+}
+
+#board-screen div.player-card .player-card-footer .apply-margin-10{
+	margin-left: 10px;
+}
+/*
+.stacked-card-1{
+	left: 16px;
+}
+
+.stacked-card-2{
+	left: 32px;
+}
+.stacked-card-3{
+	left: 48px;
+}
+.stacked-card-4{
+	left: 64px;
+}
+.stacked-card-5{
+	left: 80px;
+}
+.stacked-card-6{
+	left: 96px;
+}
+.stacked-card-7{
+	left: 112px;
+}
+.stacked-card-8{
+	left: 128px;
+}
+.stacked-card-9{
+	left: 144px;
+}
+.stacked-card-10{
+	left: 160px;
+}
+.stacked-card-11{
+	left: 176px;
+}
+*/
 #board-screen .trump-suit-container{
 	font-size: 12px;
 }

@@ -1,45 +1,55 @@
 <div id="board-screen" class="board-screen">
 	<div class="row">
-		<div class="col-xs-4 col-md-3 trump-suit-container">
-			<span class="label-small">Trump</span>
-			<div ng-class="[game.currentRound.trumpSuit, 'card']">
-				 <span class="suit-symbol trump-suit" ng-if="game.currentRound.trumpSuit === 'Spade'">&#9824;</span>
-				 <span class="suit-symbol trump-suit" ng-if="game.currentRound.trumpSuit === 'Diamond'">&#9826;</span>
-				 <span class="suit-symbol trump-suit" ng-if="game.currentRound.trumpSuit === 'Club'">&#9827;</span>
-				 <span class="suit-symbol trump-suit" ng-if="game.currentRound.trumpSuit === 'Heart'">&#9825;</span>
-			</div>
-		</div>
-		<div class="col-xs-4 col-md-3">Turn: Your's</div>
-		<div class="col-xs-4 col-md-6"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"><player-score-card></player-score-card></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-2"><player-score-card></player-score-card></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"></div>
 	</div>
-	<div class="row" ng-repeat="player in game.players" style="padding-top: 5px;padding-bottom: 5px">
-		<div class="col-md-7" >
-			<div style="float: left; padding: 10px 10px 10px 10px">
-				<div style="width: 70px;">
-					<img src='' style="width: 100%; height: 70px;" />
-					<br/>
-					<span>{{ player.name }}</span>
-				</div>
-			</div>
-
-			<div style="padding: 10px 10px 10px 10px">
-				<div style="height: 70px;">
-					<div ng-repeat="card in player.cards" ng-class="[card.suitName, 'card']">
-						 <div class="rank-name" >{{ card.rankShortName }}  </div>
-						 <span class="suit-symbol" ng-if="card.suitName === 'Spade'">&#9824;</span>
-						 <span class="suit-symbol" ng-if="card.suitName === 'Diamond'">&#9826;</span>
-						 <span class="suit-symbol" ng-if="card.suitName === 'Club'">&#9827;</span>
-						 <span class="suit-symbol" ng-if="card.suitName === 'Heart'">&#9825;</span>
-					</div>
-				</div>
-				<div>Tricks won: {{ '' + player.tricksWon + '/' + player.tricksBidded }}</div>
-			</div>
-			
-		</div>
-		<div class="">
-			
-		</div>
+	<div class="row">
+		<div class="col-sm-2"><player-score-card></player-score-card></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"><player-score-card></player-score-card></div>
 	</div>
-	
+	<div class="row">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"></div>
+	</div>
+	<div class="row">
+		<div class="col-sm-2"><player-score-card></player-score-card></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"><player-score-card></player-score-card></div>
+	</div>
+	<div class="row">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"></div>
+	</div>
+	<div class="row logged-in-player-row">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-6"><logged-in-player-score-card></logged-in-player-score-card></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"></div>
+	</div>
 </div>
 

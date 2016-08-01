@@ -88,7 +88,9 @@ define(['../module'], function(module){
 	
 		function roomCreated(response){
 			console.log(response);
-			$location.url('/board');
+			$scope.$apply(function(){
+				$location.url('/board');
+			});
 		}
 		
 		function roomAvailable(response){

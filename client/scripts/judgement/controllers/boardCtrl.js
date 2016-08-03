@@ -50,6 +50,7 @@ define(['../module'], function(module){
 		
 		function startGame(data){
 		    console.log("ADMIN START GAME", data);
+		    GameManager.canStartGame = true;
 		}
 		
 		function playerJoined(data){
@@ -62,6 +63,7 @@ define(['../module'], function(module){
 		    getAllPlayersCallback(data);
 		}
 		
+
 		function getAllPlayersCallback(response){
 			console.log("GetAllPlayers callback", response);
 			var players = response.players;

@@ -22,6 +22,7 @@ define(['../module'], function(module){
 
 				initialize: initialize,
 				goToRoom: goToRoom,
+				leaveRoom: leaveRoom,
 				ping: ping,
 				getAllPlayers: getAllPlayers,
 				getAllRooms: getAllRooms
@@ -52,8 +53,7 @@ define(['../module'], function(module){
 				}
 				
 			}
-			
-			
+
 			function startGame(data){
 				notificationHandler(service.MESSAGE_KEYS.GAME_CAN_START, data);
 			}
@@ -63,6 +63,15 @@ define(['../module'], function(module){
 					socket.emit('get-all-rooms', { playerName: username });
 				}
 			}
+			
+			function leaveRoom(){
+				if(socket !== null){
+					socket.emit('leave-room', { playerName: username });
+					socket = null;
+				}
+			}
+			
+			
 			function ping(username){
 				if(socket !== null){
 					socket.emit('ping-room', { playerName: username });

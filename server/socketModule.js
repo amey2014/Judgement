@@ -38,6 +38,8 @@ function initializeSockets(io){
 	    
 	  	socket.on('join-room', joinRoom.bind(socket));
 	  	
+	  	socket.on('leave-room', leaveRoom.bind(socket));
+	  	
 	  	socket.on('ping-room', pingRoom.bind(socket));
 	  	
 	  	socket.on('get-all-players', getAllPlayers.bind(socket));
@@ -67,6 +69,11 @@ function getAllPlayers(data, fn) {
 	//if(map[data.playerName].socketId === socket.id){
 		fn({ players: gameManager.room.getPlayers() });
 	//}
+}
+
+function leaveRoom(data, fn) {
+	console.log("Leaving room: ");
+	socket.disconnect(0);
 }
 
 function pingRoom(data, fn) {

@@ -1,17 +1,22 @@
-<div class="player-card loggedin-player-card current-turn">
+<div class="player-card-vertical">
 	<div class="player-details">
-		<div style="position: absolute">
+		<div style="display: inline;">
 			<img class="player-pic" src="static/images/Goa-640x360.jpg" />
 		</div>
-		<div>
+		<div style="float: right;">
 			<div class="player-score-container" >
 				
 				<div class="player-score">
-					<span class="total-score-label">Score: </span><span class="total-score">{{ data.points }}</span>
+					<span class="total-score-label">Score: </span><span class="total-score">888</span>
 				</div>
 			</div>
 			
 		</div>
+	</div>
+	<div class="player-card-footer">
+		<span class="player-name">Amey</span>
+		<span class="apply-margin-10 player-tricks-won">2</span>/
+		<span class="player-tricks-bidded">10</span>
 		<div>
 			<div class="player-cards-container">
 				<div class="player-cards">
@@ -31,10 +36,5 @@
 			</div>
 			
 		</div>
-	</div>
-	<div class="player-card-footer">
-		<span class="player-name">You ({{ data.name }})</span>
-		<span class="apply-margin-10 player-tricks-won">{{ data.tricksWon }}</span>/
-		<span class="player-tricks-bidded">{{ data.tricksBidded }}</span>
 	</div>
 </div>

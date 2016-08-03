@@ -11,7 +11,7 @@ define(['angular', 'ngRoute', 'static/scripts/language'], function(angular, ngRo
 					templateUrl: 'static/scripts/judgement/views/home_entry.html',
 					controller: 'JudgementHomeCtrl'
 				  })*/.when('/board', {
-					templateUrl: 'static/scripts/judgement/views/boardView.html',
+					templateUrl: 'static/scripts/judgement/views/boardView_4.html',
 					controller: 'BoardCtrl'
 				  }).
 				  otherwise({

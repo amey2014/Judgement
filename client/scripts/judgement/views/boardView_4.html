@@ -1,21 +1,15 @@
 <div id="board-screen" class="board-screen">
-	<div class="row">
-		<div class="col-sm-2"></div>
-		<div class="col-sm-1"></div>
-		<div class="col-sm-2"><player-score-card data="board.players[3]" index="3"></player-score-card></div>
-		<div class="col-sm-2"></div>
-		<div class="col-sm-2"><player-score-card data="board.players[4]" index="4"></player-score-card></div>
-		<div class="col-sm-1"></div>
-		<div class="col-sm-2"></div>
+	<div class="row header-row">
+		<div class="col-sm-12">Room: {{ GameManager.roomName }}</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-2"><player-score-card data="board.players[2]" index="2"></player-score-card></div>
-		<div class="col-sm-1"></div>
-		<div class="col-sm-2"></div>
-		<div class="col-sm-2"></div>
 		<div class="col-sm-2"></div>
 		<div class="col-sm-1"></div>
-		<div class="col-sm-2"><player-score-card data="board.players[5]" index="5"></player-score-card></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-2"><player-score-card data="board.players[2]" index="3"></player-score-card></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"></div>
 	</div>
 	<div class="row">
 		<div class="col-sm-2"></div>
@@ -27,13 +21,13 @@
 		<div class="col-sm-2"></div>
 	</div>
 	<div class="row">
-		<div class="col-sm-2"><player-score-card data="board.players[1]" index="1"></player-score-card></div>
+		<div class="col-sm-2"><player-score-card data="board.players[1]" index="2"></player-score-card></div>
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>
 		<div class="col-sm-2"></div>
 		<div class="col-sm-2"></div>
 		<div class="col-sm-1"></div>
-		<div class="col-sm-2"><player-score-card data="board.players[6]" index="6"></player-score-card></div>
+		<div class="col-sm-2"><player-score-card data="board.players[3]" index="6"></player-score-card></div>
 	</div>
 	<div class="row">
 		<div class="col-sm-2"></div>
@@ -48,6 +42,15 @@
 		<div class="col-sm-2"></div>
 		<div class="col-sm-1"></div>
 		<div class="col-sm-6"><logged-in-player-score-card data="board.players[0]"></logged-in-player-score-card></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"></div>
+	</div>
+	<div class="row">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-2"></div>
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>
 	</div>

@@ -5,7 +5,7 @@ define(['../module'], function(module){
 		console.log('playerScoreCard directive initialized...');
 		
 		function link(scope, attrs, element){
-			console.log(scope, attrs, element);
+			//console.log(scope, attrs, element);
 		}
 		
 		return {
@@ -13,15 +13,18 @@ define(['../module'], function(module){
 			restrict: 'E',
 			templateUrl: 'static/scripts/judgement/directives/playerScoreCard.tmpl.html',
 			scope: {
-				book: '='
+				data: '='
 			}
 		}
 		
 	}).directive('loggedInPlayerScoreCard', function() {
 		console.log('loggedInPlayerScoreCard directive initialized...');
 		
-		function link(scope, attrs, element){
-			console.log(scope, attrs, element);
+		function link($scope, attrs, element){
+			
+			$scope.$watch('data', function(newValue, oldValue){
+				//console.log(newValue, oldValue);
+			})
 		}
 		
 		return {
@@ -29,8 +32,11 @@ define(['../module'], function(module){
 			restrict: 'E',
 			templateUrl: 'static/scripts/judgement/directives/loggedInPlayerScoreCard.tmpl.html',
 			scope: {
-				book: '='
-			}
+				data: '='
+			},
+			controller: ['$scope', function($scope){
+				console.log($scope.data)
+			}]
 		}
 		
 	});

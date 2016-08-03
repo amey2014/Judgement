@@ -22,7 +22,7 @@ exports.localReg = function (username, password) {
 	  user.isAdmin = false;
   }
   //check if username is already assigned in our database
-  db.get('local-users', userDetails[1])
+  db.get('local-users', userDetails[0])
   .then(function (result){ //case in which user already exists in db
     console.log('username already exists');
     deferred.resolve(false); //username already exists
@@ -31,7 +31,7 @@ exports.localReg = function (username, password) {
       console.log(result.body);
       if (result.body.message == 'The requested items could not be found.'){
         //console.log('Username is free for use');
-        db.put('local-users', userDetails[1], user)
+        db.put('local-users', userDetails[0], user)
         .then(function () {
           console.log("USER: " + user);
           deferred.resolve(user);

@@ -29,17 +29,8 @@ define(['../module'], function(module){
 			$scope.home.username = data.username;
 			
 			GameManager.initialize(notificationHandler);
-			/*if(socket === null){
-				socket = io('/judgement-group');
-				
-				console.log(socket);
-				
-				socket.on('player-joined', playerJoinedCallback);
-				
-				socket.on('room-available', roomAvailableCallback);
-				
-				socket.on('disconnect', disconnected);
-			}*/
+			
+			GameManager.getAllRooms($scope.home.username);
 		}
 		
 		function notificationHandler(messageKey, data){
@@ -82,12 +73,19 @@ define(['../module'], function(module){
 			console.log(response);
 		}*/
 		
-		function playerJoined(data){
-		    console.log("Player Joined:", data);
+		function playerJoined(response){
+		    console.log("Player Joined:", response);
+		    GameManager.players = response.data.players;
+		    $scope.$apply(function(){
+				$location.url('/board');
+			});
 		}
 	
 		function roomCreated(response){
 			console.log(response);
+			
+			GameManager.players = response.data.players;
+			
 			$scope.$apply(function(){
 				$location.url('/board');
 			});

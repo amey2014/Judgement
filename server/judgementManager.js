@@ -4,18 +4,24 @@ exports.room = {
 	createGame: createGame,
 	getGame: getGame,
 	addPlayer: addPlayer,
+	removePlayer: removePlayer,
 	getPlayers: getPlayers
 	
 } 
 
-function createGame(roomName){
+function createGame(roomName, totalPlayers){
 	exports.room.name = roomName;
-	exports.room.game = new Game();
+	exports.room.game = new Game(totalPlayers);
 }
 
-function addPlayer(playerName, callback){
-	exports.room.game.addPlayer(playerName);
+function addPlayer(playerId, playerName, callback){
+	exports.room.game.addPlayer(playerId, playerName);
 	callback();
+}
+
+function removePlayer(playerId, callback){
+	if(exports.room.game) exports.room.game.removePlayer(playerId);
+	if(callback) callback();
 }
 
 function getGame(){
@@ -23,14 +29,15 @@ function getGame(){
 }
 
 function getPlayers(){
-	return exports.room.game.players;
+	return exports.room.game ? exports.room.game.players : 0;
 }
 
 var TOTAL_CARDS = 52;
 var SUIT = ['Spade', 'Diamond', 'Club', 'Heart'];
 var RANK = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'];
 
-function Game(){
+function Game(totalPlayers){
+	this.totalPlayersRequired = totalPlayers;
 	this.players = [];
 	this.rounds = [];
 	this.currentRoundIndex = 12; // starts with 0
@@ -45,8 +52,21 @@ Game.prototype.addPlayers = function(){
 	}
 }
 
-Game.prototype.addPlayer = function(name){
-	this.players.push(new Player(name, 0));
+Game.prototype.addPlayer = function(id, name){
+	if(this.players.length < this.totalPlayersRequired){
+		this.players.push(new Player(id, name, 0));
+	}
+	else{
+		console.log("Cannot add more players.");
+	}
+}
+
+Game.prototype.removePlayer = function(id, name){
+	var player = this.players.filter(function(p){
+		return p.id === id;
+	});
+	var index = this.players.indexOf(player);
+	this.players.splice(index, 1);
 }
 
 Game.prototype.initializeRounds = function(){
@@ -128,7 +148,8 @@ Round.prototype.start = function(){
 	
 }
 
-function Player(name){
+function Player(id, name){
+	this.id = id;
 	this.name = name;
 	this.pic = '';
 	this.points = 0;

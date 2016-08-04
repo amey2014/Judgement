@@ -1,8 +1,8 @@
 <div id="board-screen" class="board-screen">
 	<div class="row header-row">
-		<div class="col-sm-4">Room: {{ board.GameManager.roomName }}</div>
-		<div class="col-sm-4">JUDGEMENT</div>
-		<div class="col-sm-4"><button ng-show="board.GameManager.canStartGame" ng-click="board.GameManager.startGame()">Start Game</button><button ng-click="board.GameManager.leaveRoom()">Leave Room</button></div>
+		<div class="col-sm-4 divRoomDetails"><span class="roomNameLabel">Room: </span><span class="roomName">{{ board.GameManager.roomName }}</span></div>
+		<div class="col-sm-4 divGameName"><span class="gameName">JUDGEMENT</span></div>
+		<div class="col-sm-4 divControlButtons"><button ng-show="board.GameManager.canStartGame" ng-click="board.GameManager.startGame()">Start Game</button><button ng-click="board.leaveRoom()">Leave Room</button></div>
 	</div>
 	<div class="row">
 		<div class="col-sm-2"></div>

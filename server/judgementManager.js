@@ -20,6 +20,7 @@ function addPlayer(playerId, playerName, callback){
 }
 
 function removePlayer(playerId, callback){
+	console.log("Room.removePlayer", playerId);
 	if(exports.room.game) exports.room.game.removePlayer(playerId);
 	if(callback) callback();
 }
@@ -62,11 +63,28 @@ Game.prototype.addPlayer = function(id, name){
 }
 
 Game.prototype.removePlayer = function(id, name){
-	var player = this.players.filter(function(p){
-		return p.id === id;
+	console.log("Game.prototype.removePlayer", id, name);
+	var index = -1;
+	this.players.filter(function(p, i){
+		if(p.id === id){
+			index = i;
+			return true;
+		}
+		else{
+			index = -1;
+			return false;
+		}
+			
 	});
-	var index = this.players.indexOf(player);
-	this.players.splice(index, 1);
+	if(index > -1){
+		console.log(this.players);
+		console.log('Index: ' + index);
+		this.players.splice(index, 1);
+	}
+	else{
+		console.log('Game.prototype.removePlayer: Index is ' + index);
+	}
+	
 }
 
 Game.prototype.initializeRounds = function(){

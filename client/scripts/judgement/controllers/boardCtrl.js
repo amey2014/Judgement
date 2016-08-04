@@ -1,11 +1,12 @@
 define(['../module'], function(module){
 	
 	return module
-	.controller('BoardCtrl', ['$scope', 'my.i18n', 'UserManager', 'GameManager', function($scope, i18n, UserManager, GameManager) {
+	.controller('BoardCtrl', ['$scope', '$location', 'my.i18n', 'UserManager', 'GameManager', function($scope, $location, i18n, UserManager, GameManager) {
 		console.log('Board controller initialized...');
 		$scope.i18n = i18n;
 		$scope.board = {};
 		$scope.board.GameManager = GameManager;
+		$scope.board.leaveRoom = leaveRoom;
 		$scope.board.players = [];
 		
 		initialize();
@@ -50,7 +51,10 @@ define(['../module'], function(module){
 		
 		function startGame(data){
 		    console.log("ADMIN START GAME", data);
-		    GameManager.canStartGame = true;
+		    $scope.$apply(function(){
+		    	GameManager.canStartGame = true;
+		    })
+		    
 		}
 		
 		function playerJoined(data){
@@ -59,10 +63,18 @@ define(['../module'], function(module){
 		}
 
 		function playerLeft(data){
-		    console.log("Player Joined:", data);
+		    console.log("Player Left:", data);
 		    getAllPlayersCallback(data);
 		}
 		
+		function leaveRoom(){
+		    GameManager.leaveRoom($scope.board.username, function(){
+		    	console.log("LEFT ROOM BY ME");
+		    	$scope.$apply(function(){
+		    		$location.url("/board_enter");
+		    	});
+		    });
+		}
 
 		function getAllPlayersCallback(response){
 			console.log("GetAllPlayers callback", response);
@@ -76,8 +88,6 @@ define(['../module'], function(module){
 				var slicedArray = players.splice(0, index);
 				players = players.concat(slicedArray);
 			}
-			
-			
 			
 		    $scope.$apply(function(){
 		    	//for(var i = 0; i < players.length; i++){

@@ -170,6 +170,7 @@ app.get('/logout', function(req, res){
 	}
 	console.log("LOGGIN OUT " + name)
   req.logout();
+  // socketModule.removePlayer(name);
   res.redirect('/');
   req.session.notice = "You have successfully been logged out " + name + "!";
 });

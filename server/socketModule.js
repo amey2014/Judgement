@@ -1,6 +1,7 @@
 var gameManager = require('./judgementManager.js');
 exports.initialize = initializeSockets;
 exports.current_clients = current_clients;
+exports.removePlayer = removePlayer;
 
 var namespace = '/judgement-group';
 var nsp = io.of(namespace);
@@ -47,7 +48,7 @@ function initializeSockets(io){
 	  	socket.on('get-all-rooms', getAllRooms.bind(socket));
 	  	
 	  	socket.on('disconnect', function(){ 
-	  		console.log("Client Disconnected"); 
+	  		console.log("Client Disconnected: ",socket.playerName, socket.id); 
 	  		gameManager.room.removePlayer(socket.id, function(){
 	  			nsp.emit('player-left', { players: gameManager.room.getPlayers(), id: socket.id });
 	  		});
@@ -71,15 +72,59 @@ function getAllPlayers(data, fn) {
 	//}
 }
 
+function removePlayer(name){
+	var socket = null;
+	var socketId = null;
+	
+	var sockets = io.nsps[namespace].sockets;
+	for(var id in sockets){
+		if(sockets[id].playerName === name){
+			socket = sockets[id];
+			break;
+		}
+		else{
+			socket = null;
+		}
+	}
+	
+	if(socket) {
+		socketId = socket.id;
+		console.log("Disconnecting player: " + socket.playerName);
+		// var playerSocket = io.nsps[namespace].sockets[socketId];
+		socket.disconnect();
+		
+		gameManager.room.removePlayer(socketId, function(){
+			nsp.emit('player-left', { players: gameManager.room.getPlayers(), id: socketId });
+		});
+		
+		console.log("Player disconnected");
+	}else{
+		console.log("Cannot disconnect. Socket not found");
+	}
+	
+	
+}
+
 function leaveRoom(data, fn) {
-	console.log("Leaving room: ");
-	socket.disconnect(0);
+	var socket =this;
+	console.log("Leaving room: " + socket.id);
+	socket.leave(data.room, fn);
+	gameManager.room.removePlayer(socket.id, function(){
+		nsp.emit('player-left', { players: gameManager.room.getPlayers(), id: socket.id });
+	});
 }
 
 function pingRoom(data, fn) {
+	console.log('------------------------------');
 	console.log("Ping from: " + data.playerName);
+	console.log('------------------------------');
+	console.log('-----Diablo Room-----');
 	console.log(io.nsps[namespace].adapter.rooms['diablo']);
+	console.log('--------Current Clients-------------');
 	console.log(current_clients);
+	console.log('---------Sockets------------');
+	console.log(io.nsps[namespace].sockets);
+	console.log('----------------------------');
 	/*if(map[data.playerName].socketId === socket.id){
 		fn({ data: map[data.playerName].data });
 	}*/
@@ -87,33 +132,39 @@ function pingRoom(data, fn) {
 
 function joinRoom(data, fn) {
 	var socket = this;
-	console.log(data.username + "joining the room: " + data.room);
+	console.log(data.playerName + " joining the room: " + data.room);
 	if(io.nsps[namespace].adapter.rooms[data.room]){
-		socket.join(data.room);
-		console.log(data.playerName + "joined the room: " + data.room);
-		socket.playerName = data.playerName;
-		current_clients[socket.id].username = data.playerName;
-		// get count
-		var clientsList = io.nsps[namespace].adapter.rooms[data.room].sockets;
-		// console.log(clientsList);
-		var numClients = Object.keys(clientsList).length;
+		var clientSocketList = io.nsps[namespace].adapter.rooms[data.room].sockets;
+		var clientKeys = Object.keys(clientSocketList);
+		var numClients = clientKeys.length;
 		console.log("Total players: " + numClients);
 		
-		gameManager.room.addPlayer(socket.id, data.playerName, function(){
-			socket.broadcast.to(data.room).emit('player-joined', { players: gameManager.room.getPlayers() });
-			
-			if(Object.keys(current_clients).length === gameManager.room.game.totalPlayersRequired){
-				console.log('-----------');
-				console.log(Object.keys(current_clients));
-				console.log('-----------');
-				var key = Object.keys(current_clients)[0];
-				console.log(key);
-				var adminSocket = io.nsps[namespace].sockets[key]; // console.log(io.nsps[namespace].sockets[key]);
-				// console.log(adminSocket);
+		if(numClients < gameManager.room.game.totalPlayersRequired){
+			socket.join(data.room);
+			console.log(data.playerName + "joined the room: " + data.room);
+			socket.playerName = data.playerName;
+			current_clients[socket.id].username = data.playerName;
+
+			gameManager.room.addPlayer(socket.id, data.playerName, function(){
+				var allPlayers = gameManager.room.getPlayers();
+				socket.broadcast.to(data.room).emit('player-joined', { players: allPlayers });
 				
-				adminSocket.emit('game-can-start');
-			}
-		});
+				if(allPlayers.length === gameManager.room.game.totalPlayersRequired){
+					var key = allPlayers[0].id;
+					console.log("Admin Key " + key);
+					var adminSocket = io.nsps[namespace].sockets[key]; // console.log(io.nsps[namespace].sockets[key]);
+					// console.log(adminSocket);
+					if(adminSocket){
+						adminSocket.emit('game-can-start');
+					}
+					else{
+						console.log("Admin socket not found");
+					}
+				}
+			});
+		}else{
+			console.log("Cannot add more players");
+		}
 
 		if (fn) fn({
 			msg : data.playerName + " have joined: " + data.room, 

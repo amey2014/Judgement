@@ -64,10 +64,10 @@ define(['../module'], function(module){
 				}
 			}
 			
-			function leaveRoom(){
+			function leaveRoom(username, callback){
 				if(socket !== null){
-					socket.emit('leave-room', { playerName: username });
-					socket = null;
+					socket.emit('leave-room', { playerName: username, room: service.roomName }, callback);
+					// socket = null;
 				}
 			}
 			

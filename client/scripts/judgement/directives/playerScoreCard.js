@@ -41,7 +41,7 @@ define(['../module'], function(module){
 			controller: ['$scope', function($scope){
 				$scope.cardSymbol = {
 					Spade: '&spades;',
-					Diamond: '&diamonds;',
+					Diamond: '&diams;',
 					Club: '&clubs;',
 					Heart: '&hearts;'
 				}

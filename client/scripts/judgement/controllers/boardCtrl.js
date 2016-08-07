@@ -12,6 +12,12 @@ define(['../module'], function(module){
 		$scope.board.round = null;
 		$scope.board.currentPlayer = null;
 		$scope.board.message = null;
+		$scope.board.cardSymbol = {
+				Spade: '&spades;',
+				Diamond: '&diams;',
+				Club: '&clubs;',
+				Heart: '&hearts;'
+			}
 		
 		initialize();
 		

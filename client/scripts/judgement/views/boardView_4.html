@@ -1,8 +1,19 @@
 <div id="board-screen" class="board-screen">
 	<div class="row header-row">
-		<div class="col-sm-4 divRoomDetails"><span class="roomNameLabel">Room: </span><span class="roomName">{{ board.GameManager.roomName }}</span></div>
-		<div class="col-sm-4 divGameName"><span class="gameName">JUDGEMENT</span></div>
-		<div class="col-sm-4 divControlButtons"><button ng-show="board.GameManager.canStartGame" ng-click="board.GameManager.startTheGame()">Start Game</button><button ng-click="board.leaveRoom()">Leave Room</button></div>
+		<div class="col-xs-4 col-sm-4 divRoomDetails">
+			<span class="roomNameLabel">Room: </span>
+			<span class="roomName">{{ board.GameManager.roomName }}</span>
+			<div class="trumpCardContainer" data-ng-show="board.round">
+				<span class="trumpSuitLabel">Round: </span>
+				<span class="totalTricksValue"  data-ng-bind="board.round.totalTricks" >1</span>
+				<div class="playing-card" ng-class="board.round.trumpSuit" >
+					<span class="suitSymbolBig" data-ng-bind-html="board.cardSymbol[board.round.trumpSuit]"></span>
+				</div>
+			</div>
+			
+		</div>
+		<div class="col-xs-4 col-sm-4 divGameName"><span class="gameName">JUDGEMENT</span></div>
+		<div class="col-xs-4 col-sm-4 divControlButtons"><button ng-show="board.GameManager.canStartGame" ng-click="board.GameManager.startTheGame()">Start Game</button><button ng-click="board.leaveRoom()">Leave Room</button></div>
 	</div>
 	<div class="row">
 		<div class="col-sm-2"></div>
@@ -26,7 +37,13 @@
 		<div class="col-sm-2"><player-score-card player="board.players[1]" round="board.round" turn="board.currentPlayer" index="2"></player-score-card></div>
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>
-		<div class="col-sm-2"></div>
+		<div class="col-sm-2">
+			<div class="bidContainer" style="border-radius: 2px; box-shadow: 3px 3px 3px #dcdcdc; width: 100%">
+				<div class="bidHeader" style="background-color: #0000ff; color: #fff;">Bid your tricks</div>
+				<div><span class="bids" style="background-color: #dcdcdc; padding: 10px;" ng-repeat="i in [1, 2, 3, 4, 5, 6, 7, 8]">{{ i }}</span></div>
+				<div class="bidButton">BID</div>
+			</div>
+		</div>
 		<div class="col-sm-2"></div>
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"><player-score-card player="board.players[3]" round="board.round" turn="board.currentPlayer" index="6"></player-score-card></div>

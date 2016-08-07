@@ -13,7 +13,9 @@ define(['../module'], function(module){
 			restrict: 'E',
 			templateUrl: 'static/scripts/judgement/directives/playerScoreCard.tmpl.html',
 			scope: {
-				data: '='
+				player: '=',
+				round: '=',
+				turn: '='
 			}
 		}
 		
@@ -22,7 +24,7 @@ define(['../module'], function(module){
 		
 		function link($scope, attrs, element){
 			
-			$scope.$watch('data', function(newValue, oldValue){
+			$scope.$watch('player', function(newValue, oldValue){
 				//console.log(newValue, oldValue);
 			})
 		}
@@ -32,10 +34,18 @@ define(['../module'], function(module){
 			restrict: 'E',
 			templateUrl: 'static/scripts/judgement/directives/loggedInPlayerScoreCard.tmpl.html',
 			scope: {
-				data: '='
+				player: '=',
+				round: '=',
+				turn: '='
 			},
 			controller: ['$scope', function($scope){
-				console.log($scope.data)
+				$scope.cardSymbol = {
+					Spade: '&spades;',
+					Diamond: '&diamonds;',
+					Club: '&clubs;',
+					Heart: '&hearts;'
+				}
+				console.log($scope.player)
 			}]
 		}
 		

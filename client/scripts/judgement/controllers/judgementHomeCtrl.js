@@ -94,6 +94,8 @@ define(['../module'], function(module){
 		function roomAvailable(response){
 			console.log(response);
 			$scope.home.rooms = response.rooms;
+			$scope.home.roomName = $scope.home.rooms[0].name;
+			// 	GameManager.goToRoom($scope.home.isAdmin, $scope.home.username, $scope.home.roomName);
 			$scope.$apply();
 		}
 		/*

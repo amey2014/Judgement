@@ -1,13 +1,17 @@
 define(['../module'], function(module){
 	
 	return module
-	.controller('BoardCtrl', ['$scope', '$location', 'my.i18n', 'UserManager', 'GameManager', function($scope, $location, i18n, UserManager, GameManager) {
+	.controller('BoardCtrl', ['$scope', '$location', '$timeout', 'my.i18n', 'UserManager', 'GameManager', function($scope, $location, $timeout, i18n, UserManager, GameManager) {
 		console.log('Board controller initialized...');
 		$scope.i18n = i18n;
 		$scope.board = {};
+		
 		$scope.board.GameManager = GameManager;
 		$scope.board.leaveRoom = leaveRoom;
 		$scope.board.players = [];
+		$scope.board.round = null;
+		$scope.board.currentPlayer = null;
+		$scope.board.message = null;
 		
 		initialize();
 		
@@ -44,6 +48,12 @@ define(['../module'], function(module){
 				case GameManager.MESSAGE_KEYS.GAME_CAN_START:
 					startGame(data);
 					break;
+				case GameManager.MESSAGE_KEYS.GAME_STARTED:
+					gameStarted(data);
+					break;
+				case GameManager.MESSAGE_KEYS.START_BIDDING:
+					startBidding(data);
+					break;
 				default:
 					break;
 			}
@@ -54,6 +64,89 @@ define(['../module'], function(module){
 		    $scope.$apply(function(){
 		    	GameManager.canStartGame = true;
 		    })
+		    
+		}
+		
+		function updateBids(bids){
+			console.log(bids);
+			var players = $scope.board.players;
+			$scope.$apply(function(){
+				for(var i = 0; i < bids.length; i++){
+					for(var j = 0; j < players.length; j++){ // var player in ){
+						if(players[j].id === bids[i].id){
+							console.log("Set "+  bids[i].tricksBidded + " bids for " + players[j].name );
+							players[j].tricksBidded = bids[i].tricksBidded;
+							break;
+						}
+					}
+					
+				}
+			});
+		}
+		
+		function startBidding(data){
+			if(data.playerBids !== null){
+				updateBids(data.playerBids);
+			}
+			$scope.board.message = null;
+			
+			if(data.player === null){
+				$scope.board.currentPlayer = null;
+			}else{
+				$scope.board.currentPlayer = data.player.id;
+				
+				var currentPlayer = $scope.board.players.filter(function(p){
+			    	return p.id === data.player.id && data.player.name === p.name && data.player.name === $scope.board.username;
+			    });
+				
+				if(!data.startPlaying){
+					if(currentPlayer.length > 0){
+						// start bidding for this player
+						$scope.board.message = 'Please set your bid...';
+						$timeout(function(){
+							GameManager.setBid(currentPlayer[0].id, 1, function(data){
+								console.log("bidset", data);
+							});
+						}, 5000);
+					}
+					else{
+						$scope.board.message = data.player.name + ' bidding...';
+						console.log("Bidding...");
+					}
+				}
+				else{
+					if(currentPlayer.length > 0){
+						// start bidding for this player
+						$scope.board.message = 'Your turn...';
+						/*$timeout(function(){
+							GameManager.setBid(currentPlayer[0].id, 1, function(data){
+								console.log("bidset", data);
+							});
+						}, 5000);*/
+					}
+					else{
+						$scope.board.message = data.player.name + '\'s turn...';
+						console.log("Playing...");
+					}
+				}
+				
+				
+				
+			}
+			
+			$scope.$apply();
+		}
+		
+		function gameStarted(response){
+		    console.log("START THE GAME", response);
+		    var currentPlayer = $scope.board.players.filter(function(p){
+		    	return p.id === response.data.id && response.data.name === p.name && response.data.name === $scope.board.username;
+		    });
+		    
+		    $scope.$apply(function(){
+		    	$scope.board.round = response.round;
+		    	currentPlayer[0].cards = response.data.cards;
+		    });
 		    
 		}
 		

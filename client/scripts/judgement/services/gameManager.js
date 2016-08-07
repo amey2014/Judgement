@@ -17,7 +17,9 @@ define(['../module'], function(module){
 					'ROOM_CLOSED': 4,
 					'ROOM_CREATED': 5,
 					'PLAYER_LEFT': 6,
-					'GAME_CAN_START': 7
+					'GAME_CAN_START': 7,
+					'GAME_STARTED': 8,
+					'START_BIDDING': 9
 				},
 
 				initialize: initialize,
@@ -25,7 +27,9 @@ define(['../module'], function(module){
 				leaveRoom: leaveRoom,
 				ping: ping,
 				getAllPlayers: getAllPlayers,
-				getAllRooms: getAllRooms
+				getAllRooms: getAllRooms,
+				setBid: setBid,
+				startTheGame: startTheGame
 				//user: null,
 				//getUserDetails: getUserDetails
 			}
@@ -48,14 +52,38 @@ define(['../module'], function(module){
 					
 					socket.on('game-can-start', startGame);
 					
+					socket.on('start-bidding', startBidding);
+					
+					socket.on('game-started', gameStarted);
+					
 					socket.on('disconnect', disconnected);
 					
 				}
 				
 			}
 
+			function setBid(id, bid, callback){
+				if(socket !== null){
+					socket.emit('set-bid', { id: id, bid: bid }, callback);
+				}
+			}
+			
+			function startBidding(response){
+				notificationHandler(service.MESSAGE_KEYS.START_BIDDING, response);
+			}
+			
 			function startGame(data){
 				notificationHandler(service.MESSAGE_KEYS.GAME_CAN_START, data);
+			}
+			
+			function startTheGame(data){
+				if(socket !== null){
+					socket.emit('start-the-game');
+				}
+			}
+			
+			function gameStarted(data){
+				notificationHandler(service.MESSAGE_KEYS.GAME_STARTED, data);
 			}
 			
 			function getAllRooms(username){

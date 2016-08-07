@@ -2,40 +2,40 @@
 	<div class="row header-row">
 		<div class="col-sm-4 divRoomDetails"><span class="roomNameLabel">Room: </span><span class="roomName">{{ board.GameManager.roomName }}</span></div>
 		<div class="col-sm-4 divGameName"><span class="gameName">JUDGEMENT</span></div>
-		<div class="col-sm-4 divControlButtons"><button ng-show="board.GameManager.canStartGame" ng-click="board.GameManager.startGame()">Start Game</button><button ng-click="board.leaveRoom()">Leave Room</button></div>
+		<div class="col-sm-4 divControlButtons"><button ng-show="board.GameManager.canStartGame" ng-click="board.GameManager.startTheGame()">Start Game</button><button ng-click="board.leaveRoom()">Leave Room</button></div>
 	</div>
 	<div class="row">
 		<div class="col-sm-2"></div>
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>
-		<div class="col-sm-2"><player-score-card data="board.players[2]" index="3"></player-score-card></div>
+		<div class="col-sm-2"><player-score-card player="board.players[2]" round="board.round" turn="board.currentPlayer" index="3"></player-score-card></div>
 		<div class="col-sm-2"></div>
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>
-	</div>
-	<div class="row">
-		<div class="col-sm-2"></div>
-		<div class="col-sm-1"></div>
-		<div class="col-sm-2"></div>
-		<div class="col-sm-2"></div>
-		<div class="col-sm-2"></div>
-		<div class="col-sm-1"></div>
-		<div class="col-sm-2"></div>
-	</div>
-	<div class="row">
-		<div class="col-sm-2"><player-score-card data="board.players[1]" index="2"></player-score-card></div>
-		<div class="col-sm-1"></div>
-		<div class="col-sm-2"></div>
-		<div class="col-sm-2"></div>
-		<div class="col-sm-2"></div>
-		<div class="col-sm-1"></div>
-		<div class="col-sm-2"><player-score-card data="board.players[3]" index="6"></player-score-card></div>
 	</div>
 	<div class="row">
 		<div class="col-sm-2"></div>
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>
 		<div class="col-sm-2"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"></div>
+	</div>
+	<div class="row">
+		<div class="col-sm-2"><player-score-card player="board.players[1]" round="board.round" turn="board.currentPlayer" index="2"></player-score-card></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"><player-score-card player="board.players[3]" round="board.round" turn="board.currentPlayer" index="6"></player-score-card></div>
+	</div>
+	<div class="row">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2"></div>
+		<div class="col-sm-2">{{ board.message }}</div>
 		<div class="col-sm-2"></div>
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>
@@ -43,7 +43,7 @@
 	<div class="row logged-in-player-row">
 		<div class="col-sm-2"></div>
 		<div class="col-sm-1"></div>
-		<div class="col-sm-6"><logged-in-player-score-card data="board.players[0]"></logged-in-player-score-card></div>
+		<div class="col-sm-6"><logged-in-player-score-card player="board.players[0]" round="board.round" turn="board.currentPlayer" ></logged-in-player-score-card></div>
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>
 	</div>

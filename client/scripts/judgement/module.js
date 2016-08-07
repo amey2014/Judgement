@@ -1,6 +1,6 @@
-define(['angular', 'ngRoute', 'static/scripts/language'], function(angular, ngRoute){
+define(['angular', 'ngRoute', 'ngSanitize', 'static/scripts/language'], function(angular, ngRoute){
 	
-	return angular.module('judgementApp', ['ngRoute', 'languageModule'])
+	return angular.module('judgementApp', ['ngRoute', 'ngSanitize', 'languageModule'])
 		.config(['$routeProvider',
 			function($routeProvider) {
 				$routeProvider.

@@ -9,6 +9,7 @@ require.config({
 		angular: "static/lib/angular.min",
 		angularLocale: "static/lib/i18n/angular-locale_" + locale,
         ngRoute: "static/lib/angular-route.min",
+        ngSanitize: "static/lib/angular-sanitize",
 		app: 'static/scripts/app'
 	},
 	

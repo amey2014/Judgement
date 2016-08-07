@@ -5,7 +5,8 @@ exports.room = {
 	getGame: getGame,
 	addPlayer: addPlayer,
 	removePlayer: removePlayer,
-	getPlayers: getPlayers
+	getPlayers: getPlayers,
+	setBid: setBid
 	
 } 
 
@@ -25,6 +26,12 @@ function removePlayer(playerId, callback){
 	if(callback) callback();
 }
 
+function setBid(data, callback){
+	console.log("setBid for: ", data.id, data.bid);
+	if(exports.room.game) exports.room.game.setBid(data);
+	if(callback) callback();
+}
+
 function getGame(){
 	return exports.room.game;
 }
@@ -41,9 +48,31 @@ function Game(totalPlayers){
 	this.totalPlayersRequired = totalPlayers;
 	this.players = [];
 	this.rounds = [];
-	this.currentRoundIndex = 12; // starts with 0
+	this.currentRoundIndex = 0; // starts with 0
 	this.currentRound = null;
 	this.deck = new Deck();
+}
+
+Game.prototype.setBid = function(data){
+	var index = getPlayerIndex(this.players, data.id);
+	/*this.players.some(function(p, i){
+		if(p.id === id){
+			index = i;
+			return true;
+		}
+		else{
+			return false;
+		}
+			
+	});*/
+	if(index > -1){
+		console.log('Index: ' + index);
+		this.players[index].tricksBidded = data.bid;
+		this.currentRound.startPlayerIndex++;
+	}
+	else{
+		console.log('Game.prototype.setBid: Index is ' + index);
+	}
 }
 
 Game.prototype.addPlayers = function(){
@@ -62,20 +91,33 @@ Game.prototype.addPlayer = function(id, name){
 	}
 }
 
-Game.prototype.removePlayer = function(id, name){
-	console.log("Game.prototype.removePlayer", id, name);
+function getPlayerIndex(players, id){
 	var index = -1;
-	this.players.filter(function(p, i){
+	players.some(function(p, i){
 		if(p.id === id){
 			index = i;
 			return true;
 		}
 		else{
-			index = -1;
 			return false;
 		}
 			
 	});
+	return index;
+}
+Game.prototype.removePlayer = function(id, name){
+	console.log("Game.prototype.removePlayer", id, name);
+	var index = getPlayerIndex(this.players, id);
+	/*this.players.some(function(p, i){
+		if(p.id === id){
+			index = i;
+			return true;
+		}
+		else{
+			return false;
+		}
+			
+	});*/
 	if(index > -1){
 		console.log(this.players);
 		console.log('Index: ' + index);
@@ -94,7 +136,8 @@ Game.prototype.initializeRounds = function(){
 		throw 'Minimum 4 players required.'
 	
 	var playersCount = this.players.length;
-	var totalRounds = TOTAL_CARDS / playersCount;
+	var div = Math.floor(TOTAL_CARDS / playersCount)
+	var totalRounds = div - (div % playersCount);
 	console.log('total players:', playersCount, ', Total Rounds:', totalRounds);
 	setupRounds.call(this, totalRounds);
 	
@@ -110,7 +153,9 @@ Game.prototype.setupCurrentRound = function(){
 	if(this.currentRound !== null){
 		this.currentRoundIndex++;
 	}
+	console.log(this.currentRoundIndex);
 	this.currentRound = this.rounds[this.currentRoundIndex];
+	console.log(this.currentRound);
 }
 
 Game.prototype.shuffle= function(n)

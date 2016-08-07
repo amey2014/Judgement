@@ -47,6 +47,10 @@ function initializeSockets(io){
 	  	
 	  	socket.on('get-all-rooms', getAllRooms.bind(socket));
 	  	
+	  	socket.on('start-the-game', startTheGame.bind(socket));
+	  	
+	  	socket.on('set-bid', setBid.bind(socket));
+	  	
 	  	socket.on('disconnect', function(){ 
 	  		console.log("Client Disconnected: ",socket.playerName, socket.id); 
 	  		gameManager.room.removePlayer(socket.id, function(){
@@ -58,6 +62,31 @@ function initializeSockets(io){
 	  	broadcastRooms(socket);
 	});
 	
+}
+
+function setBid(data, callback){
+	gameManager.room.setBid(data, callback);
+	var players = gameManager.room.getPlayers();
+	var bids = players.map(function(p){
+		return { id: p.id, tricksBidded: p.tricksBidded };
+	});
+	
+	if(gameManager.room.game.currentRound.startPlayerIndex > 3){
+		gameManager.room.game.currentRound.startPlayerIndex = 0;
+		nsp.emit('start-bidding', { 
+				round: gameManager.room.game.currentRound, 
+				playerBids: bids, 
+				player: players[gameManager.room.game.currentRound.startPlayerIndex],
+				startPlaying: true
+			}
+		);
+	}else{
+		nsp.emit('start-bidding', { 
+			round: gameManager.room.game.currentRound, 
+			playerBids: bids, 
+			player: players[gameManager.room.game.currentRound.startPlayerIndex] 
+		});
+	}
 }
 
 function getAllRooms(data) {
@@ -128,6 +157,36 @@ function pingRoom(data, fn) {
 	/*if(map[data.playerName].socketId === socket.id){
 		fn({ data: map[data.playerName].data });
 	}*/
+}
+
+function startTheGame(){
+	gameManager.room.game.initializeRounds();
+	// console.log(newGame);
+	gameManager.room.game.setupCurrentRound();
+	gameManager.room.game.shuffle(53);
+	gameManager.room.game.distributeCards();
+	var players = gameManager.room.getPlayers();
+	var key = null;
+	
+	for(var i = 0; i < players.length; i++){
+		key = players[i].id;
+		socket = io.nsps[namespace].sockets[key]; // console.log(io.nsps[namespace].sockets[key]);
+		// console.log(adminSocket);
+		if(socket){
+			socket.emit('game-started', { 
+					round: gameManager.room.game.currentRound, 
+					data: players[i] 
+				}
+			);
+		}
+	}
+	
+	nsp.emit('start-bidding', { 
+		round: gameManager.room.game.currentRound, 
+		playerBids: null, 
+		player: players[gameManager.room.game.currentRound.startPlayerIndex] }
+	);
+	
 }
 
 function joinRoom(data, fn) {

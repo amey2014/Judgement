@@ -175,9 +175,11 @@ app.get('/logout', function(req, res){
   req.session.notice = "You have successfully been logged out " + name + "!";
 });
 
-http.listen(5000, function(){
-	  console.log('listening on *:5000');
-	});
+http.listen(process.env.PORT || 5000, function(){
+	var host = server.address().address;
+	var port = server.address().port;
+	console.log('Example app listening at http://%s:%s', host, port);
+});
 
 
 

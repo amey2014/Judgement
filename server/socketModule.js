@@ -73,6 +73,7 @@ function setBid(data, callback){
 	
 	if(gameManager.room.game.currentRound.startPlayerIndex > 3){
 		gameManager.room.game.currentRound.startPlayerIndex = 0;
+		gameManager.room.game.currentRound.inProgress = true;
 		nsp.emit('start-bidding', { 
 				round: gameManager.room.game.currentRound, 
 				playerBids: bids, 

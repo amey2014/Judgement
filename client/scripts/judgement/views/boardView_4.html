@@ -38,11 +38,14 @@
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>
 		<div class="col-sm-2">
-			<div class="bidContainer">
+			<div class="bidContainer" ng-show="!board.round.inProgress && board.currentPlayer === board.players[0].id">
 				<div class="bidHeader">Bid your tricks</div>
-				<span class="badge bids" data-ng-class="{'bid-not-valid': i > board.round.totalTricks}" ng-repeat="i in [1, 2, 3, 4, 5, 6, 7, 8]">{{ i }}</span>
+				<span class="badge bids" data-ng-init="board._bid = -1"
+					data-ng-click="board._bid = i"
+					data-ng-class="{'bid-not-valid': i > board.round.totalTricks, 'bid-selected': board._bid === i}" 
+					data-ng-repeat="i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]">{{ i }}</span>
 				<div class="bidButtonContainer">
-					<div type="button" class="btn btn-default btn-sm bidButton">BID</div>
+					<div type="button" class="btn btn-default btn-sm bidButton" data-ng-click="board.setMyBid(board._bid)">BID</div>
 				</div>
 			</div>
 		</div>

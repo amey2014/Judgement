@@ -203,6 +203,8 @@ function Round(totalTricks){
 	this.totalTricks = totalTricks;
 	this.trumpSuit = SUIT[(totalTricks - 1) % 4];
 	this.startPlayerIndex = (totalTricks - 1) % 4;
+	this.inProgress = false;
+	this.completed = false;
 	// deck.shuffle();
 	// this.players = [];
 }

@@ -105,13 +105,21 @@ body{
 }
  
 #board-screen .bidContainer .bids{
-	margin: 3px 3px 10px 3px;
-	background-color: #e26a03; 
+	margin: 3px 3px 0px 3px;
+	background-color: #337ab7; 
 }
 
 #board-screen .bidContainer .bids.bid-not-valid{
-	background-color: #8a979a; 
+	background-color: #ccc; 
+	color: #8e8e8e;
 }
+
+#board-screen .bidContainer .bids.bid-selected{
+	background-color: #ffe203; 
+	border: 1px Solid #fff;
+	color: #000;
+}
+
 
 #board-screen .bidContainer .bidButtonContainer{
 	padding: 5px 5px 5px 5px;

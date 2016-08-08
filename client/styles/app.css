@@ -89,6 +89,40 @@ body{
 	font-weight: bold;
 }
 
+#board-screen .bidContainer{
+	border-radius: 2px; 
+	box-shadow: 3px 3px 3px #dcdcdc; 
+	width: 100%;
+	background-color: #99d9ea;
+	
+}
+
+#board-screen .bidContainer .bidHeader{
+	padding: 5px 10px 5px 10px;
+	background-color: #00008b; 
+	color: #fff;
+	font-weight: bold;
+}
+ 
+#board-screen .bidContainer .bids{
+	margin: 3px 3px 10px 3px;
+	background-color: #e26a03; 
+}
+
+#board-screen .bidContainer .bids.bid-not-valid{
+	background-color: #8a979a; 
+}
+
+#board-screen .bidContainer .bidButtonContainer{
+	padding: 5px 5px 5px 5px;
+	text-align: right;
+	
+}
+
+#board-screen .bidContainer .bidButtonContainer .bidButton{
+	 background-color: #ffe203;
+}
+
 #board-screen .header-row div.divControlButtons{
 	text-align: right;
 }

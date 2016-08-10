@@ -13,6 +13,8 @@ define(['../module'], function(module){
 		$scope.board.round = null;
 		$scope.board.currentPlayer = null;
 		$scope.board.message = null;
+		$scope.board.cardSelected = cardSelected;
+
 		$scope.board.cardSymbol = {
 				Spade: '&spades;',
 				Diamond: '&diams;',
@@ -61,6 +63,12 @@ define(['../module'], function(module){
 				case GameManager.MESSAGE_KEYS.START_BIDDING:
 					startBidding(data);
 					break;
+				case GameManager.MESSAGE_KEYS.NEXT_PLAYER:
+					nextPlayer(data);
+					break;
+				case GameManager.MESSAGE_KEYS.ROUND_COMPLETED:
+					roundCompleted(data);
+					break;
 				default:
 					break;
 			}
@@ -71,6 +79,34 @@ define(['../module'], function(module){
 		    $scope.$apply(function(){
 		    	GameManager.canStartGame = true;
 		    })
+		    
+		}
+		
+		function nextPlayer(response){
+		    console.log("NEXT PLAYER", response);
+		    getAllPlayersCallback(response);
+		    
+		    $scope.board.currentPlayer = response.player.id;
+			
+			var currentPlayer = $scope.board.players.filter(function(p){
+		    	return p.id === response.player.id && response.player.name === p.name && response.player.name === $scope.board.username;
+		    });
+			
+			$scope.board.round.inProgress = response.round.inProgress;
+			$scope.board.round.currentTrick = response.round.currentTrick;
+			
+			if(currentPlayer.length > 0){
+				// start bidding for this player
+				$scope.board.myTurn = true;
+				$scope.board.message = 'Your turn...';
+			}
+			else{
+				$scope.board.myTurn = false;
+				$scope.board.message = response.player.name + '\'s turn...';
+				console.log("Playing...");
+			}
+			
+		    $scope.$apply();
 		    
 		}
 		
@@ -98,6 +134,25 @@ define(['../module'], function(module){
 			});
 		}
 		
+		function roundCompleted(data){
+			console.log("RoUND COMPLETED");
+			console.log(data);
+			$scope.board.message = 'Next round will begin in 5 secs...';
+			$scope.board.myTurn = false;
+			
+			getAllPlayersCallback(data);
+			
+			$scope.$apply();
+		}
+		
+		function cardSelected(card){
+		    console.log("Play card", card);
+		    GameManager.playCard($scope.board.round.currentTrick, $scope.board.players[0].id, card.card, function(data){
+				console.log("played card", data);
+				GameManager.setCurrentCards(data);
+			});
+		}
+		
 		function startBidding(data){
 			if(data.playerBids !== null){
 				updateBids(data.playerBids);
@@ -112,17 +167,15 @@ define(['../module'], function(module){
 				var currentPlayer = $scope.board.players.filter(function(p){
 			    	return p.id === data.player.id && data.player.name === p.name && data.player.name === $scope.board.username;
 			    });
+
+				console.log("Set bid for", data);
+				$scope.board.round = data.round;
 				
 				if(!data.startPlaying){
 					if(currentPlayer.length > 0){
 						// start bidding for this player
 						$scope.board.message = 'Please set your bid...';
 						$scope.board.myTurn = true;
-						/*$timeout(function(){
-							GameManager.setBid(currentPlayer[0].id, 1, function(data){
-								console.log("bidset", data);
-							});
-						}, 5000);*/
 					}
 					else{
 						$scope.board.myTurn = false;
@@ -133,7 +186,6 @@ define(['../module'], function(module){
 				else{
 					if(currentPlayer.length > 0){
 						// start bidding for this player
-						$scope.board.round.inProgress = data.round.inProgress;
 						$scope.board.myTurn = true;
 						$scope.board.message = 'Your turn...';
 						/*$timeout(function(){
@@ -148,9 +200,6 @@ define(['../module'], function(module){
 						console.log("Playing...");
 					}
 				}
-				
-				
-				
 			}
 			
 			$scope.$apply();
@@ -202,13 +251,7 @@ define(['../module'], function(module){
 			}
 			
 		    $scope.$apply(function(){
-		    	//for(var i = 0; i < players.length; i++){
-		    		$scope.board.players = players;
-		    		//if(!$scope.board.players[i]){
-		    			//$scope.board.players.push(players[i]);
-		    		// }
-		    	//}
-		    	console.log($scope.board.players);
+	    		$scope.board.players = players;
 		    });
 		    
 		}

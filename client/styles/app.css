@@ -37,7 +37,7 @@ body{
 	padding-left: 0px;
 	padding-right: 0px;
 	border: 0px Solid #fbfbfb;
-	height: 90px;
+	min-height: 90px;
 }
 
 #board-screen .header-row{
@@ -50,6 +50,7 @@ body{
 	padding-right: 0px;
 	border: 0px Solid #fbfbfb;
 	background-color: #00008b;
+	min-height: auto;
 	height: auto;
 }
 
@@ -180,10 +181,12 @@ body{
 
 #board-screen div.player-card .player-details  .player-score-container{
     text-align: right;
+    background-color: #28903e;
 }
 
 #board-screen div.player-card .player-details  .player-score-container .total-score-label{
     font-size: 0.8em;
+    color: #fff;
 }
 
 #board-screen div.player-card .player-details  .player-score-container .total-score{
@@ -191,7 +194,7 @@ body{
     /* padding-left: 5px; */
     /* background-color: rgb(222, 0, 0); */
     font-weight: bold;
-    color: rgb(222, 0, 0);
+    color: #fff; 
     /* vertical-align: top; */
     font-size: 0.9em;
 }
@@ -201,7 +204,7 @@ body{
 }
 
 #board-screen div.player-card.loggedin-player-card .player-details  .player-cards-container{
-    padding-top: 5px;
+    padding-top: 0px;
 }
 
 #board-screen div.player-card .player-details .player-cards-container .player-cards{
@@ -213,7 +216,7 @@ body{
 
 #board-screen div.player-card.loggedin-player-card .player-details .player-cards-container .player-cards{
 	text-align: center;
-	height: 40px;
+	height: 45px;
 }
 
 #board-screen .playing-card{
@@ -273,6 +276,13 @@ body{
 
 #board-screen div.loggedin-player-card.player-card .player-details .player-cards-container .player-cards .playing-card{
 	margin-left: 0px;
+	position: relative;
+	top: 10px;
+}
+
+#board-screen div.loggedin-player-card.player-card .player-details .player-cards-container .player-cards .playing-card.card-selected{
+	top: 0px;
+	background-color: #dff0d8;
 }
 
 #board-screen div.player-card .player-card-footer {

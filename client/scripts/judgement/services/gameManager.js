@@ -10,6 +10,7 @@ define(['../module'], function(module){
 			var service = {
 				players: [],
 				roomName: '',
+				currentRoundCards: [],
 				MESSAGE_KEYS: {
 					'PLAYER_JOINED': 1,
 					'PLAYER_LEFT': 2,
@@ -19,7 +20,9 @@ define(['../module'], function(module){
 					'PLAYER_LEFT': 6,
 					'GAME_CAN_START': 7,
 					'GAME_STARTED': 8,
-					'START_BIDDING': 9
+					'START_BIDDING': 9,
+					'NEXT_PLAYER': 10,
+					'ROUND_COMPLETED': 11
 				},
 
 				initialize: initialize,
@@ -29,7 +32,8 @@ define(['../module'], function(module){
 				getAllPlayers: getAllPlayers,
 				getAllRooms: getAllRooms,
 				setBid: setBid,
-				startTheGame: startTheGame
+				startTheGame: startTheGame,
+				playCard: playCard
 				//user: null,
 				//getUserDetails: getUserDetails
 			}
@@ -54,17 +58,31 @@ define(['../module'], function(module){
 					
 					socket.on('start-bidding', startBidding);
 					
+					socket.on('next-player', nextPlayer);
+					
 					socket.on('game-started', gameStarted);
+					
+					socket.on('round-completed', roundCompleted);
 					
 					socket.on('disconnect', disconnected);
 					
 				}
 				
 			}
+			
+			function nextPlayer(response){
+				notificationHandler(service.MESSAGE_KEYS.NEXT_PLAYER, response);
+			}
 
 			function setBid(id, bid, callback){
 				if(socket !== null){
 					socket.emit('set-bid', { id: id, bid: bid }, callback);
+				}
+			}
+			
+			function playCard(currentTrick, id, card, callback){
+				if(socket !== null){
+					socket.emit('play-card', { id: id, currentTrick: currentTrick, card: card }, callback);
 				}
 			}
 			
@@ -84,6 +102,10 @@ define(['../module'], function(module){
 			
 			function gameStarted(data){
 				notificationHandler(service.MESSAGE_KEYS.GAME_STARTED, data);
+			}
+			
+			function roundCompleted(data){
+				notificationHandler(service.MESSAGE_KEYS.ROUND_COMPLETED, data);
 			}
 			
 			function getAllRooms(username){

@@ -15,7 +15,8 @@
 		<div>
 			<div class="player-cards-container">
 				<div class="player-cards">
-					<div class="playing-card" ng-class="card.suitName" ng-repeat="card in player.cards">
+					<div class="playing-card" data-ng-class="[card.suitName, {'card-selected': selectedCard === card}]" data-ng-repeat="card in player.cards"
+						data-ng-click="selectedCard = card" data-ng-dblclick="playCard(card)">
 						<span class="rankName">{{ card.rankShortName }}</span>
 						<span class="suitSymbolSmall" ng-bind-html="cardSymbol[card.suitName]"></span>
 						<span class="suitSymbolBig" ng-bind-html="cardSymbol[card.suitName]" ></span>

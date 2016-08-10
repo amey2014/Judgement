@@ -51,6 +51,8 @@ function initializeSockets(io){
 	  	
 	  	socket.on('set-bid', setBid.bind(socket));
 	  	
+	  	socket.on('play-card', playCard.bind(socket));
+	  	
 	  	socket.on('disconnect', function(){ 
 	  		console.log("Client Disconnected: ",socket.playerName, socket.id); 
 	  		gameManager.room.removePlayer(socket.id, function(){
@@ -70,9 +72,11 @@ function setBid(data, callback){
 	var bids = players.map(function(p){
 		return { id: p.id, tricksBidded: p.tricksBidded };
 	});
-	
-	if(gameManager.room.game.currentRound.startPlayerIndex > 3){
-		gameManager.room.game.currentRound.startPlayerIndex = 0;
+	console.log("bids count: " + gameManager.room.game.currentRound.bids);
+	if(gameManager.room.game.currentRound.bids === 4){
+		gameManager.room.game.currentRound.startPlayerIndex = (gameManager.room.game.currentRound.totalTricks - 1) % 4; // set this to 0 as bidding process increments it.
+		// gameManager.room.game.currentRound.currentTrick;
+		console.log(gameManager.room.game.currentRound.startPlayerIndex)
 		gameManager.room.game.currentRound.inProgress = true;
 		nsp.emit('start-bidding', { 
 				round: gameManager.room.game.currentRound, 
@@ -88,6 +92,72 @@ function setBid(data, callback){
 			player: players[gameManager.room.game.currentRound.startPlayerIndex] 
 		});
 	}
+}
+
+function playCard(data, callback) {
+	var result = gameManager.room.game.playCard(data);
+	var players = gameManager.room.getPlayers();
+	if(result.continueCurrentRound){
+		console.log("Next player is ");
+		console.log(players[gameManager.room.game.currentRound.startPlayerIndex])
+		if(result.continueCurrentTrick){
+			console.log("Continue trick")
+			nsp.emit('next-player', { 
+				round: gameManager.room.game.currentRound,  
+				player: players[gameManager.room.game.currentRound.startPlayerIndex] ,
+				players: players
+			});
+		}else{
+			console.log("trick completed");
+			console.log(players);
+			nsp.emit('next-player', { 
+				round: gameManager.room.game.currentRound,  
+				player: players[gameManager.room.game.currentRound.startPlayerIndex] ,
+				players: players
+			});
+		}
+	}else{
+		console.log("start bidding for next round")
+		console.log(gameManager.room.game.currentRound);
+		
+		var players = gameManager.room.getPlayers();
+		
+		nsp.emit('round-completed', { 
+				players: players 
+			}
+		);
+		
+		setTimeout(function(){
+			// gameManager.room.game.startNewRound();
+			gameManager.room.game.shuffle(53);
+			gameManager.room.game.distributeCards();
+
+			var key = null;
+			
+			for(var i = 0; i < players.length; i++){
+				key = players[i].id;
+				socket = io.nsps[namespace].sockets[key]; // console.log(io.nsps[namespace].sockets[key]);
+				// console.log(adminSocket);
+				if(socket){
+					socket.emit('game-started', { 
+							round: gameManager.room.game.currentRound, 
+							data: players[i] 
+						}
+					);
+				}
+			}
+			
+			nsp.emit('start-bidding', { 
+				round: gameManager.room.game.currentRound, 
+				playerBids: null, 
+				player: players[gameManager.room.game.currentRound.startPlayerIndex] }
+			);
+			
+		}, 5000);
+		
+		
+	}
+	
 }
 
 function getAllRooms(data) {
@@ -163,7 +233,7 @@ function pingRoom(data, fn) {
 function startTheGame(){
 	gameManager.room.game.initializeRounds();
 	// console.log(newGame);
-	gameManager.room.game.setupCurrentRound();
+	gameManager.room.game.setupNewRound();
 	gameManager.room.game.shuffle(53);
 	gameManager.room.game.distributeCards();
 	var players = gameManager.room.getPlayers();

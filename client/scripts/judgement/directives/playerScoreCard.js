@@ -36,7 +36,8 @@ define(['../module'], function(module){
 			scope: {
 				player: '=',
 				round: '=',
-				turn: '='
+				turn: '=',
+				cardSelected: '&'
 			},
 			controller: ['$scope', function($scope){
 				$scope.cardSymbol = {
@@ -45,7 +46,21 @@ define(['../module'], function(module){
 					Club: '&clubs;',
 					Heart: '&hearts;'
 				}
-				console.log($scope.player)
+				
+				$scope.selectedCard = null;
+				$scope.playCard = playCard;
+
+				function cardClicked(card){
+					var hasCard = player.cards.some(function(c){
+						return c.suitIndex = $scope.baseCardSuitIndex;
+					});
+					
+					$scope.cardSelected({ card: card });
+				}
+				
+				function playCard(card){
+					$scope.cardSelected({ card: card });
+				}
 			}]
 		}
 		

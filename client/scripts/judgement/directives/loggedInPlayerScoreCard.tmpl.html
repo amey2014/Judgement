@@ -1,4 +1,7 @@
 <div class="player-card loggedin-player-card" {{ turn }} ng-class="{'current-turn': turn === player.id}">
+	<div class="play-card-button-container" style="text-align: center">
+		<div type="button" style="background-color: #ffe203;" class="btn btn-default btn-sm play-card-button" data-ng-click="playCard(selectedCard)">Play</div>
+	</div>
 	<div class="player-details">
 		<div style="position: absolute">
 			<img class="player-pic" src="static/images/Goa-640x360.jpg" />

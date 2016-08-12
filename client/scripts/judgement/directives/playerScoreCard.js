@@ -15,8 +15,17 @@ define(['../module'], function(module){
 			scope: {
 				player: '=',
 				round: '=',
-				turn: '='
-			}
+				turn: '=',
+				currentCard: '='
+			},
+			controller: ['$scope', function($scope){
+				$scope.cardSymbol = {
+					Spade: '&spades;',
+					Diamond: '&diams;',
+					Club: '&clubs;',
+					Heart: '&hearts;'
+				}
+			}]
 		}
 		
 	}).directive('loggedInPlayerScoreCard', function() {
@@ -37,6 +46,7 @@ define(['../module'], function(module){
 				player: '=',
 				round: '=',
 				turn: '=',
+				baseCard: '=',
 				cardSelected: '&'
 			},
 			controller: ['$scope', function($scope){
@@ -49,17 +59,33 @@ define(['../module'], function(module){
 				
 				$scope.selectedCard = null;
 				$scope.playCard = playCard;
-
+				$scope.cardClicked = cardClicked;
+				
 				function cardClicked(card){
-					var hasCard = player.cards.some(function(c){
-						return c.suitIndex = $scope.baseCardSuitIndex;
-					});
+					var hasCard = false;
+					if($scope.baseCard){
+						hasCard = $scope.player.cards.some(function(c){
+							return c.suitIndex === $scope.baseCard.card.suitIndex;
+						});
+					}
 					
-					$scope.cardSelected({ card: card });
+					if(!hasCard || $scope.baseCard.card.suitIndex === card.suitIndex){
+						$scope.selectedCard = card;
+					}
+					
 				}
 				
 				function playCard(card){
-					$scope.cardSelected({ card: card });
+					var hasCard = false;
+					if($scope.baseCard){
+						hasCard = $scope.player.cards.some(function(c){
+							return c.suitIndex === $scope.baseCard.card.suitIndex;
+						});
+					};
+					if(!hasCard || $scope.baseCard.card.suitIndex === card.suitIndex){
+						$scope.cardSelected({ card: card });
+					}
+					
 				}
 			}]
 		}

@@ -99,22 +99,39 @@ function playCard(data, callback) {
 	var players = gameManager.room.getPlayers();
 	if(result.continueCurrentRound){
 		console.log("Next player is ");
-		console.log(players[gameManager.room.game.currentRound.startPlayerIndex])
+		console.log(players[gameManager.room.game.currentRound.startPlayerIndex]);
+		var round = gameManager.room.game.currentRound;
+		
 		if(result.continueCurrentTrick){
+			var baseCard = round.playerCards[round.currentTrick][0];
 			console.log("Continue trick")
 			nsp.emit('next-player', { 
 				round: gameManager.room.game.currentRound,  
 				player: players[gameManager.room.game.currentRound.startPlayerIndex] ,
-				players: players
+				players: players,
+				previousPlayerCard: data,
+				baseCard: baseCard
 			});
 		}else{
 			console.log("trick completed");
 			console.log(players);
-			nsp.emit('next-player', { 
-				round: gameManager.room.game.currentRound,  
-				player: players[gameManager.room.game.currentRound.startPlayerIndex] ,
-				players: players
+			
+			nsp.emit('trick-completed', { 
+				round: gameManager.room.game.currentRound,
+				previousPlayerCard: data,
+				players: players,
+				previousTrickWinner: result.winningPlayerId
 			});
+			
+			setTimeout(function(){
+				nsp.emit('next-player', { 
+					round: gameManager.room.game.currentRound,  
+					player: players[gameManager.room.game.currentRound.startPlayerIndex] ,
+					players: players,
+					previousPlayerCard: null,
+					baseCard: null
+				});
+			}, 3000);
 		}
 	}else{
 		console.log("start bidding for next round")
@@ -122,38 +139,58 @@ function playCard(data, callback) {
 		
 		var players = gameManager.room.getPlayers();
 		
-		nsp.emit('round-completed', { 
-				players: players 
-			}
-		);
+		nsp.emit('trick-completed', { 
+			round: gameManager.room.game.currentRound,
+			previousPlayerCard: data,
+			players: players,
+			previousPlayerCard: data,
+			baseCard: null,
+			previousTrickWinner: result.winningPlayerId
+		});
+		
+		gameManager.room.game.assignPoints();
+		gameManager.room.game.clearPlayersBid();
+		gameManager.room.game.setupNewRound();
 		
 		setTimeout(function(){
-			// gameManager.room.game.startNewRound();
-			gameManager.room.game.shuffle(53);
-			gameManager.room.game.distributeCards();
-
-			var key = null;
-			
-			for(var i = 0; i < players.length; i++){
-				key = players[i].id;
-				socket = io.nsps[namespace].sockets[key]; // console.log(io.nsps[namespace].sockets[key]);
-				// console.log(adminSocket);
-				if(socket){
-					socket.emit('game-started', { 
-							round: gameManager.room.game.currentRound, 
-							data: players[i] 
-						}
-					);
+			nsp.emit('round-completed', { 
+					players: players,
+					previousPlayerCard: null,
+					previousTrickWinner: result.winningPlayerId
 				}
-			}
-			
-			nsp.emit('start-bidding', { 
-				round: gameManager.room.game.currentRound, 
-				playerBids: null, 
-				player: players[gameManager.room.game.currentRound.startPlayerIndex] }
 			);
 			
-		}, 5000);
+			setTimeout(function(){
+				// gameManager.room.game.startNewRound();
+				gameManager.room.game.shuffle(53);
+				gameManager.room.game.distributeCards();
+
+				var key = null;
+				
+				for(var i = 0; i < players.length; i++){
+					key = players[i].id;
+					socket = io.nsps[namespace].sockets[key]; // console.log(io.nsps[namespace].sockets[key]);
+					// console.log(adminSocket);
+					if(socket){
+						socket.emit('game-started', { 
+								round: gameManager.room.game.currentRound, 
+								data: players[i] 
+							}
+						);
+					}
+				}
+				
+				nsp.emit('start-bidding', { 
+					round: gameManager.room.game.currentRound, 
+					playerBids: null, 
+					player: players[gameManager.room.game.currentRound.startPlayerIndex] }
+				);
+				
+			}, 5000);
+			
+		}, 3000);
+			
+		
 		
 		
 	}

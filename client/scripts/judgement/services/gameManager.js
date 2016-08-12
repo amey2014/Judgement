@@ -22,7 +22,8 @@ define(['../module'], function(module){
 					'GAME_STARTED': 8,
 					'START_BIDDING': 9,
 					'NEXT_PLAYER': 10,
-					'ROUND_COMPLETED': 11
+					'ROUND_COMPLETED': 11,
+					'TRICK_COMPLETED': 12
 				},
 
 				initialize: initialize,
@@ -64,10 +65,16 @@ define(['../module'], function(module){
 					
 					socket.on('round-completed', roundCompleted);
 					
+					socket.on('trick-completed', trickCompleted);
+					
 					socket.on('disconnect', disconnected);
 					
 				}
 				
+			}
+			
+			function trickCompleted(response){
+				notificationHandler(service.MESSAGE_KEYS.TRICK_COMPLETED, response);
 			}
 			
 			function nextPlayer(response){

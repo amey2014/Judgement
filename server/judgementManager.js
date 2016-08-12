@@ -232,7 +232,7 @@ Game.prototype.startNewRound = function(){
 Game.prototype.playCard = function(data){
 	var continueCurrentRound = true;
 	var continueCurrentTrick = true;
-	
+	var winningPlayerId = null;
 	var index = getPlayerIndex(this.players, data.id);
 	var player = this.players[index];
 	
@@ -252,22 +252,20 @@ Game.prototype.playCard = function(data){
 	if(count === playersCount){ // next trick
 		console.log('Next trick');
 		
-		var playerId = this.currentRound.whoWonThisTrick(data.currentTrick);
-		var nextPlayerIndex = getPlayerIndex(this.players, playerId);
+		winningPlayerId = this.currentRound.whoWonThisTrick(data.currentTrick);
+		var nextPlayerIndex = getPlayerIndex(this.players, winningPlayerId);
 		this.players[nextPlayerIndex].tricksWon++;
 			
 		var totalTricksPlayed = this.currentRound.playerCards.length;
 		
-		console.log("Round: " + this.currentRound.totalTricks + ", currentTrick: " + data.currentTrick + "Player won: " + playerId);
+		console.log("Round: " + this.currentRound.totalTricks + ", currentTrick: " + data.currentTrick + "Player won: " + winningPlayerId);
 		console.log("totalTricksPlayed: " + totalTricksPlayed);
 		
 		if(totalTricksPlayed === this.currentRound.totalTricks){ // next round
 			console.log('Next Round');
 			continueCurrentRound = false;
 			continueCurrentTrick = false;
-			this.assignPoints();
-			this.clearPlayersBid();
-			this.setupNewRound();
+			
 		}else{  // continue current round
 			console.log('Continue Round');
 			continueCurrentRound = true;
@@ -282,7 +280,8 @@ Game.prototype.playCard = function(data){
 	//return continueCurrentRound;
 	return { 
 		continueCurrentRound: continueCurrentRound, 
-		continueCurrentTrick: continueCurrentTrick
+		continueCurrentTrick: continueCurrentTrick,
+		winningPlayerId: winningPlayerId
 	};
 }
 	

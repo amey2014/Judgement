@@ -14,7 +14,8 @@ define(['../module'], function(module){
 		$scope.board.currentPlayer = null;
 		$scope.board.message = null;
 		$scope.board.cardSelected = cardSelected;
-
+		$scope.board.playerCards = [{}, {}, {}, {}];
+		$scope.board.selectBid = selectBid;
 		$scope.board.cardSymbol = {
 				Spade: '&spades;',
 				Diamond: '&diams;',
@@ -69,11 +70,20 @@ define(['../module'], function(module){
 				case GameManager.MESSAGE_KEYS.ROUND_COMPLETED:
 					roundCompleted(data);
 					break;
+				case GameManager.MESSAGE_KEYS.TRICK_COMPLETED:
+					trickCompleted(data);
+					break;
 				default:
 					break;
 			}
 		}
 		
+		function selectBid(bid){
+			if(bid <= $scope.board.round.totalTricks) {
+				$scope.board._bid = bid;
+			}
+			
+		}
 		function startGame(data){
 		    console.log("ADMIN START GAME", data);
 		    $scope.$apply(function(){
@@ -84,17 +94,22 @@ define(['../module'], function(module){
 		
 		function nextPlayer(response){
 		    console.log("NEXT PLAYER", response);
+		    
 		    getAllPlayersCallback(response);
+		    $scope.board.baseCard = response.baseCard;
 		    
 		    $scope.board.currentPlayer = response.player.id;
 			
 			var currentPlayer = $scope.board.players.filter(function(p){
 		    	return p.id === response.player.id && response.player.name === p.name && response.player.name === $scope.board.username;
 		    });
+			 
+			$scope.board.round = response.round;
 			
-			$scope.board.round.inProgress = response.round.inProgress;
-			$scope.board.round.currentTrick = response.round.currentTrick;
-			
+			if(response.previousPlayerCard){
+				var index = getPlayerIndex(response.previousPlayerCard.id);
+				$scope.board.playerCards.splice(index, 1, response.previousPlayerCard);
+			}
 			if(currentPlayer.length > 0){
 				// start bidding for this player
 				$scope.board.myTurn = true;
@@ -133,15 +148,43 @@ define(['../module'], function(module){
 				$scope.board.players[0].tricksBidded = bid;
 			});
 		}
+
+		function trickCompleted(response){
+		    console.log("TRICK COMPLETED", response);
+		    getAllPlayersCallback(response);
+		    var winnerIndex = getPlayerIndex(response.previousTrickWinner);
+		    $scope.board.baseCard = null;
+		    
+		    $scope.board.message = $scope.board.players[winnerIndex].name + "won this trick."
+		    	
+		    $scope.$apply(function(){
+		    	var index = getPlayerIndex(response.previousPlayerCard.id);
+				$scope.board.playerCards.splice(index, 1, response.previousPlayerCard);
+				
+		    	$timeout(function(){
+		    		$scope.board.playerCards.splice(0, $scope.board.playerCards.length, {}, {}, {}, {});
+		    	}, 2000);
+		    })
+		    
+		}
 		
 		function roundCompleted(data){
+			
 			console.log("RoUND COMPLETED");
+			$scope.board._bid = 0;
+			$scope.board.baseCard = null;
 			console.log(data);
 			$scope.board.message = 'Next round will begin in 5 secs...';
 			$scope.board.myTurn = false;
-			
-			getAllPlayersCallback(data);
-			
+			if(data.previousPlayerCard){
+				var index = getPlayerIndex(data.previousPlayerCard.id);
+				$scope.board.playerCards.splice(index, 1, data.previousPlayerCard);
+			}
+			$timeout(function(){
+	    		$scope.board.playerCards.splice(0, $scope.board.playerCards.length, {}, {}, {}, {});
+	    	}, 2000);
+
+	    	getAllPlayersCallback(data);
 			$scope.$apply();
 		}
 		
@@ -235,6 +278,17 @@ define(['../module'], function(module){
 		    		$location.url("/board_enter");
 		    	});
 		    });
+		}
+		
+		function getPlayerIndex(id){
+			var index = -1;
+		    for(var i =0; i < $scope.board.players.length; i++){
+		    	if( $scope.board.players[i].id === id){
+		    		index = i;
+		    		break;
+		    	}
+		    }
+		    return index;
 		}
 
 		function getAllPlayersCallback(response){

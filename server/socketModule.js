@@ -13,7 +13,7 @@ var current_clients = {
 function initializeSockets(io){
 	
 	nsp.on('connection', function(socket){
-		console.log('someone connected');
+		console.log('Someone connected');
 		
 		if(!current_clients[socket.id]){
 			current_clients[socket.id] = {
@@ -54,7 +54,7 @@ function initializeSockets(io){
 	  	socket.on('play-card', playCard.bind(socket));
 	  	
 	  	socket.on('disconnect', function(){ 
-	  		console.log("Client Disconnected: ",socket.playerName, socket.id); 
+	  		console.log("User Disconnected: ", socket.playerName, socket.id); 
 	  		gameManager.room.removePlayer(socket.id, function(){
 	  			nsp.emit('player-left', { players: gameManager.room.getPlayers(), id: socket.id });
 	  		});
@@ -67,16 +67,21 @@ function initializeSockets(io){
 }
 
 function setBid(data, callback){
+	var socket = this;
+	console.log("SocketModule.js: Set bid for " + socket.playerName, "bids: ", data.bid);
+	
 	gameManager.room.setBid(data, callback);
 	var players = gameManager.room.getPlayers();
+	
 	var bids = players.map(function(p){
 		return { id: p.id, tricksBidded: p.tricksBidded };
 	});
-	console.log("bids count: " + gameManager.room.game.currentRound.bids);
-	if(gameManager.room.game.currentRound.bids === 4){
+	
+	var bidsCount = gameManager.room.game.currentRound.bids;
+	console.log("SocketModule.js: Total Bids:", bidsCount);
+	if(bidsCount === 4){
+		console.log("SocketModule.js: All players have completed bidding.");
 		gameManager.room.game.currentRound.startPlayerIndex = (gameManager.room.game.currentRound.totalTricks - 1) % 4; // set this to 0 as bidding process increments it.
-		// gameManager.room.game.currentRound.currentTrick;
-		console.log(gameManager.room.game.currentRound.startPlayerIndex)
 		gameManager.room.game.currentRound.inProgress = true;
 		nsp.emit('start-bidding', { 
 				round: gameManager.room.game.currentRound, 
@@ -86,47 +91,62 @@ function setBid(data, callback){
 			}
 		);
 	}else{
+		console.log("SocketModule.js: Continue bidding.");
+		
+		var nextPlayer = players[gameManager.room.game.currentRound.startPlayerIndex];
+		console.log("SocketModule.js: Next player to bid: ", nextPlayer.name);
 		nsp.emit('start-bidding', { 
 			round: gameManager.room.game.currentRound, 
 			playerBids: bids, 
-			player: players[gameManager.room.game.currentRound.startPlayerIndex] 
+			player: nextPlayer
 		});
 	}
 }
 
+function getCardDetails(card){
+	return card.rankShortName + ' of ' + card.suitName + ". {" + card.id + "}";
+}
+
 function playCard(data, callback) {
+	var socket = this;
+	console.log("SocketModule.js: Card played by:", socket.playerName, getCardDetails(data.card));
 	var result = gameManager.room.game.playCard(data);
 	var players = gameManager.room.getPlayers();
+	
+	
 	if(result.continueCurrentRound){
-		console.log("Next player is ");
-		console.log(players[gameManager.room.game.currentRound.startPlayerIndex]);
+		console.log("SocketModule.js: Continue Current Round: ", result.continueCurrentRound);
+		
+		var player = players[gameManager.room.game.currentRound.startPlayerIndex];
 		var round = gameManager.room.game.currentRound;
 		
 		if(result.continueCurrentTrick){
+			console.log("SocketModule.js: Continue Current Trick: ", round.currentTrick);
+			console.log("SocketModule.js: Next player: ", player.name);
+			
 			var baseCard = round.playerCards[round.currentTrick][0];
-			console.log("Continue trick")
 			nsp.emit('next-player', { 
-				round: gameManager.room.game.currentRound,  
-				player: players[gameManager.room.game.currentRound.startPlayerIndex] ,
+				round: round,  
+				player: players[round.startPlayerIndex] ,
 				players: players,
 				previousPlayerCard: data,
 				baseCard: baseCard
 			});
 		}else{
-			console.log("trick completed");
-			console.log(players);
+			console.log("SocketModule.js: Trick completed" );
+			console.log("SocketModule.js: Winner: ", result.winner.name);
 			
 			nsp.emit('trick-completed', { 
-				round: gameManager.room.game.currentRound,
+				round: round,
 				previousPlayerCard: data,
 				players: players,
-				previousTrickWinner: result.winningPlayerId
+				previousTrickWinner: result.winner.id
 			});
 			
 			setTimeout(function(){
 				nsp.emit('next-player', { 
-					round: gameManager.room.game.currentRound,  
-					player: players[gameManager.room.game.currentRound.startPlayerIndex] ,
+					round: round,  
+					player: players[round.startPlayerIndex] ,
 					players: players,
 					previousPlayerCard: null,
 					baseCard: null
@@ -134,8 +154,9 @@ function playCard(data, callback) {
 			}, 3000);
 		}
 	}else{
-		console.log("start bidding for next round")
-		console.log(gameManager.room.game.currentRound);
+		console.log("Trick completed" );
+		console.log("SocketModule.js: Winner: ", result.winner.name);
+		// console.log(gameManager.room.game.currentRound);
 		
 		var players = gameManager.room.getPlayers();
 		
@@ -145,23 +166,28 @@ function playCard(data, callback) {
 			players: players,
 			previousPlayerCard: data,
 			baseCard: null,
-			previousTrickWinner: result.winningPlayerId
+			previousTrickWinner: result.winner.id
 		});
 		
+		console.log("SocketModule.js: Assign Points for this round" );
 		gameManager.room.game.assignPoints();
+		console.log("SocketModule.js: Clear previous bids" );
 		gameManager.room.game.clearPlayersBid();
+		console.log("SocketModule.js: Set up new round" );
 		gameManager.room.game.setupNewRound();
+		
+		round = gameManager.room.game.currentRound;
 		
 		setTimeout(function(){
 			nsp.emit('round-completed', { 
 					players: players,
 					previousPlayerCard: null,
-					previousTrickWinner: result.winningPlayerId
+					previousTrickWinner: result.winner.id
 				}
 			);
 			
 			setTimeout(function(){
-				// gameManager.room.game.startNewRound();
+				console.log("SocketModule.js: Shuffle & distribute cards for new round" );
 				gameManager.room.game.shuffle(53);
 				gameManager.room.game.distributeCards();
 
@@ -173,17 +199,18 @@ function playCard(data, callback) {
 					// console.log(adminSocket);
 					if(socket){
 						socket.emit('game-started', { 
-								round: gameManager.room.game.currentRound, 
+								round: round, 
 								data: players[i] 
 							}
 						);
 					}
 				}
-				
+				console.log("SocketModule.js: Start bidding for new round: ", round.totalTricks );
+				console.log("SocketModule.js: Player to bid:", players[round.startPlayerIndex].name);
 				nsp.emit('start-bidding', { 
-					round: gameManager.room.game.currentRound, 
+					round: round, 
 					playerBids: null, 
-					player: players[gameManager.room.game.currentRound.startPlayerIndex] }
+					player: players[round.startPlayerIndex] }
 				);
 				
 			}, 5000);
@@ -226,7 +253,7 @@ function removePlayer(name){
 	
 	if(socket) {
 		socketId = socket.id;
-		console.log("Disconnecting player: " + socket.playerName);
+		console.log("SocketModule.js: Disconnecting player: ", socket.playerName);
 		// var playerSocket = io.nsps[namespace].sockets[socketId];
 		socket.disconnect();
 		
@@ -234,9 +261,9 @@ function removePlayer(name){
 			nsp.emit('player-left', { players: gameManager.room.getPlayers(), id: socketId });
 		});
 		
-		console.log("Player disconnected");
+		console.log("SocketModule.js: Player disconnected: ", + socket.playerName);
 	}else{
-		console.log("Cannot disconnect. Socket not found");
+		console.log("SocketModule.js: Cannot disconnect. Socket not found");
 	}
 	
 	
@@ -244,7 +271,7 @@ function removePlayer(name){
 
 function leaveRoom(data, fn) {
 	var socket =this;
-	console.log("Leaving room: " + socket.id);
+	console.log("SocketModule.js: Leaving room: " + socket.id);
 	socket.leave(data.room, fn);
 	gameManager.room.removePlayer(socket.id, function(){
 		nsp.emit('player-left', { players: gameManager.room.getPlayers(), id: socket.id });
@@ -252,28 +279,23 @@ function leaveRoom(data, fn) {
 }
 
 function pingRoom(data, fn) {
-	console.log('------------------------------');
-	console.log("Ping from: " + data.playerName);
-	console.log('------------------------------');
-	console.log('-----Diablo Room-----');
-	console.log(io.nsps[namespace].adapter.rooms['diablo']);
-	console.log('--------Current Clients-------------');
-	console.log(current_clients);
-	console.log('---------Sockets------------');
-	console.log(io.nsps[namespace].sockets);
-	console.log('----------------------------');
-	/*if(map[data.playerName].socketId === socket.id){
-		fn({ data: map[data.playerName].data });
-	}*/
+	var socket = this;
+	console.log("SocketModule.js: Ping from: " + data.playerName);
+	if(fn) fn({ points: gameManager.room.game });
 }
 
 function startTheGame(){
+	console.log("SocketModule.js: startTheGame() is invoked.");
+	console.log("SocketModule.js: Initializing all rounds.");
 	gameManager.room.game.initializeRounds();
-	// console.log(newGame);
+	console.log("SocketModule.js: Set up new round.");
 	gameManager.room.game.setupNewRound();
+	console.log("Shuffle and distribute cards.");
 	gameManager.room.game.shuffle(53);
 	gameManager.room.game.distributeCards();
+	
 	var players = gameManager.room.getPlayers();
+	var round = gameManager.room.game.currentRound;
 	var key = null;
 	
 	for(var i = 0; i < players.length; i++){
@@ -282,17 +304,19 @@ function startTheGame(){
 		// console.log(adminSocket);
 		if(socket){
 			socket.emit('game-started', { 
-					round: gameManager.room.game.currentRound, 
+					round: round, 
 					data: players[i] 
 				}
 			);
 		}
 	}
 	
+	console.log("SocketModule.js: Start Bidding for Round:", round.totalTricks);
+	console.log("SocketModule.js: Player to bid:", players[round.startPlayerIndex].name);
 	nsp.emit('start-bidding', { 
-		round: gameManager.room.game.currentRound, 
+		round: round, 
 		playerBids: null, 
-		player: players[gameManager.room.game.currentRound.startPlayerIndex] }
+		player: players[round.startPlayerIndex] }
 	);
 	
 }
@@ -367,11 +391,11 @@ function broadcastRooms(socket){
   	var roomKeys = Object.keys(io.nsps[namespace].adapter.rooms);
   	var allSockets =  Object.keys(io.nsps[namespace].adapter.sids);
   	
-  	console.log('------------room keys------------');
-  	console.log(roomKeys);
-  	console.log('------------all sockets------------');
-  	console.log(allSockets);
-  	console.log('------------------------');
+  	// console.log('------------room keys------------');
+  	// console.log(roomKeys);
+  	// console.log('------------all sockets------------');
+  	// console.log(allSockets);
+  	// console.log('------------------------');
   	
   	if(roomKeys){
   		console.log("Total rooms: " + roomKeys.length);

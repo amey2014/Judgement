@@ -84,6 +84,7 @@ define(['../module'], function(module){
 			}
 			
 		}
+		
 		function startGame(data){
 		    console.log("ADMIN START GAME", data);
 		    $scope.$apply(function(){
@@ -189,14 +190,20 @@ define(['../module'], function(module){
 		}
 		
 		function cardSelected(card){
-		    console.log("Play card", card);
-		    GameManager.playCard($scope.board.round.currentTrick, $scope.board.players[0].id, card.card, function(data){
-				console.log("played card", data);
-				GameManager.setCurrentCards(data);
-			});
+			if($scope.board.currentPlayer === $scope.board.players[0].id){
+			    console.log("Play card", card);
+			    $scope.board.currentPlayer = null;
+			    GameManager.playCard($scope.board.round.currentTrick, $scope.board.players[0].id, card.card, function(data){
+					console.log("played card", data);
+					GameManager.setCurrentCards(data);
+				});
+			}else{
+				console.log("boardCtrl: Already Played");
+			}
 		}
 		
 		function startBidding(data){
+			$scope.board._bid = 0;
 			if(data.playerBids !== null){
 				updateBids(data.playerBids);
 			}

@@ -42,7 +42,8 @@ function getPlayers(){
 
 var TOTAL_CARDS = 52;
 var SUIT = ['Spade', 'Diamond', 'Club', 'Heart'];
-var RANK = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'];
+var RANK_NAME = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'];
+var RANK_INDEX = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0];
 
 function Game(totalPlayers){
 	this.totalPlayersRequired = totalPlayers;
@@ -176,15 +177,22 @@ Game.prototype.distributeCards = function(){
 	var totalCards = this.currentRound.totalTricks * this.players.length;
 	for(var i = 0; i < totalCards; i++, startPlayerIndex++){
 		this.players[startPlayerIndex % this.players.length].cards.push(this.deck.cards[i]);
-	}
-	/*for(var i = 0; i < this.players.length; i++){
-		this.players[i].cards.sort(function(p, q){ 
-			if(p.suitIndex > q.suitIndex) 
+		
+		this.players[startPlayerIndex % this.players.length].cards.sort(function(a, b){
+			if(a.id < b.id){
 				return 1;
-			
-		} );
-		}
-	}*/
+			}
+			else if (a.id > b.id){
+				return -1
+			}
+			else{
+				return 0;
+			}
+		})
+	}
+	
+	
+	
 	this.players.forEach(function(p){
 		p.getCards();
 	});
@@ -254,7 +262,8 @@ Game.prototype.playCard = function(data){
 		
 		winningPlayerId = this.currentRound.whoWonThisTrick(data.currentTrick);
 		var nextPlayerIndex = getPlayerIndex(this.players, winningPlayerId);
-		this.players[nextPlayerIndex].tricksWon++;
+		var winner = this.players[nextPlayerIndex];
+		winner.tricksWon++;
 			
 		var totalTricksPlayed = this.currentRound.playerCards.length;
 		
@@ -281,7 +290,7 @@ Game.prototype.playCard = function(data){
 	return { 
 		continueCurrentRound: continueCurrentRound, 
 		continueCurrentTrick: continueCurrentTrick,
-		winningPlayerId: winningPlayerId
+		winner: winner
 	};
 }
 	
@@ -312,11 +321,10 @@ Round.prototype.whoWonThisTrick = function(data){
 	var playerId = playerCards[0].id;
 	console.log("BaseCardSuit: " + baseCardSuit);
 	
-	for(var i = 0; i < playerCards.length; i++){
+	/*for(var i = 0; i < playerCards.length; i++){
 		console.log("playerId: " + playerCards[i].id);
-		console.log("playerId: " + playerCards[i].card);
 		console.log(playerCards[i].card.rankShortName + ' of '+ playerCards[i].card.suitName, "suitIndex: " + playerCards[i].card.suitIndex, "rankIndex: " + playerCards[i].card.rankIndex);
-	}
+	}*/
 	
 	while(playerCards.length > 1){
 		var card1 = playerCards[0].card;
@@ -379,22 +387,22 @@ function Player(id, name){
 }
 	
 Player.prototype.getCards = function(){
-	
 	return this.cards.map(function(c){
 		return c.toString();
 	});
 }
 
 function Card(suit, rank){
+	this.id = suit + RANK_INDEX[rank]
 	this.suitIndex = suit;
 	this.rankIndex = rank;
 	this.suitName = SUIT[suit];
-	this.rankShortName = rank > 0 && rank < 9 ? RANK[rank] : RANK[rank].charAt(0);
-	this.rankLongName = RANK[rank];
+	this.rankShortName = rank > 0 && rank < 9 ? RANK_NAME[rank] : RANK_NAME[rank].charAt(0);
+	this.rankLongName = RANK_NAME[rank];
 }
 
 Card.prototype.toString = function(){
-	return this.rankName + ' of ' + this.suitName;
+	return this.rankName + ' of ' + this.suitName + ". {" + this.id + "}";
 }
 
 function Deck(){

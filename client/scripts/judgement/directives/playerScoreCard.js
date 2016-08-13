@@ -75,17 +75,30 @@ define(['../module'], function(module){
 					
 				}
 				
-				function playCard(card){
-					var hasCard = false;
-					if($scope.baseCard){
-						hasCard = $scope.player.cards.some(function(c){
-							return c.suitIndex === $scope.baseCard.card.suitIndex;
-						});
-					};
-					if(!hasCard || $scope.baseCard.card.suitIndex === card.suitIndex){
-						$scope.cardSelected({ card: card });
-					}
+				var inProcess = false;
 					
+				function playCard(card){
+					if(!inProcess){
+						try{
+							inProcess = true;
+							var hasCard = false;
+							if($scope.baseCard){
+								hasCard = $scope.player.cards.some(function(c){
+									return c.suitIndex === $scope.baseCard.card.suitIndex;
+								});
+							};
+							if(!hasCard || $scope.baseCard.card.suitIndex === card.suitIndex){
+								$scope.cardSelected({ card: card });
+							}
+						}catch(error){
+							console.log("Error occured in playCard()");
+						}finally{
+							inProcess = false;
+						}
+					}
+					else{
+						console.log("Already played");
+					}
 				}
 			}]
 		}

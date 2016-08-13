@@ -79,7 +79,7 @@ define(['../module'], function(module){
 		}
 		
 		function selectBid(bid){
-			if(bid <= $scope.board.round.totalTricks) {
+			if(bid <= $scope.board.round.totalTricks &&  bid !== $scope.board.invalidBid) {
 				$scope.board._bid = bid;
 			}
 			
@@ -128,6 +128,7 @@ define(['../module'], function(module){
 		
 		function updateBids(bids){
 			console.log(bids);
+			var sum_of_bids = 0;
 			var players = $scope.board.players;
 			$scope.$apply(function(){
 				for(var i = 0; i < bids.length; i++){
@@ -135,12 +136,14 @@ define(['../module'], function(module){
 						if(players[j].id === bids[i].id){
 							console.log("Set "+  bids[i].tricksBidded + " bids for " + players[j].name );
 							players[j].tricksBidded = bids[i].tricksBidded;
+							sum_of_bids += bids[i].tricksBidded;
 							break;
 						}
 					}
 					
 				}
 			});
+			return sum_of_bids;
 		}
 		
 		function setMyBid(bid){
@@ -203,10 +206,22 @@ define(['../module'], function(module){
 		}
 		
 		function startBidding(data){
-			$scope.board._bid = 0;
+			$scope.board.invalidBid = -1;
+			
+			
 			if(data.playerBids !== null){
-				updateBids(data.playerBids);
+				var sum_of_bids = -1;
+				var totalBids = data.round.bids;
+				sum_of_bids = updateBids(data.playerBids);
+				if(totalBids === ($scope.board.players.length - 1)){
+					if(sum_of_bids <= data.round.totalTricks){
+						$scope.board.invalidBid = data.round.totalTricks - sum_of_bids;
+					}
+				}
 			}
+			
+			$scope.board._bid = $scope.board.invalidBid === 0 ? 1 : 0;
+			
 			$scope.board.message = null;
 			
 			if(data.player === null){

@@ -13,7 +13,10 @@
 			
 		</div>
 		<div class="col-xs-4 col-sm-4 divGameName"><span class="gameName">JUDGEMENT</span></div>
-		<div class="col-xs-4 col-sm-4 divControlButtons"><button ng-show="board.GameManager.canStartGame" ng-click="board.GameManager.startTheGame()">Start Game</button><button ng-click="board.leaveRoom()">Leave Room</button></div>
+		<div class="col-xs-4 col-sm-4 divControlButtons">
+			<button ng-show="board.GameManager.canStartGame" ng-click="board.GameManager.startTheGame()">Start Game</button>
+			<button ng-click="board.leaveRoom()">Leave Room</button>
+		</div>
 	</div>
 	<div class="row">
 		<div class="col-sm-2">
@@ -65,7 +68,7 @@
 				<div class="bidHeader">Bid your tricks</div>
 				<span class="badge bids" data-ng-init="board._bid = -1"
 					data-ng-click="board.selectBid(i)"
-					data-ng-class="{'bid-not-valid': i > board.round.totalTricks, 'bid-selected': board._bid === i}" 
+					data-ng-class="{'bid-not-valid': i > board.round.totalTricks || i === board.invalidBid, 'bid-selected': board._bid === i}" 
 					data-ng-repeat="i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]">{{ i }}</span>
 				<div class="bidButtonContainer">
 					<div type="button" class="btn btn-default btn-sm bidButton" data-ng-click="board.setMyBid(board._bid)">BID</div>

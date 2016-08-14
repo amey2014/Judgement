@@ -19,14 +19,13 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-2">
+		<div class="col-sm-3">
 			<div class="trumpCardContainer overlay">
 				<div class="playing-card Spade" ng-class="board.round.trumpSuit">
 					<span class="suitSymbolBig ng-binding" data-ng-bind="board.message" style="font-size: 2em;top: 0px;"></span>
 				</div>	
 			</div>
 		</div>
-		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>
 		<div class="col-sm-2"><player-score-card player="board.players[2]" round="board.round" current-card="board.playerCards[2].card" turn="board.currentPlayer" index="3"></player-score-card></div>
 		<div class="col-sm-2"></div>
@@ -38,10 +37,11 @@
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>
 		<div class="col-sm-2" style="text-align: center">
-			<div class="playing-card" data-ng-if="board.playerCards[2].card" style="width: 40px; height: 45px; margin-top: 20px;" data-ng-class="board.playerCards[2].card.suitName">
-				<span class="rankName" style="left: -3px">{{board.playerCards[2].card.rankShortName }}</span>
-				<span class="suitSymbolSmall" style="left: -8px" data-ng-bind-html="board.cardSymbol[board.playerCards[2].card.suitName]"></span>
-				<span class="suitSymbolBig" style="top: -18px;left: -3px;" data-ng-bind-html="board.cardSymbol[board.playerCards[2].card.suitName]"></span>
+			<div class="playing-card" data-ng-if="board.playerCards[2].card" 
+			style="position: relative; width: 45px; height: 55px; margin-top: 20px;" data-ng-class="board.playerCards[2].card.suitName">
+				<span class="rankName" style="top: 2px; left: 2px; position: absolute">{{board.playerCards[2].card.rankShortName }}</span>
+				<span class="suitSymbolSmall" style="top: 11px;left: 4px; position: absolute" data-ng-bind-html="board.cardSymbol[board.playerCards[2].card.suitName]"></span>
+				<span class="suitSymbolBig" style="top: 10px;left: 12px; position: absolute;" data-ng-bind-html="board.cardSymbol[board.playerCards[2].card.suitName]"></span>
 			</div>
 		</div>
 		<div class="col-sm-2"></div>
@@ -52,10 +52,11 @@
 		<div class="col-sm-2"><player-score-card player="board.players[1]" round="board.round" current-card="board.playerCards[1].card" turn="board.currentPlayer" index="2"></player-score-card></div>
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2" style="text-align: center">
-			<div class="playing-card" data-ng-if="board.playerCards[1].card" style="width: 40px; height: 45px; margin-top: 20px;" data-ng-class="board.playerCards[1].card.suitName">
-				<span class="rankName" style="left: -3px">{{board.playerCards[1].card.rankShortName }}</span>
-				<span class="suitSymbolSmall" style="left: -8px" data-ng-bind-html="board.cardSymbol[board.playerCards[1].card.suitName]"></span>
-				<span class="suitSymbolBig" style="top: -18px;left: -3px;" data-ng-bind-html="board.cardSymbol[board.playerCards[1].card.suitName]"></span>
+			<div class="playing-card" data-ng-if="board.playerCards[1].card" 
+			style="width: 45px; height: 55px; margin-top: 20px;position: relative" data-ng-class="board.playerCards[1].card.suitName">
+				<span class="rankName" style="top: 2px; left: 2px; position: absolute">{{board.playerCards[1].card.rankShortName }}</span>
+				<span class="suitSymbolSmall" style="top: 11px;left: 4px; position: absolute" data-ng-bind-html="board.cardSymbol[board.playerCards[1].card.suitName]"></span>
+				<span class="suitSymbolBig" style="top: 10px;left: 12px; position: absolute;" data-ng-bind-html="board.cardSymbol[board.playerCards[1].card.suitName]"></span>
 			</div>
 		</div>
 		<div class="col-sm-2">
@@ -76,10 +77,11 @@
 			</div>
 		</div>
 		<div class="col-sm-2" style="text-align: center">
-			<div class="playing-card" data-ng-if="board.playerCards[3].card" style="width: 40px; height: 45px; margin-top: 20px;" data-ng-class="board.playerCards[3].card.suitName">
-				<span class="rankName" style="left: -3px">{{board.playerCards[3].card.rankShortName }}</span>
-				<span class="suitSymbolSmall" style="left: -8px" data-ng-bind-html="board.cardSymbol[board.playerCards[3].card.suitName]"></span>
-				<span class="suitSymbolBig" style="top: -18px;left: -3px;" data-ng-bind-html="board.cardSymbol[board.playerCards[3].card.suitName]"></span>
+			<div class="playing-card" data-ng-if="board.playerCards[3].card" 
+			style="width: 45px; height: 55px; margin-top: 20px;position: relative" data-ng-class="board.playerCards[3].card.suitName">
+				<span class="rankName" style="top: 2px; left: 2px; position: absolute">{{board.playerCards[3].card.rankShortName }}</span>
+				<span class="suitSymbolSmall" style="top: 11px;left: 4px; position: absolute" data-ng-bind-html="board.cardSymbol[board.playerCards[3].card.suitName]"></span>
+				<span class="suitSymbolBig" style="top: 10px;left: 12px; position: absolute;" data-ng-bind-html="board.cardSymbol[board.playerCards[3].card.suitName]"></span>
 			</div>
 		</div>
 		<div class="col-sm-1" ></div>
@@ -87,17 +89,14 @@
 	</div>
 	<div class="row">
 		<div class="col-sm-2"></div>
-		<div class="col-sm-1"></div>
-		<div class="col-sm-2"></div>
-		<div class="col-sm-2" style="text-align: center">
-			<div class="playing-card" data-ng-if="board.playerCards[0].card" style="width: 40px; height: 45px; margin-top: 20px;" data-ng-class="board.playerCards[0].card.suitName">
-				<span class="rankName" style="left: -3px">{{board.playerCards[0].card.rankShortName }}</span>
-				<span class="suitSymbolSmall" style="left: -8px" data-ng-bind-html="board.cardSymbol[board.playerCards[0].card.suitName]"></span>
-				<span class="suitSymbolBig" style="top: -18px;left: -3px;" data-ng-bind-html="board.cardSymbol[board.playerCards[0].card.suitName]"></span>
+		<div class="col-sm-8 col-md-6 col-md-offset-1" style="text-align: center">
+			<div class="playing-card" data-ng-if="board.playerCards[0].card" 
+			style="width: 45px; height: 55px; margin-top: 20px;position: relative" data-ng-class="board.playerCards[0].card.suitName">
+				<span class="rankName" style="top: 2px; left: 2px; position: absolute">{{board.playerCards[0].card.rankShortName }}</span>
+				<span class="suitSymbolSmall" style="top: 11px;left: 4px; position: absolute" data-ng-bind-html="board.cardSymbol[board.playerCards[0].card.suitName]"></span>
+				<span class="suitSymbolBig" style="top: 10px;left: 12px; position: absolute;" data-ng-bind-html="board.cardSymbol[board.playerCards[0].card.suitName]"></span>
 			</div>
 		</div>
-		<div class="col-sm-2"></div>
-		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>
 	</div>
 	<div class="row logged-in-player-row">

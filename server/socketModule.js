@@ -55,9 +55,10 @@ function initializeSockets(io){
 	  	
 	  	socket.on('disconnect', function(){ 
 	  		console.log("User Disconnected: ", socket.playerName, socket.id); 
-	  		gameManager.room.removePlayer(socket.id, function(){
+	  		nsp.emit('player-left', { players: gameManager.room.getPlayers(), id: socket.id, playerName: socket.playerName });
+	  		/*gameManager.room.removePlayer(socket.id, function(){
 	  			nsp.emit('player-left', { players: gameManager.room.getPlayers(), id: socket.id });
-	  		});
+	  		});*/
 	  		if(current_clients[socket.id]) delete current_clients[socket.id];
   		});
 	  	
@@ -323,14 +324,15 @@ function startTheGame(){
 
 function joinRoom(data, fn) {
 	var socket = this;
-	console.log(data.playerName + " joining the room: " + data.room);
+	console.log(data.playerName + " trying to join the room: " + data.room);
 	if(io.nsps[namespace].adapter.rooms[data.room]){
 		var clientSocketList = io.nsps[namespace].adapter.rooms[data.room].sockets;
 		var clientKeys = Object.keys(clientSocketList);
 		var numClients = clientKeys.length;
-		console.log("Total players: " + numClients);
-		
-		if(numClients < gameManager.room.game.totalPlayersRequired){
+		console.log("Total client sockets: " + numClients);
+		var currentPlayersCount = gameManager.room.getPlayers().length;
+		console.log("Exisiting players count: " + currentPlayersCount);
+		if(currentPlayersCount < gameManager.room.game.totalPlayersRequired){
 			socket.join(data.room);
 			console.log(data.playerName + "joined the room: " + data.room);
 			socket.playerName = data.playerName;
@@ -353,19 +355,124 @@ function joinRoom(data, fn) {
 					}
 				}
 			});
+			if (fn) fn({
+				msg : data.playerName + " have joined: " + data.room, 
+				data: { 
+					id: socket.id, 
+					players: gameManager.room.getPlayers() 
+				} 
+			});
 		}else{
-			console.log("Cannot add more players");
+			var currentPlayers = gameManager.room.getPlayers();
+			var existingPlayerEntries = currentPlayers.filter(function(p){
+				return p.name === data.playerName;
+			});
+			if(existingPlayerEntries.length > 0){
+				existingPlayerEntries[0].id = socket.id;
+				console.log("Updated current players");
+				if (fn) fn({
+					msg : data.playerName + " have joined: " + data.room, 
+					data: { 
+						id: socket.id, 
+						players: gameManager.room.getPlayers(),
+						round: gameManager.room.game.currentRound
+					} 
+				});
+				
+				if(gameManager.room.game.currentRound.bids < gameManager.room.game.totalPlayersRequired){
+					console.log("Bidding is in progress for round " + gameManager.room.game.currentRound.totalTicks);
+					var i = currentPlayers.indexOf(existingPlayerEntries[0]);
+					if(gameManager.room.game.currentRound.startPlayerIndex === i){
+						console.log("Player to bid " + data.playerName);
+						var bids = currentPlayers.map(function(p){
+							return { id: p.id, tricksBidded: p.tricksBidded };
+						});
+						socket.emit('start-bidding', { 
+							round: gameManager.room.game.currentRound, 
+							playerBids: bids, 
+							player: existingPlayerEntries[0] }
+						);
+					}
+				}
+				
+				if(gameManager.room.game.currentRound.inProgress){
+					console.log("Round " + gameManager.room.game.currentRound.totalTricks + " in progress");
+					var i = currentPlayers.indexOf(existingPlayerEntries[0]);
+					var currentTrick = gameManager.room.game.currentRound.currentTrick;
+					console.log(gameManager.room.game.currentRound);
+					var currentTrickCardsCount = 0;
+					if(gameManager.room.game.currentRound.playerCards[currentTrick]){
+						currentTrickCardsCount = gameManager.room.game.currentRound.playerCards[currentTrick].length;
+					} 
+					
+					if(currentTrickCardsCount < currentPlayers.length){
+						//if(gameManager.room.game.currentRound.startPlayerIndex === i){
+							console.log("Next player is " + currentPlayers[gameManager.room.game.currentRound.startPlayerIndex].name);
+							if(currentTrickCardsCount === 0){
+								var bids = currentPlayers.map(function(p){
+									return { id: p.id, tricksBidded: p.tricksBidded };
+								});
+								socket.emit('start-bidding', { 
+										round: gameManager.room.game.currentRound, 
+										playerBids: bids, 
+										player: currentPlayers[gameManager.room.game.currentRound.startPlayerIndex],
+										startPlaying: true
+									}
+								);
+							}else{
+								var baseCard = gameManager.room.game.currentRound.playerCards[gameManager.room.game.currentRound.currentTrick][0];
+								socket.emit('next-player', { 
+									round: gameManager.room.game.currentRound,  
+									player: currentPlayers[gameManager.room.game.currentRound.startPlayerIndex] ,
+									players: currentPlayers,
+									previousPlayerCard: null, // gameManager.room.game.currentRound.playerCards[this.currentTrick]
+									previousPlayedCards: gameManager.room.game.currentRound.playerCards[gameManager.room.game.currentRound.currentTrick],
+									baseCard: baseCard
+								});
+							}
+						/*}else{
+							var baseCard = gameManager.room.game.currentRound.playerCards[gameManager.room.game.currentRound.currentTrick][0];
+							nsp.emit('next-player', { 
+								round: gameManager.room.game.currentRound,  
+								player: currentPlayers[gameManager.room.game.currentRound.startPlayerIndex] ,
+								players: currentPlayers,
+								previousPlayerCard: null, // gameManager.room.game.currentRound.playerCards[this.currentTrick]
+								previousPlayedCards: gameManager.room.game.currentRound.playerCards[gameManager.room.game.currentRound.currentTrick],
+								baseCard: baseCard
+							});
+						}*/
+					}
+				}
+					
+			}else{
+				console.log("Cannot add more players");
+			}
+			
+			/*nsp.emit('reset-board', { 
+				round: gameManager.room.game.currentRound, 
+				players: gameManager.room.getPlayers(), 
+				player: players[round.startPlayerIndex] }
+			);*/
+			
 		}
 
-		if (fn) fn({
-			msg : data.playerName + " have joined: " + data.room, 
-			data: { id: socket.id, players: gameManager.room.getPlayers()  } 
-		});
+		
 	}
 	else{
 		console.log("Room no available: " + data.room);
 		if (fn) fn({msg :"Room not available: " + data.room });
 	}
+}
+
+function getPlayerIndex(id){
+	var index = -1;
+    for(var i =0; i < $scope.board.players.length; i++){
+    	if( $scope.board.players[i].id === id){
+    		index = i;
+    		break;
+    	}
+    }
+    return index;
 }
 
 function createRoom(data, fn){

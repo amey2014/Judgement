@@ -234,6 +234,7 @@ body{
 
 #board-screen .playing-card span.rankName{
 	position: relative;
+	font-size: 13px;
 	left: -15px;
 }
 
@@ -270,7 +271,7 @@ body{
 
 #board-screen div.player-card.loggedin-player-card .playing-card span.suitSymbolBig,
 #board-screen div.logged-in-player-card .playing-card span.suitSymbolBig{
-	font-size: 31px;
+	font-size: 32px;
     position: absolute;
     top: 5px;
     left: 11px;
@@ -285,7 +286,7 @@ body{
 }
 
 #board-screen span.suitSymbolBig{
-	font-size: 35px;
+	font-size: 32px;
 	position: relative;
     top: -20px;
     left: -6px
@@ -340,7 +341,7 @@ body{
 #board-screen div.loggedin-player-card.player-card .player-details .player-cards-container .player-cards .playing-card{
 	margin-left: 0px;
 	position: relative;
-	top: 10px;
+	top: 5px;
 }
 
 #board-screen div.loggedin-player-card.player-card .player-details .player-cards-container .player-cards .playing-card.card-selected{

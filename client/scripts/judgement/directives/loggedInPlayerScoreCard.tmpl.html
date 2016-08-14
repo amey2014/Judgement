@@ -23,9 +23,9 @@
 						style="width: 40px; height: 45px;"
 						data-ng-repeat="card in player.cards"  data-ng-style="{'left': ((player.cards.length - ($index + 1)) * 18) + 'px'}" 
 						data-ng-click="cardClicked(card)" data-ng-dblclick="playCard(card); $event.stopPropagation();">
-						<span class="rankName" style=" left: -10px; position: relative">{{ card.rankShortName }}</span>
-						<span class="suitSymbolSmall" style="top: 12px;left: -27px; position: relative" ng-bind-html="cardSymbol[card.suitName]"></span>
-						<span class="suitSymbolBig" style="top: -9px;left: -8px; position: relative;" ng-bind-html="cardSymbol[card.suitName]"></span>
+						<span class="rankName" style=" left: 2px; position: absolute">{{ card.rankShortName }}</span>
+						<span class="suitSymbolSmall" style="top: 9px;left: 2px; position: absolute" ng-bind-html="cardSymbol[card.suitName]"></span>
+						<span class="suitSymbolBig" style="top: 4px;left: 11px; position: absolute;" ng-bind-html="cardSymbol[card.suitName]"></span>
 					</div> 
 					
 					<div class="block-play" data-ng-if="!round.inProgress || turn !== player.id"></div>

@@ -154,12 +154,12 @@ define(['../module'], function(module){
 			}
 			
 			function disconnected(){
+				console.log("Your connection is disconnected.");
 				socket = null;
 			}
 			
 			function joinRoomCallback(response){
 				notificationHandler(service.MESSAGE_KEYS.PLAYER_JOINED, response);
-				
 			}
 			
 			function playerJoinedCallback(data){

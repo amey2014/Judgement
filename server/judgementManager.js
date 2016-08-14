@@ -81,7 +81,7 @@ Game.prototype.addPlayer = function(id, name){
 		this.players.push(new Player(id, name, 0));
 	}
 	else{
-		console.log("Cannot add more players.");
+		console.log("Game.prototype.addPlayer: Cannot add more players.");
 	}
 }
 
@@ -118,7 +118,7 @@ Game.prototype.removePlayer = function(id, name){
 		this.players.splice(index, 1);
 	}
 	else{
-		console.log('Game.prototype.removePlayer: Index is ' + index);
+		console.log('Game.prototype.removePlayer: Cannot remove player, Index is ' + index);
 	}
 	
 }

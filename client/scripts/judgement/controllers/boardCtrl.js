@@ -111,6 +111,13 @@ define(['../module'], function(module){
 				var index = getPlayerIndex(response.previousPlayerCard.id);
 				$scope.board.playerCards.splice(index, 1, response.previousPlayerCard);
 			}
+			else if(response.previousPlayedCards){
+				$scope.board.playerCards = [];
+				for(var i = 0; i < response.previousPlayedCards.length; i++){
+					var index = getPlayerIndex(response.previousPlayedCards[i].id);
+					$scope.board.playerCards[index] = response.previousPlayedCards[i];
+				}
+			}
 			if(currentPlayer.length > 0){
 				// start bidding for this player
 				$scope.board.myTurn = true;
@@ -159,7 +166,7 @@ define(['../module'], function(module){
 		    var winnerIndex = getPlayerIndex(response.previousTrickWinner);
 		    $scope.board.baseCard = null;
 		    
-		    $scope.board.message = $scope.board.players[winnerIndex].name + "won this trick."
+		    $scope.board.message = $scope.board.players[winnerIndex].name + " won this trick."
 		    	
 		    $scope.$apply(function(){
 		    	var index = getPlayerIndex(response.previousPlayerCard.id);
@@ -286,6 +293,10 @@ define(['../module'], function(module){
 		function playerJoined(data){
 		    console.log("Player Joined:", data);
 		    getAllPlayersCallback(data);
+		    if(data.round){
+		    	$scope.board.round = data.round;
+		    	$scope.$apply();
+		    }
 		}
 
 		function playerLeft(data){
@@ -325,7 +336,7 @@ define(['../module'], function(module){
 				var slicedArray = players.splice(0, index);
 				players = players.concat(slicedArray);
 			}
-			
+		    
 		    $scope.$apply(function(){
 	    		$scope.board.players = players;
 		    });

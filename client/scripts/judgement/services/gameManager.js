@@ -34,7 +34,8 @@ define(['../module'], function(module){
 				getAllRooms: getAllRooms,
 				setBid: setBid,
 				startTheGame: startTheGame,
-				playCard: playCard
+				playCard: playCard,
+				showPoints: showPoints
 				//user: null,
 				//getUserDetails: getUserDetails
 			}
@@ -71,6 +72,14 @@ define(['../module'], function(module){
 					
 				}
 				
+			}
+			
+			
+			function showPoints(callback){
+				
+				if(socket !== null){
+					socket.emit('ping-room', null, callback );
+				}
 			}
 			
 			function trickCompleted(response){

@@ -108,6 +108,7 @@ body{
 #board-screen .bidContainer .bids{
 	margin: 3px 3px 0px 3px;
 	background-color: #337ab7; 
+	cursor: pointer;
 }
 
 #board-screen .bidContainer .bids.bid-not-valid{
@@ -216,6 +217,7 @@ body{
 }
 
 #board-screen .playing-card{
+	cursor: pointer;
    	width: 40px;
    	height: 45px;
    	border: 1px Solid #b3b3b3;
@@ -347,6 +349,16 @@ body{
 #board-screen div.loggedin-player-card.player-card .player-details .player-cards-container .player-cards .playing-card.card-selected{
 	top: 0px;
 	background-color: #dff0d8;
+}
+
+#board-screen div.loggedin-player-card.player-card .player-cards .playing-card.Heart.card-is-not-valid,
+#board-screen div.loggedin-player-card.player-card .player-cards .playing-card.Diamond.card-is-not-valid{
+    color: #ff7f50;
+}
+
+#board-screen div.loggedin-player-card.player-card .player-cards .playing-card.Club.card-is-not-valid,
+#board-screen div.loggedin-player-card.player-card .player-cards .playing-card.Spade.card-is-not-valid{
+    color: #808080;
 }
 
 #board-screen div.player-card .player-card-footer {

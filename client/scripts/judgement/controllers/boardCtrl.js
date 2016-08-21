@@ -16,6 +16,9 @@ define(['../module'], function(module){
 		$scope.board.cardSelected = cardSelected;
 		$scope.board.playerCards = [{}, {}, {}, {}];
 		$scope.board.selectBid = selectBid;
+		$scope.board.showPoints = showPoints;
+		$scope.board.hidePoints =  hidePoints;
+		$scope.board.showPointsTable = false;
 		$scope.board.cardSymbol = {
 				Spade: '&spades;',
 				Diamond: '&diams;',
@@ -32,6 +35,23 @@ define(['../module'], function(module){
 			else{
 				userDetailsCallback(UserManager.user);
 			}
+		}
+		
+		function showPoints(){
+			GameManager.showPoints(function(data){
+				console.log("Showing points...", data);
+				$scope.board.pointsTable = {
+					players: data.players,
+					roundPoints: data.roundPoints
+				}
+				$scope.board.showPointsTable = true;
+				$scope.$apply();
+			});
+		}
+		
+		function hidePoints(){
+			$scope.board.showPointsTable = false;
+			
 		}
 		
 		function userDetailsCallback(data){

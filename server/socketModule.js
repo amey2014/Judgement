@@ -187,36 +187,48 @@ function playCard(data, callback) {
 				}
 			);
 			
-			setTimeout(function(){
-				console.log("SocketModule.js: Shuffle & distribute cards for new round" );
-				gameManager.room.game.shuffle(53);
-				gameManager.room.game.distributeCards();
-
-				var key = null;
-				
-				for(var i = 0; i < players.length; i++){
-					key = players[i].id;
-					socket = io.nsps[namespace].sockets[key]; // console.log(io.nsps[namespace].sockets[key]);
-					// console.log(adminSocket);
-					if(socket){
-						socket.emit('game-started', { 
-								round: round, 
-								data: players[i] 
-							}
-						);
+			if(gameManager.room.game.currentRoundIndex < gameManager.room.game.rounds.length){
+				setTimeout(function(){
+					console.log("SocketModule.js: Shuffle & distribute cards for new round" );
+					gameManager.room.game.shuffle(53);
+					gameManager.room.game.distributeCards();
+	
+					var key = null;
+					
+					for(var i = 0; i < players.length; i++){
+						key = players[i].id;
+						socket = io.nsps[namespace].sockets[key]; // console.log(io.nsps[namespace].sockets[key]);
+						// console.log(adminSocket);
+						if(socket){
+							socket.emit('game-started', { 
+									round: round, 
+									data: players[i] 
+								}
+							);
+						}
 					}
-				}
-				console.log("SocketModule.js: Start bidding for new round: ", round.totalTricks );
-				console.log("SocketModule.js: Player to bid:", players[round.startPlayerIndex].name);
-				nsp.emit('start-bidding', { 
-					round: round, 
-					playerBids: null, 
-					player: players[round.startPlayerIndex] }
-				);
+					console.log("SocketModule.js: Start bidding for new round: ", round.totalTricks );
+					console.log("SocketModule.js: Player to bid:", players[round.startPlayerIndex].name);
+					nsp.emit('start-bidding', { 
+						round: round, 
+						playerBids: null, 
+						player: players[round.startPlayerIndex] }
+					);
+					
+				}, 3000);
+			}else{
+				console.log("SocketModule.js: Current Round index greater than total rounds");
+				console.log("SocketModule.js: Game completed");
 				
-			}, 5000);
+				//setTimeout(function(){
+					console.log("SocketModule.js: Sending game completed event" );
+					
+					nsp.emit('game-completed');
+					
+				// }, 2000);
+			}
 			
-		}, 3000);
+		}, 1000);
 			
 		
 		
@@ -281,8 +293,9 @@ function leaveRoom(data, fn) {
 
 function pingRoom(data, fn) {
 	var socket = this;
-	console.log("SocketModule.js: Ping from: " + data.playerName);
-	if(fn) fn({ points: gameManager.room.game });
+	console.log("SocketModule.js: Ping from: " + socket.playerName);
+	var players = gameManager.room.getPlayers();
+	if(fn) fn({ players: players.map(function(p){ return { name: p.name, total: p.points } }), roundPoints: gameManager.room.game.pointsTable });
 }
 
 function startTheGame(){

@@ -1,4 +1,5 @@
 <div id="board-screen" class="board-screen">
+
 	<div class="row header-row">
 		<div class="col-xs-4 col-sm-4 divRoomDetails">
 			<span class="roomNameLabel">Room: </span>
@@ -14,8 +15,15 @@
 		</div>
 		<div class="col-xs-4 col-sm-4 divGameName"><span class="gameName">JUDGEMENT</span></div>
 		<div class="col-xs-4 col-sm-4 divControlButtons">
-			<button ng-show="board.GameManager.canStartGame" ng-click="board.GameManager.startTheGame()">Start Game</button>
-			<button ng-click="board.leaveRoom()">Leave Room</button>
+			<button ng-show="board.GameManager.canStartGame" ng-click="board.GameManager.startTheGame()" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		      Play <span class="glyphicon glyphicon-play"></span>
+		    </button>
+		    <button ng-click="board.leaveRoom()" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		      Leave <span class="glyphicon glyphicon-remove-sign"></span>
+		    </button>
+		    <button ng-click="board.showPoints()" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		      Points <span class="glyphicon glyphicon-star"></span>
+		    </button>
 		</div>
 	</div>
 	<div class="row">
@@ -90,6 +98,11 @@
 	<div class="row">
 		<div class="col-sm-2"></div>
 		<div class="col-sm-8 col-md-6 col-md-offset-1" style="text-align: center">
+			<div class="trumpCardContainer overlay" data-ng-show="!board.round.inProgress && board.currentPlayer === board.players[0].id">
+				<div class="playing-card" ng-class="board.round.trumpSuit" >
+					<span class="suitSymbolBig" data-ng-bind-html="board.cardSymbol[board.round.trumpSuit]"></span>
+				</div>
+			</div>
 			<div class="playing-card" data-ng-if="board.playerCards[0].card" 
 			style="width: 45px; height: 55px; margin-top: 20px;position: relative" data-ng-class="board.playerCards[0].card.suitName">
 				<span class="rankName" style="top: 2px; left: 2px; position: absolute">{{board.playerCards[0].card.rankShortName }}</span>
@@ -113,5 +126,32 @@
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>
 	</div>
+	
+	<div style="position: fixed; width: 100%; top: 0;" data-ng-show="board.showPointsTable" data-ng-click="board.hidePoints()">
+		<div class="points-table" style="width: 75%; position: relative; margin-left: auto; margin-right: auto; ">
+			<div class="row" style="background-color: #ff9900">
+				<div class="col-sm-2" style="min-height: 0px">#</div>
+				<div class="col-sm-3" style="min-height: 0px">{{ board.pointsTable.players[0].name }}</div>
+				<div class="col-sm-2" style="min-height: 0px">{{ board.pointsTable.players[1].name }}</div>
+				<div class="col-sm-3" style="min-height: 0px">{{ board.pointsTable.players[2].name }}</div>
+				<div class="col-sm-2" style="min-height: 0px">{{ board.pointsTable.players[3].name }}</div>
+			</div>
+			<div style="background-color: #e6e6fa;border-bottom: 1px Solid #dcdcdc" class="row" data-ng-repeat="row in board.pointsTable.roundPoints">
+				<div class="col-sm-2" style="min-height: 0px">{{ row.round }}</div>
+				<div class="col-sm-3" style="min-height: 0px">{{ row.points[0].points }}</div>
+				<div class="col-sm-2" style="min-height: 0px">{{ row.points[1].points }}</div>
+				<div class="col-sm-3" style="min-height: 0px">{{ row.points[2].points }}</div>
+				<div class="col-sm-2" style="min-height: 0px">{{ row.points[3].points }}</div>
+			</div>
+			<div class="row" style="background-color: #e6e6fa; font-weight: bold">
+				<div class="col-sm-2" style="min-height: 0px">Total</div>
+				<div class="col-sm-3" style="min-height: 0px">{{ board.pointsTable.players[0].total }}</div>
+				<div class="col-sm-2" style="min-height: 0px">{{ board.pointsTable.players[1].total }}</div>
+				<div class="col-sm-3" style="min-height: 0px">{{ board.pointsTable.players[2].total }}</div>
+				<div class="col-sm-2" style="min-height: 0px">{{ board.pointsTable.players[3].total }}</div>
+			</div>
+		</div>
+	</div>
+	
 </div>
 

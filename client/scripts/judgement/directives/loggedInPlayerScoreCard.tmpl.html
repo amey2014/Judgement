@@ -19,7 +19,7 @@
 		<div>
 			<div class="player-cards-container">
 				<div class="player-cards" style="">					
-					<div class="playing-card" data-ng-class="[card.suitName, {'card-selected': selectedCard === card}]"  
+					<div class="playing-card" data-ng-class="[card.suitName, {'card-selected': selectedCard === card}, {'card-is-not-valid': card.canPlay !== undefined && !card.canPlay}]"  
 						style="width: 40px; height: 45px;"
 						data-ng-repeat="card in player.cards"  data-ng-style="{'left': ((player.cards.length - ($index + 1)) * 18) + 'px'}" 
 						data-ng-click="cardClicked(card)" data-ng-dblclick="playCard(card); $event.stopPropagation();">

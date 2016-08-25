@@ -151,9 +151,9 @@ define(['../module'], function(module){
 			}
 			
 			
-			function goToRoom(isAdmin, username, roomName){
+			function goToRoom(isAdmin, username, roomName, totalPlayers){
 				if(isAdmin){
-					socket.emit('create-room', { playerName: username, room: roomName, totalPlayers:  4}, roomCreatedCallback);
+					socket.emit('create-room', { playerName: username, room: roomName, totalPlayers:  totalPlayers}, roomCreatedCallback);
 				}
 				else{
 					socket.emit('join-room', { playerName: username, room: roomName }, joinRoomCallback);

@@ -79,22 +79,24 @@ function setBid(data, callback){
 	});
 	
 	var bidsCount = gameManager.room.game.currentRound.bids;
+	var nextPlayerIndex = gameManager.room.game.currentRound.startPlayerIndex;
 	console.log("SocketModule.js: Total Bids:", bidsCount);
-	if(bidsCount === 4){
+	if(bidsCount === gameManager.room.game.totalPlayersRequired){
 		console.log("SocketModule.js: All players have completed bidding.");
 		gameManager.room.game.currentRound.startPlayerIndex = (gameManager.room.game.currentRound.totalTricks - 1) % 4; // set this to 0 as bidding process increments it.
 		gameManager.room.game.currentRound.inProgress = true;
+		
 		nsp.emit('start-bidding', { 
 				round: gameManager.room.game.currentRound, 
 				playerBids: bids, 
-				player: players[gameManager.room.game.currentRound.startPlayerIndex],
+				player: players[nextPlayerIndex],
 				startPlaying: true
 			}
 		);
 	}else{
 		console.log("SocketModule.js: Continue bidding.");
 		
-		var nextPlayer = players[gameManager.room.game.currentRound.startPlayerIndex];
+		var nextPlayer = players[nextPlayerIndex];
 		console.log("SocketModule.js: Next player to bid: ", nextPlayer.name);
 		nsp.emit('start-bidding', { 
 			round: gameManager.room.game.currentRound, 
@@ -345,6 +347,8 @@ function joinRoom(data, fn) {
 		console.log("Total client sockets: " + numClients);
 		var currentPlayersCount = gameManager.room.getPlayers().length;
 		console.log("Exisiting players count: " + currentPlayersCount);
+		console.log("5" === gameManager.room.game.totalPlayersRequired);
+		console.log(5 === gameManager.room.game.totalPlayersRequired);
 		if(currentPlayersCount < gameManager.room.game.totalPlayersRequired){
 			socket.join(data.room);
 			console.log(data.playerName + "joined the room: " + data.room);
@@ -497,7 +501,7 @@ function createRoom(data, fn){
 	
 	console.log(data.playerName + "joined the room: " + data.room);
 	
-	gameManager.room.createGame(data.room, data.totalPlayers);
+	gameManager.room.createGame(data.room, +data.totalPlayers);
 	gameManager.room.addPlayer(socket.id, data.playerName, function(){
 		broadcastRooms(socket);
 	});

@@ -18,14 +18,13 @@
 		</div>
 		<div>
 			<div class="player-cards-container">
-				<div class="player-cards" style="">					
-					<div class="playing-card" data-ng-class="[card.suitName, {'card-selected': selectedCard === card}, {'card-is-not-valid': card.canPlay !== undefined && !card.canPlay}]"  
-						style="width: 40px; height: 45px;"
+				<div class="player-cards">		
+					<div class="playing-card" data-ng-class="[card.suitName, {'card-selected': selectedCard === card}, {'card-is-not-valid': card.canPlay !== undefined && !card.canPlay}]" 
 						data-ng-repeat="card in player.cards"  data-ng-style="{'left': ((player.cards.length - ($index + 1)) * 18) + 'px'}" 
 						data-ng-click="cardClicked(card)" data-ng-dblclick="playCard(card); $event.stopPropagation();">
-						<span class="rankName" style=" left: 2px; position: absolute">{{ card.rankShortName }}</span>
-						<span class="suitSymbolSmall" style="top: 9px;left: 2px; position: absolute" ng-bind-html="cardSymbol[card.suitName]"></span>
-						<span class="suitSymbolBig" style="top: 4px;left: 11px; position: absolute;" ng-bind-html="cardSymbol[card.suitName]"></span>
+						<span class="rankName">{{ card.rankShortName }}</span>
+						<span class="suitSymbolSmall" ng-bind-html="cardSymbol[card.suitName]"></span>
+						<span class="suitSymbolBig" ng-bind-html="cardSymbol[card.suitName]"></span>
 					</div> 
 					
 					<div class="block-play" data-ng-if="!round.inProgress || turn !== player.id"></div>

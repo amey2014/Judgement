@@ -196,11 +196,19 @@ body{
     font-size: 0.9em;
 }
 
-#board-screen div.player-card .player-details  .player-cards-container{
+#board-screen .board-message-container .board-message{
+	text-align: left;
+	padding-left: 5px;
+	padding-right: 5px;
+	color: #383838;
+	font-size: 1.7em;
+}
+
+#board-screen div.player-card .player-details .player-cards-container{
     padding-top: 10px;
 }
 
-#board-screen div.player-card.loggedin-player-card .player-details  .player-cards-container{
+#board-screen div.player-card.loggedin-player-card .player-details .player-cards-container{
     padding-top: 0px;
 }
 
@@ -216,87 +224,127 @@ body{
 	height: 45px;
 }
 
+#board-screen .current-trick-card-container{
+	text-align: center;
+}
+/* -------- Playing card base --------------- */
 #board-screen .playing-card{
+	position: relative; 
+	width: 40px; 
+	height: 45px; 
 	cursor: pointer;
-   	width: 40px;
-   	height: 45px;
    	border: 1px Solid #b3b3b3;
    	display: inline-block;
-   	/*margin-left: -18px;
-   	margin-top: 5px;*/
    	background-color: rgba(239,228,176,1);
    	border-radius: 2px;
    	margin-right: 5px;
 }
 
-#board-screen .header-row div.trumpCardContainer .playing-card{
-	display: inline-block;
-	text-align: center;
-}
-
 #board-screen .playing-card span.rankName{
-	position: relative;
-	font-size: 13px;
-	left: -15px;
-}
-
-#board-screen div.player-card.loggedin-player-card .playing-card{
-	margin-right: 0px;
-}
-
-#board-screen div.player-card.loggedin-player-card .playing-card span.rankName,
-#board-screen div.logged-in-player-card .playing-card span.rankName{
 	position: absolute;
-    left: 1px;
-    top: 0px;
+	font-size: 13px;
 }
 
 #board-screen .playing-card span.suitSymbolSmall{
-	position: relative;
-   	left: -18px;
+	position: absolute;
 }
 
-#board-screen div.player-card.loggedin-player-card .playing-card span.suitSymbolSmall,
-#board-screen div.logged-in-player-card .playing-card span.suitSymbolSmall{
-	position: relative;
-    left: -20px;
+#board-screen .playing-card span.suitSymbolBig{
+	top: 4px;
+	left: 11px; 
+	position: absolute;
+	font-size: 32px;
+}
+
+#board-screen .playing-card.Heart,
+#board-screen .playing-card.Diamond{
+	color: rgba(255,0,0,1);
+}
+
+#board-screen .playing-card.Spade,
+#board-screen .playing-card.Club{
+	color: #000000;
+}
+
+
+/* -------- Current Trick Playing card  --------------- */
+
+#board-screen .current-trick-card-container .playing-card{
+	width: 45px; 
+	height: 55px; 
+	margin-top: 20px;
+}
+
+#board-screen .current-trick-card-container .playing-card span.rankName{
+	top: 2px; 
+	left: 2px; 
+	position: absolute
+}
+
+#board-screen .current-trick-card-container .playing-card span.suitSymbolSmall{
+	top: 11px;
+	left: 4px; 
+	position: absolute;
+}
+
+#board-screen .current-trick-card-container .playing-card span.suitSymbolBig{
+	top: 10px;
+	left: 12px; 
+	position: absolute;
+}
+
+/* -------- Header Trump Playing card  base --------------- */
+#board-screen .header-row div.trumpCardContainer .playing-card{
+	display: inline-block;
+	position: static;
+	text-align: center;
+}
+
+#board-screen .header-row div.trumpCardContainer .playing-card .suitSymbolBig{
+	position: static;
+}
+
+/* -------- Logged in player Playing card  base --------------- */
+
+#board-screen div.player-card.loggedin-player-card .playing-card{
+	margin-right: 0px;
+	top: 5px;
+}
+
+#board-screen div.player-card.loggedin-player-card .playing-card.card-selected{
+	top: 0px;
+	background-color: #dff0d8;
+}
+
+#board-screen div.player-card.loggedin-player-card .playing-card span.rankName{
+    left: 2px;
     top: 0px;
 }
 
-#board-screen div.logged-in-player-card .playing-card span.suitSymbolSmall{
-	position: relative;
-    left: -5px;
-    top: 0px;
+#board-screen div.player-card.loggedin-player-card .playing-card span.suitSymbolSmall{
+	top: 9px;
+    left: 2px;
 }
 
-
-
-#board-screen div.player-card.loggedin-player-card .playing-card span.suitSymbolBig,
-#board-screen div.logged-in-player-card .playing-card span.suitSymbolBig{
+#board-screen div.player-card.loggedin-player-card .playing-card span.suitSymbolBig{
 	font-size: 32px;
     position: absolute;
     top: 5px;
     left: 11px;
 }
 
-#board-screen div.logged-in-player-card .playing-card span.suitSymbolBig{
-	left: 15px;
+#board-screen div.player-card.loggedin-player-card .playing-card.Heart.card-is-not-valid,
+#board-screen div.player-card.loggedin-player-card .playing-card.Diamond.card-is-not-valid{
+    color: #ff7f50;
 }
 
-#board-screen div.logged-in-player-card .playing-card{
-	text-align: center;
+#board-screen div.player-card.loggedin-player-card .playing-card.Club.card-is-not-valid,
+#board-screen div.player-card.loggedin-player-card .playing-card.Spade.card-is-not-valid{
+    color: #808080;
 }
 
-#board-screen span.suitSymbolBig{
-	font-size: 32px;
-	position: relative;
-    top: -20px;
-    left: -6px
-}
 
-#board-screen div.trumpCardContainer span.suitSymbolBig{
-    top: -5px;
-}
+/* -------- Trump overlay Playing card  base --------------- */ 
 
 #board-screen div.trumpCardContainer.overlay{
 	position: absolute;
@@ -311,18 +359,13 @@ body{
 	width: 100%;
 	height: 100%;
 	border: 0px;
+	margin-top: 0px;
 }
-
 
 #board-screen div.trumpCardContainer.overlay .playing-card span.suitSymbolBig{
+	position: relative; 
 	font-size: 6em;
-	color: rgba(0,0,0,0.4);
 	top: -20px; 
-}
-
-#board-screen div.trumpCardContainer.overlay .playing-card.Diamond span.suitSymbolBig,
-#board-screen div.trumpCardContainer.overlay .playing-card.Heart span.suitSymbolBig{
-	color: rgba(255,0,0,0.4);
 }
 
 #board-screen div.trumpCardContainer.overlay .playing-card.Heart,
@@ -330,35 +373,41 @@ body{
 	color: rgba(255,0,0,0.4);
 }
 
-#board-screen .playing-card.Heart,
-#board-screen .playing-card.Diamond{
-	color: #ff0000;
+#board-screen div.trumpCardContainer.overlay .playing-card.Spade,
+#board-screen div.trumpCardContainer.overlay .playing-card.Club {
+	color: rgba(0,0,0,0.4);
 }
 
-#board-screen .playing-card.Spade,
-#board-screen .playing-card.Club{
-	color: #000000;
+/*----- Points table ----------- */
+
+#board-screen .points-table-container{
+	position: fixed; 
+	width: 100%; 
+	top: 0;
 }
 
-#board-screen div.loggedin-player-card.player-card .player-details .player-cards-container .player-cards .playing-card{
-	margin-left: 0px;
-	position: relative;
-	top: 5px;
+#board-screen .points-table-container .points-table{
+	width: 75%; 
+	position: relative; 
+	margin-left: auto; 
+	margin-right: auto; 
 }
 
-#board-screen div.loggedin-player-card.player-card .player-details .player-cards-container .player-cards .playing-card.card-selected{
-	top: 0px;
-	background-color: #dff0d8;
+#board-screen .points-table-container .points-table .row{
+	background-color: #e6e6fa;
+	border-bottom: 1px Solid #dcdcdc;
 }
 
-#board-screen div.loggedin-player-card.player-card .player-cards .playing-card.Heart.card-is-not-valid,
-#board-screen div.loggedin-player-card.player-card .player-cards .playing-card.Diamond.card-is-not-valid{
-    color: #ff7f50;
+#board-screen .points-table-container .points-table .row.header-row{
+	background-color: #ff9900
 }
 
-#board-screen div.loggedin-player-card.player-card .player-cards .playing-card.Club.card-is-not-valid,
-#board-screen div.loggedin-player-card.player-card .player-cards .playing-card.Spade.card-is-not-valid{
-    color: #808080;
+#board-screen .points-table-container .points-table .row.total-row{ 
+	font-weight: bold
+}
+
+#board-screen .points-table-container .points-table .row div[class^=col-]{
+	min-height: 0px;
 }
 
 #board-screen div.player-card .player-card-footer {

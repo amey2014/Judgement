@@ -34,16 +34,15 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-2"></div>
 		<div class="col-sm-2"><player-score-card player="board.players[2]" round="board.round" current-card="board.playerCards[2].card" turn="board.currentPlayer" index="3"></player-score-card></div>
 		<div class="col-sm-2"></div>
+		<div class="col-sm-2"><player-score-card player="board.players[3]" round="board.round" current-card="board.playerCards[3].card" turn="board.currentPlayer" index="3"></player-score-card></div>
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>
 	</div>
 	<div class="row">
 		<div class="col-sm-2"></div>
 		<div class="col-sm-1"></div>
-		<div class="col-sm-2"></div>
 		<div class="col-sm-2 current-trick-card-container" >
 			<div class="playing-card" data-ng-if="board.playerCards[2].card" data-ng-class="board.playerCards[2].card.suitName">
 				<span class="rankName">{{board.playerCards[2].card.rankShortName }}</span>
@@ -53,6 +52,14 @@
 			<!--  -->
 		</div>
 		<div class="col-sm-2"></div>
+		<div class="col-sm-2 current-trick-card-container" >
+			<div class="playing-card" data-ng-if="board.playerCards[3].card" data-ng-class="board.playerCards[3].card.suitName">
+				<span class="rankName">{{board.playerCards[3].card.rankShortName }}</span>
+				<span class="suitSymbolSmall" data-ng-bind-html="board.cardSymbol[board.playerCards[3].card.suitName]"></span>
+				<span class="suitSymbolBig" data-ng-bind-html="board.cardSymbol[board.playerCards[3].card.suitName]"></span>
+			</div>
+			<!--  -->
+		</div>
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"></div>
 	</div>
@@ -85,15 +92,15 @@
 			</div>
 		</div>
 		<div class="col-sm-2 current-trick-card-container" >
-			<div class="playing-card" data-ng-if="board.playerCards[3].card" data-ng-class="board.playerCards[3].card.suitName">
-				<span class="rankName" >{{board.playerCards[3].card.rankShortName }}</span>
-				<span class="suitSymbolSmall" data-ng-bind-html="board.cardSymbol[board.playerCards[3].card.suitName]"></span>
-				<span class="suitSymbolBig" data-ng-bind-html="board.cardSymbol[board.playerCards[3].card.suitName]"></span>
+			<div class="playing-card" data-ng-if="board.playerCards[4].card" data-ng-class="board.playerCards[4].card.suitName">
+				<span class="rankName" >{{board.playerCards[4].card.rankShortName }}</span>
+				<span class="suitSymbolSmall" data-ng-bind-html="board.cardSymbol[board.playerCards[4].card.suitName]"></span>
+				<span class="suitSymbolBig" data-ng-bind-html="board.cardSymbol[board.playerCards[4].card.suitName]"></span>
 			</div>
 			<!--  -->
 		</div>
 		<div class="col-sm-1" ></div>
-		<div class="col-sm-2"><player-score-card player="board.players[3]" round="board.round" current-card="board.playerCards[3].card" turn="board.currentPlayer" index="6"></player-score-card></div>
+		<div class="col-sm-2"><player-score-card player="board.players[4]" round="board.round" current-card="board.playerCards[4].card" turn="board.currentPlayer" index="6"></player-score-card></div>
 	</div>
 	<div class="row">
 		<div class="col-sm-2"></div>

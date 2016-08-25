@@ -10,8 +10,11 @@ define(['angular', 'ngRoute', 'ngSanitize', 'static/scripts/language'], function
 				  })/*.when('/ju_home_entry', {
 					templateUrl: 'static/scripts/judgement/views/home_entry.html',
 					controller: 'JudgementHomeCtrl'
-				  })*/.when('/board', {
+				  })*/.when('/board_4', {
 					templateUrl: 'static/scripts/judgement/views/boardView_4.html',
+					controller: 'BoardCtrl'
+				  }).when('/board_5', {
+					templateUrl: 'static/scripts/judgement/views/boardView_5.html',
 					controller: 'BoardCtrl'
 				  }).
 				  otherwise({

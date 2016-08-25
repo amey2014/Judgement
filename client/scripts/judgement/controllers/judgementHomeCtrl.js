@@ -76,9 +76,7 @@ define(['../module'], function(module){
 		function playerJoined(response){
 		    console.log("Player Joined:", response);
 		    GameManager.players = response.data.players;
-		    $scope.$apply(function(){
-				$location.url('/board');
-			});
+		    gotoRoom();
 		}
 	
 		function roomCreated(response){
@@ -86,11 +84,17 @@ define(['../module'], function(module){
 			
 			GameManager.players = response.data.players;
 			
-			$scope.$apply(function(){
-				$location.url('/board');
-			});
+			gotoRoom();
 		}
 		
+		function gotoRoom(){
+			$scope.$apply(function(){
+				if($scope.home.totalPlayers === "4")
+					$location.url('/board_4');
+				else
+					$location.url('/board_5');
+			});
+		}
 		function roomAvailable(response){
 			console.log(response);
 			$scope.home.rooms = response.rooms;
@@ -98,15 +102,7 @@ define(['../module'], function(module){
 			// 	GameManager.goToRoom($scope.home.isAdmin, $scope.home.username, $scope.home.roomName);
 			$scope.$apply();
 		}
-		/*
-		var newGame = new Game();
-		newGame.addPlayers();
-		newGame.initializeRounds();
-		// console.log(newGame);
-		newGame.setupCurrentRound();
-		newGame.shuffle(53);
-		newGame.distributeCards();
-		$scope.game = newGame;*/
+		
 	}]);
 	
 });

@@ -61,7 +61,7 @@ Game.prototype.setBid = function(data){
 	if(index > -1){
 		console.log('Index: ' + index);
 		this.players[index].tricksBidded = data.bid;
-		this.currentRound.startPlayerIndex = (this.currentRound.startPlayerIndex + 1) % 4;
+		this.currentRound.startPlayerIndex = (this.currentRound.startPlayerIndex + 1) % this.totalPlayersRequired;
 		this.currentRound.bids++;
 	}
 	else{
@@ -71,7 +71,7 @@ Game.prototype.setBid = function(data){
 
 Game.prototype.addPlayers = function(){
 	var player = null;
-	for(var i = 1; i <= 4; i++){
+	for(var i = 1; i <= this.totalPlayersRequired; i++){
 		this.addPlayer('Player'+ i);
 	}
 }
@@ -126,7 +126,7 @@ Game.prototype.removePlayer = function(id, name){
 Game.prototype.initializeRounds = function(){
 	if(this.players === null)
 		throw 'No players added yet';
-	if(this.players.length < 4)
+	if(this.players.length < this.totalPlayersRequired)
 		throw 'Minimum 4 players required.'
 	
 	var playersCount = this.players.length;
@@ -138,8 +138,9 @@ Game.prototype.initializeRounds = function(){
 };
 
 function setupRounds(totalRounds){
+	console.log('Total players:', this.totalPlayersRequired);
 	for(var i = 1; i <= totalRounds; i++){
-		this.rounds.push(new Round(i));
+		this.rounds.push(new Round(i, this.totalPlayersRequired));
 	}
 }
 
@@ -176,6 +177,8 @@ Game.prototype.distributeCards = function(){
 	var startPlayerIndex = this.currentRound.startPlayerIndex;
 	var totalCards = this.currentRound.totalTricks * this.players.length;
 	for(var i = 0; i < totalCards; i++, startPlayerIndex++){
+		console.log(startPlayerIndex, "-----------------", this.players.length);
+		console.log(startPlayerIndex % this.players.length);
 		this.players[startPlayerIndex % this.players.length].cards.push(this.deck.cards[i]);
 	}
 
@@ -281,7 +284,7 @@ Game.prototype.playCard = function(data){
 		}
 	}else{ // continue current trick
 		console.log('Continue current trick');
-		this.currentRound.startPlayerIndex = (this.currentRound.startPlayerIndex + 1) % 4;
+		this.currentRound.startPlayerIndex = (this.currentRound.startPlayerIndex + 1) % this.totalPlayersRequired;
 	}
 	//return continueCurrentRound;
 	return { 
@@ -291,11 +294,13 @@ Game.prototype.playCard = function(data){
 	};
 }
 	
-function Round(totalTricks){
+function Round(totalTricks, totalPlayers){
 	this.id = totalTricks;
 	this.totalTricks = totalTricks;
 	this.trumpSuit = SUIT[(totalTricks - 1) % 4];
-	this.startPlayerIndex = (totalTricks - 1) % 4;
+	console.log(totalTricks, totalPlayers);
+	console.log((totalTricks - 1) % totalPlayers);
+	this.startPlayerIndex = (totalTricks - 1) % + totalPlayers;
 	this.inProgress = false;
 	this.bids = 0;
 	this.currentTrick = 0;

@@ -124,18 +124,23 @@ define(['../module'], function(module){
 				
 				var inProcess = false;
 					
-				function playCard(card){
+				function playCard(0){
+					console.log("Test", card)
 					if(!inProcess){
+						
 						try{
-							inProcess = true;
-							var hasCard = false;
-							if($scope.baseCard){
-								hasCard = $scope.player.cards.some(function(c){
-									return c.suitIndex === $scope.baseCard.card.suitIndex;
-								});
-							};
-							if(!hasCard || $scope.baseCard.card.suitIndex === card.suitIndex){
-								$scope.cardSelected({ card: card });
+							if(card){
+								inProcess = true;
+								var hasCard = false;
+								if($scope.baseCard){
+									hasCard = $scope.player.cards.some(function(c){
+										return c.suitIndex === $scope.baseCard.card.suitIndex;
+									});
+								};
+								if(!hasCard || $scope.baseCard.card.suitIndex === card.suitIndex){
+									$scope.cardSelected({ card: card });
+									$scope.selectedCard = null;
+								}
 							}
 						}catch(error){
 							console.log("Error occured in playCard()");

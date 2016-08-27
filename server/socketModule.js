@@ -528,12 +528,12 @@ function broadcastRooms(socket){
 	  	roomKeys.forEach(function(key){
 	  		if(allSockets.indexOf(key) === -1){
 	  			count =  Object.keys(io.nsps[namespace].adapter.rooms[key].sockets).length;
-	  			rooms.push({ name: key, playerCount: count });
+	  			rooms.push({ name: key, playerCount: count, totalPlayeArsRequired: gameManager.room.game.totalPlayersRequired });
 	  		}
 	  	})
 	  	if(rooms && rooms.length > 0){
 	  		console.log("Broadcasting rooms: " + rooms.length);
-	  		nsp.emit('room-available', { rooms: rooms, players: gameManager.room.getPlayers() });
+	  		nsp.emit('room-available', { rooms: rooms, players: gameManager.room.getPlayers(), totalPlayersRequired: gameManager.room.game.totalPlayersRequired });
 	  	}
   	}
   	else{

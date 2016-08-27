@@ -89,16 +89,17 @@ define(['../module'], function(module){
 		
 		function gotoRoom(){
 			$scope.$apply(function(){
-				if($scope.home.totalPlayers === "4")
-					$location.url('/board_4');
-				else
+				if($scope.home.totalPlayers == "5")
 					$location.url('/board_5');
+				else
+					$location.url('/board_4');
 			});
 		}
 		function roomAvailable(response){
 			console.log(response);
 			$scope.home.rooms = response.rooms;
 			$scope.home.roomName = $scope.home.rooms[0].name;
+			$scope.home.totalPlayers = response.totalPlayersRequired;
 			// 	GameManager.goToRoom($scope.home.isAdmin, $scope.home.username, $scope.home.roomName);
 			$scope.$apply();
 		}

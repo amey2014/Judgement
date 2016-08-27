@@ -9,10 +9,10 @@
 			<h2>Welcome: {{ home.username }}</h2>
 			<h3>Go to Room</h3>
 			
-			<select ng-model="home.totalPlayers" data-ng-hide="!home.isAdmin">
+			Total Players: <select ng-model="home.totalPlayers" data-ng-hide="!home.isAdmin">
 				<option ng-repeat="count in [4, 5, 6, 7]">{{ count }}</option>
 			</select>
-		    <input type="text" class="form-control" 
+		    Room Name: <input type="text" class="form-control" 
 		    	id="inputName" placeholder="Room Name"
 		    	data-ng-model="home.roomName" data-ng-hide="!home.isAdmin">
 			<button type="button" class="btn" data-ng-click="home.GameManager.goToRoom(home.isAdmin, home.username, home.roomName, home.totalPlayers)" ng-hide="!home.isAdmin">Create</button>

@@ -2,111 +2,146 @@
 
 	<div class="row header-row">
 		<div class="col-xs-4 col-sm-4 divRoomDetails">
-			<span class="roomNameLabel">Room: </span>
-			<span class="roomName">{{ board.GameManager.roomName }}</span>
+			<span class="roomNameLabel">Room: </span> <span class="roomName">{{
+				board.GameManager.roomName }}</span>
 			<div class="trumpCardContainer" data-ng-show="board.round">
-				<span class="trumpSuitLabel">Round: </span>
-				<span class="totalTricksValue" data-ng-bind="board.round.totalTricks" >1</span>
-				<div class="playing-card" data-ng-class="board.round.trumpSuit" >
-					<span class="suitSymbolBig" data-ng-bind-html="board.cardSymbol[board.round.trumpSuit]"></span>
+				<span class="trumpSuitLabel">Round: </span> <span
+					class="totalTricksValue" data-ng-bind="board.round.totalTricks">1</span>
+				<div class="playing-card" data-ng-class="board.round.trumpSuit">
+					<span class="suitSymbolBig"
+						data-ng-bind-html="board.cardSymbol[board.round.trumpSuit]"></span>
 				</div>
 			</div>
 			<!--  -->
 		</div>
-		<div class="col-xs-4 col-sm-4 divGameName"><span class="gameName">JUDGEMENT</span></div>
+		<div class="col-xs-4 col-sm-4 divGameName">
+			<span class="gameName">JUDGEMENT</span>
+		</div>
 		<div class="col-xs-4 col-sm-4 divControlButtons">
-			<button data-ng-show="board.GameManager.canStartGame" data-ng-click="board.GameManager.startTheGame()" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		      Play <span class="glyphicon glyphicon-play"></span>
-		    </button>
-		    <button data-ng-click="board.leaveRoom()" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		      Leave <span class="glyphicon glyphicon-remove-sign"></span>
-		    </button>
-		    <button data-ng-click="board.showPoints()" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		      Points <span class="glyphicon glyphicon-star"></span>
-		    </button>
+			<button data-ng-show="board.GameManager.canStartGame"
+				data-ng-click="board.GameManager.startTheGame()" type="button"
+				class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+				aria-haspopup="true" aria-expanded="false">
+				Play <span class="glyphicon glyphicon-play"></span>
+			</button>
+			<button data-ng-click="board.leaveRoom()" type="button"
+				class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+				aria-haspopup="true" aria-expanded="false">
+				Leave <span class="glyphicon glyphicon-remove-sign"></span>
+			</button>
+			<button data-ng-click="board.showPoints()" type="button"
+				class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+				aria-haspopup="true" aria-expanded="false">
+				Points <span class="glyphicon glyphicon-star"></span>
+			</button>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-xs-3 col-sm-3">
+		<div class="col-xs-3 col-sm-3 col-md-3">
 			<div class="board-message-container">
 				<div class="board-message">
 					<span data-ng-bind="board.message"></span>
 				</div>
 			</div>
 		</div>
-		<div class="col-xs-2 col-sm-2"></div>
-		<div class="col-xs-3 col-sm-2"><player-score-card player="board.players[2]" round="board.round" current-card="board.playerCards[2].card" turn="board.currentPlayer" index="3"></player-score-card></div>
-		<div class="col-xs-1 col-sm-2"></div>
-		<div class="col-xs-1 col-sm-1"></div>
-		<div class="col-xs-2 col-sm-2"></div>
+		<div class="col-xs-4 col-xs-offset-1 col-sm-4 col-sm-offset-1 col-md-2 col-md-offset-2">
+			<player-score-card player="board.players[2]" round="board.round"
+				current-card="board.playerCards[2].card" turn="board.currentPlayer"
+				index="3"></player-score-card>
+		</div>
+		<div class="col-xs-1 col-sm-2 col-md-2"></div>
+		<div class="col-xs-1 col-sm-1 col-md-3"></div>
 	</div>
 	<div class="row">
-		<div class="col-xs-2 col-sm-2"></div>
-		<div class="col-xs-1 col-sm-1"></div>
-		<div class="col-xs-2 col-sm-2"></div>
-		<div class="col-xs-3 col-sm-2 current-trick-card-container" >
-			<div class="playing-card" data-ng-if="board.playerCards[2].card" data-ng-class="board.playerCards[2].card.suitName">
-				<span class="rankName">{{board.playerCards[2].card.rankShortName }}</span>
-				<span class="suitSymbolSmall" data-ng-bind-html="board.cardSymbol[board.playerCards[2].card.suitName]"></span>
-				<span class="suitSymbolBig" data-ng-bind-html="board.cardSymbol[board.playerCards[2].card.suitName]"></span>
+		<div class="col-xs-3 col-sm-2 col-md-2"></div>
+		<div class="col-xs-4 col-xs-offset-1 col-sm-4 col-sm-offset-1 col-md-2 col-md-offset-2 current-trick-card-container">
+			<div class="playing-card" data-ng-if="board.playerCards[2].card"
+				data-ng-class="board.playerCards[2].card.suitName">
+				<span class="rankName">{{board.playerCards[2].card.rankShortName
+					}}</span> <span class="suitSymbolSmall"
+					data-ng-bind-html="board.cardSymbol[board.playerCards[2].card.suitName]"></span>
+				<span class="suitSymbolBig"
+					data-ng-bind-html="board.cardSymbol[board.playerCards[2].card.suitName]"></span>
 			</div>
 			<!--  -->
 		</div>
-		<div class="col-xs-1 col-sm-2"></div>
-		<div class="col-xs-1 col-sm-1"></div>
-		<div class="col-xs-2 col-sm-2"></div>
+		<div class="col-xs-1 col-sm-2 col-md-2"></div>
+		<div class="col-xs-1 col-sm-1 col-md-3"></div>
 	</div>
 	<div class="row">
-		<div class="col-xs-3 col-sm-2"><player-score-card player="board.players[1]" round="board.round" current-card="board.playerCards[1].card" turn="board.currentPlayer" index="2"></player-score-card></div>
-		<div class="col-xs-1 col-sm-1"></div>
-		<div class="col-xs-1  current-trick-card-container" >
-			<div class="playing-card" data-ng-if="board.playerCards[1].card" data-ng-class="board.playerCards[1].card.suitName">
-				<span class="rankName">{{board.playerCards[1].card.rankShortName }}</span>
-				<span class="suitSymbolSmall" data-ng-bind-html="board.cardSymbol[board.playerCards[1].card.suitName]"></span>
-				<span class="suitSymbolBig" data-ng-bind-html="board.cardSymbol[board.playerCards[1].card.suitName]"></span>
+		<div class="col-xs-3 col-sm-3 col-md-2">
+			<player-score-card player="board.players[1]" round="board.round"
+				current-card="board.playerCards[1].card" turn="board.currentPlayer"
+				index="2"></player-score-card>
+		</div>
+		<div class="col-xs-1 col-sm-2 col-md-1 col-md-offset-1 current-trick-card-container">
+			<div class="playing-card" data-ng-if="board.playerCards[1].card"
+				data-ng-class="board.playerCards[1].card.suitName">
+				<span class="rankName">{{board.playerCards[1].card.rankShortName
+					}}</span> <span class="suitSymbolSmall"
+					data-ng-bind-html="board.cardSymbol[board.playerCards[1].card.suitName]"></span>
+				<span class="suitSymbolBig"
+					data-ng-bind-html="board.cardSymbol[board.playerCards[1].card.suitName]"></span>
 			</div>
 			<!--  -->
 		</div>
-		<div class="col-xs-2 col-sm-2">
-			<div class="trumpCardContainer overlay" data-ng-show="board.round && board.round.inProgress">
-				<div class="playing-card" ng-class="board.round.trumpSuit" >
-					<span class="suitSymbolBig" data-ng-bind-html="board.cardSymbol[board.round.trumpSuit]"></span>
+		<div class="col-xs-4 col-sm-2 col-md-2 col-md-offset-1">
+			<div class="trumpCardContainer overlay"
+				data-ng-show="board.round && board.round.inProgress">
+				<div class="playing-card" ng-class="board.round.trumpSuit">
+					<span class="suitSymbolBig"
+						data-ng-bind-html="board.cardSymbol[board.round.trumpSuit]"></span>
 				</div>
 			</div>
-			<div class="bidContainer" ng-show="!board.round.inProgress && board.currentPlayer === board.players[0].id">
+			<div class="bidContainer"
+				ng-show="!board.round.inProgress && board.currentPlayer === board.players[0].id">
 				<div class="bidHeader">Bid your tricks</div>
 				<span class="badge bids" data-ng-init="board._bid = -1"
 					data-ng-click="board.selectBid(i)"
-					data-ng-class="{'bid-not-valid': i > board.round.totalTricks || i === board.invalidBid, 'bid-selected': board._bid === i}" 
-					data-ng-repeat="i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]">{{ i }}</span>
+					data-ng-class="{'bid-not-valid': i > board.round.totalTricks || i === board.invalidBid, 'bid-selected': board._bid === i}"
+					data-ng-repeat="i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]">{{
+					i }}</span>
 				<div class="bidButtonContainer">
-					<div type="button" class="btn btn-default btn-sm bidButton" data-ng-click="board.setMyBid(board._bid)">BID</div>
+					<div type="button" class="btn btn-default btn-sm bidButton"
+						data-ng-click="board.setMyBid(board._bid)">BID</div>
 				</div>
 			</div>
 		</div>
-		<div class="col-xs-1 col-sm-2 current-trick-card-container" >
-			<div class="playing-card" data-ng-if="board.playerCards[3].card" data-ng-class="board.playerCards[3].card.suitName">
-				<span class="rankName" >{{board.playerCards[3].card.rankShortName }}</span>
-				<span class="suitSymbolSmall" data-ng-bind-html="board.cardSymbol[board.playerCards[3].card.suitName]"></span>
-				<span class="suitSymbolBig" data-ng-bind-html="board.cardSymbol[board.playerCards[3].card.suitName]"></span>
+		<div class="col-xs-1 col-sm-2 col-md-2 col-md-offset-1 current-trick-card-container">
+			<div class="playing-card" data-ng-if="board.playerCards[3].card"
+				data-ng-class="board.playerCards[3].card.suitName">
+				<span class="rankName">{{board.playerCards[3].card.rankShortName
+					}}</span> <span class="suitSymbolSmall"
+					data-ng-bind-html="board.cardSymbol[board.playerCards[3].card.suitName]"></span>
+				<span class="suitSymbolBig"
+					data-ng-bind-html="board.cardSymbol[board.playerCards[3].card.suitName]"></span>
 			</div>
 			<!--  -->
 		</div>
-		<div class="col-xs-1 col-sm-1" ></div>
-		<div class="col-xs-3 col-sm-2"><player-score-card player="board.players[3]" round="board.round" current-card="board.playerCards[3].card" turn="board.currentPlayer" index="6"></player-score-card></div>
+		<div class="col-xs-3 col-sm-3 col-md-2">
+			<player-score-card player="board.players[3]" round="board.round"
+				current-card="board.playerCards[3].card" turn="board.currentPlayer"
+				index="6"></player-score-card>
+		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-2 col-sm-2"></div>
-		<div class="col-xs-8 col-sm-8 col-md-6 col-md-offset-1 current-trick-card-container" >
-			<div class="trumpCardContainer overlay" data-ng-show="!board.round.inProgress && board.currentPlayer === board.players[0].id">
-				<div class="playing-card" ng-class="board.round.trumpSuit" >
-					<span class="suitSymbolBig" data-ng-bind-html="board.cardSymbol[board.round.trumpSuit]"></span>
+		<div
+			class="col-xs-8 col-sm-8 col-md-6 col-md-offset-1 current-trick-card-container">
+			<div class="trumpCardContainer overlay"
+				data-ng-show="!board.round.inProgress && board.currentPlayer === board.players[0].id">
+				<div class="playing-card" ng-class="board.round.trumpSuit">
+					<span class="suitSymbolBig"
+						data-ng-bind-html="board.cardSymbol[board.round.trumpSuit]"></span>
 				</div>
 			</div>
-			<div class="playing-card" data-ng-if="board.playerCards[0].card" data-ng-class="board.playerCards[0].card.suitName">
-				<span class="rankName">{{board.playerCards[0].card.rankShortName }}</span>
-				<span class="suitSymbolSmall" data-ng-bind-html="board.cardSymbol[board.playerCards[0].card.suitName]"></span>
-				<span class="suitSymbolBig" data-ng-bind-html="board.cardSymbol[board.playerCards[0].card.suitName]"></span>
+			<div class="playing-card" data-ng-if="board.playerCards[0].card"
+				data-ng-class="board.playerCards[0].card.suitName">
+				<span class="rankName">{{board.playerCards[0].card.rankShortName
+					}}</span> <span class="suitSymbolSmall"
+					data-ng-bind-html="board.cardSymbol[board.playerCards[0].card.suitName]"></span>
+				<span class="suitSymbolBig"
+					data-ng-bind-html="board.cardSymbol[board.playerCards[0].card.suitName]"></span>
 			</div>
 			<!--  -->
 		</div>
@@ -114,29 +149,37 @@
 	</div>
 	<div class="row logged-in-player-row">
 		<div class="col-xs-2 col-sm-2"></div>
-		<div class="col-xs-8 col-sm-8 col-md-6 col-md-offset-1"><logged-in-player-score-card player="board.players[0]" round="board.round" turn="board.currentPlayer" base-card="board.baseCard" card-selected="board.cardSelected({ card: card })"></logged-in-player-score-card></div>
+		<div class="col-xs-8 col-sm-8 col-md-6 col-md-offset-1">
+			<logged-in-player-score-card player="board.players[0]"
+				round="board.round" turn="board.currentPlayer"
+				base-card="board.baseCard"
+				card-selected="board.cardSelected({ card: card })"></logged-in-player-score-card>
+		</div>
 		<div class="col-xs-2 col-sm-2"></div>
 	</div>
-<!-- 	<div class="row"> -->
-<!-- 		<div class="col-sm-2"></div> -->
-<!-- 		<div class="col-sm-1"></div> -->
-<!-- 		<div class="col-sm-2"></div> -->
-<!-- 		<div class="col-sm-2"></div> -->
-<!-- 		<div class="col-sm-2"></div> -->
-<!-- 		<div class="col-sm-1"></div> -->
-<!-- 		<div class="col-sm-2"></div> -->
-<!-- 	</div> -->
-	
-	<div class="points-table-container" data-ng-show="board.showPointsTable" data-ng-click="board.hidePoints()">
-		<div class="points-table" >
+	<!-- 	<div class="row"> -->
+	<!-- 		<div class="col-sm-2"></div> -->
+	<!-- 		<div class="col-sm-1"></div> -->
+	<!-- 		<div class="col-sm-2"></div> -->
+	<!-- 		<div class="col-sm-2"></div> -->
+	<!-- 		<div class="col-sm-2"></div> -->
+	<!-- 		<div class="col-sm-1"></div> -->
+	<!-- 		<div class="col-sm-2"></div> -->
+	<!-- 	</div> -->
+
+	<div class="points-table-container"
+		data-ng-show="board.showPointsTable"
+		data-ng-click="board.hidePoints()">
+		<div class="points-table">
 			<div class="row header-row">
-				<div class="col-sm-2" >#</div>
-				<div class="col-sm-3" >{{ board.pointsTable.players[0].name }}</div>
-				<div class="col-sm-2" >{{ board.pointsTable.players[1].name }}</div>
+				<div class="col-sm-2">#</div>
+				<div class="col-sm-3">{{ board.pointsTable.players[0].name }}</div>
+				<div class="col-sm-2">{{ board.pointsTable.players[1].name }}</div>
 				<div class="col-sm-3">{{ board.pointsTable.players[2].name }}</div>
 				<div class="col-sm-2">{{ board.pointsTable.players[3].name }}</div>
 			</div>
-			<div class="row" data-ng-repeat="row in board.pointsTable.roundPoints">
+			<div class="row"
+				data-ng-repeat="row in board.pointsTable.roundPoints">
 				<div class="col-sm-2">{{ row.round }}</div>
 				<div class="col-sm-3">{{ row.points[0].points }}</div>
 				<div class="col-sm-2">{{ row.points[1].points }}</div>
@@ -152,6 +195,6 @@
 			</div>
 		</div>
 	</div>
-	
+
 </div>
 

@@ -72,8 +72,8 @@ function setBid(data, callback){
 	console.log("SocketModule.js: Set bid for " + socket.playerName, "bids: ", data.bid);
 	
 	gameManager.room.setBid(data, callback);
-	var players = gameManager.room.getPlayers();
 	
+	var players = gameManager.room.getPlayers();
 	var bids = players.map(function(p){
 		return { id: p.id, tricksBidded: p.tricksBidded };
 	});
@@ -101,7 +101,8 @@ function setBid(data, callback){
 		nsp.emit('start-bidding', { 
 			round: gameManager.room.game.currentRound, 
 			playerBids: bids, 
-			player: nextPlayer
+			player: nextPlayer,
+			startPlaying: false
 		});
 	}
 }
@@ -230,11 +231,7 @@ function playCard(data, callback) {
 				// }, 2000);
 			}
 			
-		}, 1000);
-			
-		
-		
-		
+		}, 1000);	
 	}
 	
 }
@@ -337,24 +334,47 @@ function startTheGame(){
 	
 }
 
+function getSocketsCount(){
+	var clientSocketList = io.nsps[namespace].adapter.rooms[data.room].sockets;
+	var clientKeys = Object.keys(clientSocketList);
+	var numClients = clientKeys.length;
+	console.log("Total client sockets: " + numClients);
+	return numClients;
+}
 function joinRoom(data, fn) {
 	var socket = this;
 	console.log(data.playerName + " trying to join the room: " + data.room);
 	if(io.nsps[namespace].adapter.rooms[data.room]){
-		var clientSocketList = io.nsps[namespace].adapter.rooms[data.room].sockets;
-		var clientKeys = Object.keys(clientSocketList);
-		var numClients = clientKeys.length;
-		console.log("Total client sockets: " + numClients);
-		var currentPlayersCount = gameManager.room.getPlayers().length;
+		//getSocketsCount();
+		var playerUpdated = false;
+		var currentPlayers = gameManager.room.getPlayers();
+		var currentPlayersCount = currentPlayers.length;
 		console.log("Exisiting players count: " + currentPlayersCount);
-		console.log("5" === gameManager.room.game.totalPlayersRequired);
-		console.log(5 === gameManager.room.game.totalPlayersRequired);
-		if(currentPlayersCount < gameManager.room.game.totalPlayersRequired){
+		var existingPlayerEntries = currentPlayers.filter(function(p){
+			return p.name === data.playerName;
+		});
+		
+		if(existingPlayerEntries.length > 0){
+			existingPlayerEntries[0].id = socket.id;
+			socket.join(data.room);
+			socket.playerName = data.playerName;
+			playerUpdated = true;
+			console.log("Updated current players");
+			if (fn) fn({
+				msg : data.playerName + " have joined: " + data.room, 
+				data: { 
+					id: socket.id, 
+					players: gameManager.room.getPlayers(),
+					round: gameManager.room.game.currentRound
+				} 
+			});
+		}else if(currentPlayersCount < gameManager.room.game.totalPlayersRequired){
+			
 			socket.join(data.room);
 			console.log(data.playerName + "joined the room: " + data.room);
 			socket.playerName = data.playerName;
 			current_clients[socket.id].username = data.playerName;
-
+			
 			gameManager.room.addPlayer(socket.id, data.playerName, function(){
 				var allPlayers = gameManager.room.getPlayers();
 				socket.broadcast.to(data.room).emit('player-joined', { players: allPlayers });
@@ -380,99 +400,67 @@ function joinRoom(data, fn) {
 				} 
 			});
 		}else{
-			var currentPlayers = gameManager.room.getPlayers();
-			var existingPlayerEntries = currentPlayers.filter(function(p){
-				return p.name === data.playerName;
-			});
-			if(existingPlayerEntries.length > 0){
-				existingPlayerEntries[0].id = socket.id;
-				console.log("Updated current players");
-				if (fn) fn({
-					msg : data.playerName + " have joined: " + data.room, 
-					data: { 
-						id: socket.id, 
-						players: gameManager.room.getPlayers(),
-						round: gameManager.room.game.currentRound
-					} 
-				});
+			console.log("Cannot add more players");
+		}
+
+		if(existingPlayerEntries.length > 0 && gameManager.room.game.currentRound !== null){
+			if(gameManager.room.game.currentRound.bids < gameManager.room.game.totalPlayersRequired){
+				console.log("Bidding is in progress for round " + gameManager.room.game.currentRound.totalTicks);
+				var i = currentPlayers.indexOf(existingPlayerEntries[0]);
+				if(gameManager.room.game.currentRound.startPlayerIndex === i){
+					console.log("Player to bid " + data.playerName);
+					var bids = currentPlayers.map(function(p){
+						return { id: p.id, tricksBidded: p.tricksBidded };
+					});
+					socket.emit('start-bidding', { 
+						round: gameManager.room.game.currentRound, 
+						playerBids: bids, 
+						player: existingPlayerEntries[0] }
+					);
+				}
+			}
+			
+			if(gameManager.room.game.currentRound.inProgress){
+				console.log("Round " + gameManager.room.game.currentRound.totalTricks + " in progress");
+				var i = currentPlayers.indexOf(existingPlayerEntries[0]);
+				var currentTrick = gameManager.room.game.currentRound.currentTrick;
+				console.log(gameManager.room.game.currentRound);
+				var currentTrickCardsCount = 0;
+				if(gameManager.room.game.currentRound.playerCards[currentTrick]){
+					currentTrickCardsCount = gameManager.room.game.currentRound.playerCards[currentTrick].length;
+				} 
 				
-				if(gameManager.room.game.currentRound.bids < gameManager.room.game.totalPlayersRequired){
-					console.log("Bidding is in progress for round " + gameManager.room.game.currentRound.totalTicks);
-					var i = currentPlayers.indexOf(existingPlayerEntries[0]);
-					if(gameManager.room.game.currentRound.startPlayerIndex === i){
-						console.log("Player to bid " + data.playerName);
+				if(currentTrickCardsCount < currentPlayers.length){
+					//if(gameManager.room.game.currentRound.startPlayerIndex === i){
+					console.log("Next player is " + currentPlayers[gameManager.room.game.currentRound.startPlayerIndex].name);
+					if(currentTrickCardsCount === 0){
 						var bids = currentPlayers.map(function(p){
 							return { id: p.id, tricksBidded: p.tricksBidded };
 						});
 						socket.emit('start-bidding', { 
-							round: gameManager.room.game.currentRound, 
-							playerBids: bids, 
-							player: existingPlayerEntries[0] }
-						);
-					}
-				}
-				
-				if(gameManager.room.game.currentRound.inProgress){
-					console.log("Round " + gameManager.room.game.currentRound.totalTricks + " in progress");
-					var i = currentPlayers.indexOf(existingPlayerEntries[0]);
-					var currentTrick = gameManager.room.game.currentRound.currentTrick;
-					console.log(gameManager.room.game.currentRound);
-					var currentTrickCardsCount = 0;
-					if(gameManager.room.game.currentRound.playerCards[currentTrick]){
-						currentTrickCardsCount = gameManager.room.game.currentRound.playerCards[currentTrick].length;
-					} 
-					
-					if(currentTrickCardsCount < currentPlayers.length){
-						//if(gameManager.room.game.currentRound.startPlayerIndex === i){
-							console.log("Next player is " + currentPlayers[gameManager.room.game.currentRound.startPlayerIndex].name);
-							if(currentTrickCardsCount === 0){
-								var bids = currentPlayers.map(function(p){
-									return { id: p.id, tricksBidded: p.tricksBidded };
-								});
-								socket.emit('start-bidding', { 
-										round: gameManager.room.game.currentRound, 
-										playerBids: bids, 
-										player: currentPlayers[gameManager.room.game.currentRound.startPlayerIndex],
-										startPlaying: true
-									}
-								);
-							}else{
-								var baseCard = gameManager.room.game.currentRound.playerCards[gameManager.room.game.currentRound.currentTrick][0];
-								socket.emit('next-player', { 
-									round: gameManager.room.game.currentRound,  
-									player: currentPlayers[gameManager.room.game.currentRound.startPlayerIndex] ,
-									players: currentPlayers,
-									previousPlayerCard: null, // gameManager.room.game.currentRound.playerCards[this.currentTrick]
-									previousPlayedCards: gameManager.room.game.currentRound.playerCards[gameManager.room.game.currentRound.currentTrick],
-									baseCard: baseCard
-								});
+								round: gameManager.room.game.currentRound, 
+								playerBids: bids, 
+								player: currentPlayers[gameManager.room.game.currentRound.startPlayerIndex],
+								startPlaying: true
 							}
-						/*}else{
-							var baseCard = gameManager.room.game.currentRound.playerCards[gameManager.room.game.currentRound.currentTrick][0];
-							nsp.emit('next-player', { 
-								round: gameManager.room.game.currentRound,  
-								player: currentPlayers[gameManager.room.game.currentRound.startPlayerIndex] ,
-								players: currentPlayers,
-								previousPlayerCard: null, // gameManager.room.game.currentRound.playerCards[this.currentTrick]
-								previousPlayedCards: gameManager.room.game.currentRound.playerCards[gameManager.room.game.currentRound.currentTrick],
-								baseCard: baseCard
-							});
-						}*/
+						);
+					}else{
+						var baseCard = gameManager.room.game.currentRound.playerCards[gameManager.room.game.currentRound.currentTrick][0];
+						socket.emit('next-player', { 
+							round: gameManager.room.game.currentRound,  
+							player: currentPlayers[gameManager.room.game.currentRound.startPlayerIndex] ,
+							players: currentPlayers,
+							previousPlayerCard: null, // gameManager.room.game.currentRound.playerCards[this.currentTrick]
+							previousPlayedCards: gameManager.room.game.currentRound.playerCards[gameManager.room.game.currentRound.currentTrick],
+							baseCard: baseCard
+						});
 					}
-				}
 					
-			}else{
-				console.log("Cannot add more players");
+						
+				}
 			}
-			
-			/*nsp.emit('reset-board', { 
-				round: gameManager.room.game.currentRound, 
-				players: gameManager.room.getPlayers(), 
-				player: players[round.startPlayerIndex] }
-			);*/
-			
+				
 		}
-
 		
 	}
 	else{
@@ -514,13 +502,7 @@ function broadcastRooms(socket){
 	// var rooms = io.nsps[namespace].adapter.rooms;
   	var roomKeys = Object.keys(io.nsps[namespace].adapter.rooms);
   	var allSockets =  Object.keys(io.nsps[namespace].adapter.sids);
-  	
-  	// console.log('------------room keys------------');
-  	// console.log(roomKeys);
-  	// console.log('------------all sockets------------');
-  	// console.log(allSockets);
-  	// console.log('------------------------');
-  	
+
   	if(roomKeys){
   		console.log("Total rooms: " + roomKeys.length);
 	  	var rooms = [];

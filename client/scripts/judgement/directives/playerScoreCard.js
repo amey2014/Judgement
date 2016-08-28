@@ -124,7 +124,7 @@ define(['../module'], function(module){
 				
 				var inProcess = false;
 					
-				function playCard(0){
+				function playCard(card){
 					console.log("Test", card)
 					if(!inProcess){
 						

@@ -6,6 +6,7 @@ exports.room = {
 	addPlayer: addPlayer,
 	removePlayer: removePlayer,
 	getPlayers: getPlayers,
+	getPlayersCount: getPlayersCount,
 	setBid: setBid
 	
 } 
@@ -39,6 +40,12 @@ function getGame(){
 function getPlayers(){
 	return exports.room.game ? exports.room.game.players : 0;
 }
+
+function getPlayersCount(){
+	return exports.room.game ? exports.room.game.players.length : 0;
+}
+
+
 
 var TOTAL_CARDS = 52;
 var SUIT = ['Spade', 'Diamond', 'Club', 'Heart'];

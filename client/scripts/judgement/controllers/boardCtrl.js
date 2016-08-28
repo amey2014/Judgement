@@ -55,10 +55,14 @@ define(['../module'], function(module){
 		}
 		
 		function userDetailsCallback(data){
-			$scope.board.isAdmin = data.isAdmin;
-			$scope.board.username = data.username;
-			GameManager.initialize(notificationHandler);
-			GameManager.getAllPlayers(data.username, getAllPlayersCallback);
+			if($scope.board.GameManager.roomName){
+				$scope.board.isAdmin = data.isAdmin;
+				$scope.board.username = data.username;
+				GameManager.initialize(notificationHandler);
+				GameManager.getAllPlayers(data.username, getAllPlayersCallback);
+			}else{
+				$location.url("/board_enter");
+			}
 		}
 		
 		function notificationHandler(messageKey, data){
@@ -93,11 +97,20 @@ define(['../module'], function(module){
 				case GameManager.MESSAGE_KEYS.TRICK_COMPLETED:
 					trickCompleted(data);
 					break;
+				case GameManager.MESSAGE_KEYS.DISCONNECTED:
+					disconnected(data);
+					break;
 				default:
 					break;
 			}
 		}
 		
+		function disconnected(data){
+			console.log("Disconnected", data);
+		    $scope.$apply(function(){
+		    	$scope.board.message = "You are disconnected! Please refresh";
+		    })
+		}
 		function selectBid(bid){
 			if(bid <= $scope.board.round.totalTricks &&  bid !== $scope.board.invalidBid) {
 				$scope.board._bid = bid;

@@ -10,6 +10,7 @@ define(['../module'], function(module){
 		$scope.home.isAdmin = false;
 		$scope.home.username = null;
 		$scope.home.rooms = [];
+		$scope.home.joinRoom = joinRoom;
 		var socket = null;
 		
 		initialize();
@@ -68,10 +69,24 @@ define(['../module'], function(module){
 		function disconnected(){
 			socket = null;
 		}
-		
-		function joinRoom(response){
-			console.log(response);
-		}*/
+		*/
+		function joinRoom(isAdmin, username, roomName){
+			
+			var totalPlayers = +$scope.home.totalPlayers;
+			
+			if(Number.isNaN(totalPlayers) || totalPlayers < 4){
+				console.log("Please select total players");
+				return;
+			}
+			if(!roomName || roomName === ""){
+				console.log("Please enter room name");
+				return;
+			}
+			
+			GameManager.goToRoom(isAdmin, username, roomName, totalPlayers);
+			
+			
+		}
 		
 		function playerJoined(response){
 		    console.log("Player Joined:", response);

@@ -23,7 +23,8 @@ define(['../module'], function(module){
 					'START_BIDDING': 9,
 					'NEXT_PLAYER': 10,
 					'ROUND_COMPLETED': 11,
-					'TRICK_COMPLETED': 12
+					'TRICK_COMPLETED': 12,
+					'DISCONNECTED': 13
 				},
 
 				initialize: initialize,
@@ -162,9 +163,10 @@ define(['../module'], function(module){
 				service.roomName = roomName;
 			}
 			
-			function disconnected(){
+			function disconnected(response){
 				console.log("Your connection is disconnected.");
 				socket = null;
+				notificationHandler(service.MESSAGE_KEYS.DISCONNECTED, response);
 			}
 			
 			function joinRoomCallback(response){

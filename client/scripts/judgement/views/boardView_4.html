@@ -1,13 +1,13 @@
 <div id="board-screen" class="board-screen">
 
-	<div class="row header-row">
+	<div class="row header-row less-padding">
 		<div class="col-xs-4 col-sm-4 divRoomDetails">
 			<span class="roomNameLabel">Room: </span> <span class="roomName">{{
 				board.GameManager.roomName }}</span>
 			<div class="trumpCardContainer" data-ng-show="board.round">
 				<span class="trumpSuitLabel">Round: </span> <span
 					class="totalTricksValue" data-ng-bind="board.round.totalTricks">1</span>
-				<div class="playing-card" data-ng-class="board.round.trumpSuit">
+				<div class="playing-card hide-trump"  data-ng-class="board.round.trumpSuit">
 					<span class="suitSymbolBig"
 						data-ng-bind-html="board.cardSymbol[board.round.trumpSuit]"></span>
 				</div>
@@ -15,24 +15,24 @@
 			<!--  -->
 		</div>
 		<div class="col-xs-4 col-sm-4 divGameName">
-			<span class="gameName">JUDGEMENT</span>
+			<span class="gameName small-header-font-size">JUDGEMENT</span>
 		</div>
 		<div class="col-xs-4 col-sm-4 divControlButtons">
 			<button data-ng-show="board.GameManager.canStartGame"
 				data-ng-click="board.GameManager.startTheGame()" type="button"
-				class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+				class="btn btn-default dropdown-toggle no-padding" data-toggle="dropdown"
 				aria-haspopup="true" aria-expanded="false">
-				Play <span class="glyphicon glyphicon-play"></span>
+				<span class="hide-labels">Play</span><span class="glyphicon glyphicon-play"></span>
 			</button>
 			<button data-ng-click="board.leaveRoom()" type="button"
-				class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+				class="btn btn-default dropdown-toggle no-padding" data-toggle="dropdown"
 				aria-haspopup="true" aria-expanded="false">
-				Leave <span class="glyphicon glyphicon-remove-sign"></span>
+				<span class="hide-labels">Leave</span><span class="glyphicon glyphicon-remove-sign"></span>
 			</button>
 			<button data-ng-click="board.showPoints()" type="button"
-				class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+				class="btn btn-default dropdown-toggle no-padding" data-toggle="dropdown"
 				aria-haspopup="true" aria-expanded="false">
-				Points <span class="glyphicon glyphicon-star"></span>
+				<span class="hide-labels">Points</span><span class="glyphicon glyphicon-star"></span>
 			</button>
 		</div>
 	</div>

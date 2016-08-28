@@ -1,6 +1,7 @@
 body{
 	font-family: sans-serif;
 }
+
 #books-screen .header-row{
 	font-weight: bold;
 }
@@ -474,6 +475,35 @@ body{
     left: 7px;
 }
 
+@media (max-width: 684px) {
+	.hide-trump{
+   		display: none !important;
+   }
+   
+   .hide-labels{
+   		display: none;
+   }
+   
+   .small-header-font-size{
+   		font-size: 0.6em;
+   }
+   
+   .small-font-size{
+   		font-size: 12px;
+   }
+   
+   .small-image-height{
+   		height: 62px !important;
+   }
+   
+   .no-padding {
+   		padding: 2px 4px !important;
+   }
+   
+   .less-padding{
+   		padding: 5px 10px 5px 10px !important;
+   }
+}
 /* -------------- card vertical view -----------*/
 /*
 @media screen and (max-width: 500px) {

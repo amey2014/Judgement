@@ -60,6 +60,8 @@ define(['../module'], function(module){
 				$scope.board.username = data.username;
 				GameManager.initialize(notificationHandler);
 				GameManager.getAllPlayers(data.username, getAllPlayersCallback);
+				
+				
 			}else{
 				$location.url("/board_enter");
 			}
@@ -161,6 +163,7 @@ define(['../module'], function(module){
 				$scope.board.message = response.player.name + '\'s turn...';
 				console.log("Playing...");
 			}
+			
 			
 		    $scope.$apply();
 		    
@@ -372,6 +375,29 @@ define(['../module'], function(module){
 		    
 		    $scope.$apply(function(){
 	    		$scope.board.players = players;
+	    		
+	    		/*var cards = [];
+	    		for(var i = 0; i < 12; i++){
+	    			cards.push({
+						
+				        	id:i,
+							rankIndex:6,
+							rankLongName:"8",
+							rankShortName:"8",
+							suitIndex:0,
+							suitName:"Spade"
+						
+					})
+	    		}
+	    		$scope.board.players = [{
+					id: "/judgement-group#qg8KHnTZOYkPSocyAABa",
+					name: "amey",
+					pic:"",
+					points:-20,
+					tricksBidded:0,
+					tricksWon:0,
+					cards: cards
+				}];*/
 		    });
 		    
 		}

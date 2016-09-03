@@ -2,6 +2,15 @@ body{
 	font-family: sans-serif;
 }
 
+.no-select{
+	-webkit-touch-callout: none; /* iOS Safari */
+	  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+	  -khtml-user-select: none;    /* Konqueror */
+	  -moz-user-select: none;      /* Firefox */
+	  -ms-user-select: none;       /* Internet Explorer/Edge */
+	  user-select: none;           /* Non-prefixed version, currently
+	                                  not supported by any browser */
+}
 #books-screen .header-row{
 	font-weight: bold;
 }
@@ -38,9 +47,22 @@ body{
 	padding-left: 0px;
 	padding-right: 0px;
 	border: 0px Solid #fbfbfb;
-	min-height: 90px;
+	height: 90px;
 }
 
+@media screen and (orientation: landscape) {
+	#board-screen .flexible-row div[class^=col-xs]{
+		height: 42px !important;
+	}
+	
+	#board-screen .flexible-row div[class^=col-xs].current-trick-card-container .playing-card{
+		margin-top: 0px;
+	}
+}
+
+#board-screen{
+	background-image: url('/static/images/5629396-hd-background-design-images.jpg')
+}
 #board-screen .header-row{
 	padding: 10px 10px 10px 10px;
 	background-color: #00008b;
@@ -105,33 +127,74 @@ body{
 	color: #fff;
 	font-weight: bold;
 }
+
+#board-screen .col-xs-4 .bidContainer {
+	position: absolute;
+	top: 92px;
+	margin: auto;
+}
+
+.bidContainerOverlay{
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.8);
+}
  
-#board-screen .bidContainer .bids{
+.bidContainerOverlay .bidContainer {
+	position: relative;
+	top: 100px;
+	width: 60%;
+	margin: auto;
+	background-color: #b7d7ea;
+	max-width: 380px;
+}
+
+.bidContainerOverlay .bidContainer .bidHeader{
+	padding: 5px 10px 5px 10px;
+	background-color: #00008b; 
+	color: #fff;
+	font-weight: bold;
+}
+
+.bidContainerOverlay .bidContainer .bids{
 	margin: 3px 3px 0px 3px;
 	background-color: #337ab7; 
 	cursor: pointer;
 }
 
-#board-screen .bidContainer .bids.bid-not-valid{
+.bidContainerOverlay .bidContainer .bids.bid-not-valid{
 	background-color: #ccc; 
 	color: #8e8e8e;
 }
 
-#board-screen .bidContainer .bids.bid-selected{
+.bidContainerOverlay .bidContainer .bids.bid-selected{
 	background-color: #ffe203; 
 	border: 1px Solid #fff;
 	color: #000;
 }
 
 
-#board-screen .bidContainer .bidButtonContainer{
+.bidContainerOverlay .bidContainer .bidButtonContainer{
 	padding: 5px 5px 5px 5px;
 	text-align: right;
-	
+	text-align: center;
 }
 
-#board-screen .bidContainer .bidButtonContainer .bidButton{
+.bidContainerOverlay .bidContainer .bidButtonContainer .suitSymbolBig{
+    font-size: 18px;
+}
+   
+.bidContainerOverlay .bidContainer .suitSymbolBig.Diamond,
+.bidContainerOverlay .bidContainer .suitSymbolBig.Heart{
+    color: #ff0000;
+} 
+
+.bidContainerOverlay .bidContainer .bidButtonContainer .bidButton{
 	 background-color: #ffe203;
+	 padding: 2px 7px;
 }
 
 #board-screen .header-row div.divControlButtons{
@@ -140,20 +203,20 @@ body{
 #board-screen .logged-in-player-row div[class^=col-]{
 	padding-left: 0px;
 	padding-right: 0px;
-	border: 1px Solid #fbfbfb;
+	border: 0px Solid #fbfbfb;
 	height: 100%;
 }
 
 #board-screen div.player-card{
 	background-color: rgba(236, 248, 251, 1);
 	height: 100%;
-	border: 1px Solid #8e8e8e;
+	border: 1px Solid #8e1919;
 	border-radius: 2px;
-	box-shadow: 3px 3px 3px #c0c0c0;
+	box-shadow: 3px 3px 3px #330101;
 }
 
 #board-screen div.player-card.current-turn{
-   border: 6px Solid #ffa604;
+   border: 3px Solid #ffa604;
 }
 
 #board-screen div.player-card .player-details{
@@ -205,6 +268,11 @@ body{
 	font-size: 1.7em;
 }
 
+/** small text --*/
+#board-screen .col-xs-3 .board-message-container .board-message{
+	font-size: 1.2em;
+}
+
 #board-screen div.player-card .player-details .player-cards-container{
     padding-top: 10px;
 }
@@ -223,6 +291,18 @@ body{
 #board-screen div.player-card.loggedin-player-card .player-details .player-cards-container .player-cards{
 	text-align: right;
 	height: 45px;
+	width: 200%;
+	left: -100%;
+	position: relative;
+}
+
+#board-screen div.player-card.loggedin-player-card .playing-card{
+	width: 36px; 
+	height: 45px; 
+}
+
+#board-screen div.player-card.loggedin-player-card .playing-card.is-trump-card{
+	background-color: #3bffbd; 
 }
 
 #board-screen .current-trick-card-container{
@@ -234,7 +314,7 @@ body{
 	width: 40px; 
 	height: 45px; 
 	cursor: pointer;
-   	border: 1px Solid #b3b3b3;
+   	border: 1px Solid #8e8e8e;
    	display: inline-block;
    	background-color: rgba(239,228,176,1);
    	border-radius: 2px;
@@ -257,8 +337,8 @@ body{
 	font-size: 32px;
 }
 
-#board-screen .playing-card.Heart,
-#board-screen .playing-card.Diamond{
+.playing-card.Heart,
+.playing-card.Diamond{
 	color: rgba(255,0,0,1);
 }
 
@@ -267,6 +347,22 @@ body{
 	color: #000000;
 }
 
+/*---------------- ----*/
+
+#board-screen .current-trick-card-container.col-xs-1 .playing-card,
+#board-screen .current-trick-card-container.col-xs-4 .playing-card,
+#board-screen .current-trick-card-container.col-xs-10 .playing-card{
+	width: 30px; 
+	height: 40px; 
+}
+
+#board-screen .current-trick-card-container.col-xs-1 .playing-card span.suitSymbolBig,
+#board-screen .current-trick-card-container.col-xs-4 .playing-card span.suitSymbolBig,
+#board-screen .current-trick-card-container.col-xs-10 .playing-card span.suitSymbolBig{
+	top: 16px;
+	left: 12px; 
+	font-size: 18px;
+}
 
 /* -------- Current Trick Playing card  --------------- */
 

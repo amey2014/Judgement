@@ -28,7 +28,7 @@ exports.localReg = function (username, password) {
     deferred.resolve(false); //username already exists
   })
   .fail(function (result) {//case in which user does not already exist in db
-      console.log(result.body);
+      // console.log(result.body);
       if (result.body.message == 'The requested items could not be found.'){
         //console.log('Username is free for use');
         db.put('local-users', userDetails[0], user)
@@ -60,7 +60,7 @@ exports.localAuth = function (username, password) {
     console.log("FOUND USER");
     var hash = result.body.password;
     //console.log(hash);
-    console.log(bcrypt.compareSync(password, hash));
+    // console.log(bcrypt.compareSync(password, hash));
     if (bcrypt.compareSync(password, hash)) {
       deferred.resolve(result.body);
     } else {

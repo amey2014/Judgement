@@ -482,12 +482,12 @@ body{
 
 #board-screen div.trumpCardContainer.overlay .playing-card.Heart,
 #board-screen div.trumpCardContainer.overlay .playing-card.Diamond {
-	color: rgba(255,0,0,0.4);
+	color: rgba(255,0,0,1);
 }
 
 #board-screen div.trumpCardContainer.overlay .playing-card.Spade,
 #board-screen div.trumpCardContainer.overlay .playing-card.Club {
-	color: rgba(0,0,0,0.4);
+	color: rgba(0,0,0,1);
 }
 
 /*----- Points table ----------- */

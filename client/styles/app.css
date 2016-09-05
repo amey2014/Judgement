@@ -140,7 +140,7 @@ body{
 	left: 0px;
 	width: 100%;
 	height: 100%;
-	background-color: rgba(0,0,0,0.8);
+	background-color: rgba(0,0,0,0.4);
 }
  
 .bidContainerOverlay .bidContainer {
@@ -269,6 +269,7 @@ body{
 }
 
 /** small text --*/
+
 #board-screen .col-xs-3 .board-message-container .board-message{
 	font-size: 1.2em;
 }
@@ -308,7 +309,17 @@ body{
 #board-screen .current-trick-card-container{
 	text-align: center;
 }
+
+#board-screen .current-trick-card-container.col-xs-2.left-align{
+	text-align: left;
+}
+
+#board-screen .current-trick-card-container.col-xs-2.right-align{
+	text-align: right;
+}
+
 /* -------- Playing card base --------------- */
+
 #board-screen .playing-card{
 	position: relative; 
 	width: 40px; 
@@ -350,6 +361,8 @@ body{
 /*---------------- ----*/
 
 #board-screen .current-trick-card-container.col-xs-1 .playing-card,
+#board-screen .current-trick-card-container.col-xs-2 .playing-card,
+#board-screen .current-trick-card-container.col-xs-3 .playing-card,
 #board-screen .current-trick-card-container.col-xs-4 .playing-card,
 #board-screen .current-trick-card-container.col-xs-10 .playing-card{
 	width: 30px; 
@@ -357,6 +370,8 @@ body{
 }
 
 #board-screen .current-trick-card-container.col-xs-1 .playing-card span.suitSymbolBig,
+#board-screen .current-trick-card-container.col-xs-2 .playing-card span.suitSymbolBig,
+#board-screen .current-trick-card-container.col-xs-3 .playing-card span.suitSymbolBig,
 #board-screen .current-trick-card-container.col-xs-4 .playing-card span.suitSymbolBig,
 #board-screen .current-trick-card-container.col-xs-10 .playing-card span.suitSymbolBig{
 	top: 16px;

@@ -18,6 +18,11 @@
 		<script src="/socket.io/socket.io.js"></script>
 		<script data-main="static\scripts\main" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.js"></script>
 		
+		<script>
+			window.onbeforeunload = function () {
+		        return "Refreshing page, SURE?";
+			}
+		</script>
 
 	</head>
 	<body class="small-font-size">

@@ -21,7 +21,7 @@
 		</div>
 	</div>
 	<div class="player-card-footer">
-		<span class="player-name">{{ player.name || 'Seat Empty' }}</span>
+		<span class="player-name">{{ player.name.substr(0, 7) || 'Empty Seat'.substr(0, 7) }}</span>
 		<span class="apply-margin-10 player-tricks-won">{{ player.tricksWon || 0 }}</span>/
 		<span class="player-tricks-bidded">{{ player.tricksBidded || 0 }}</span>
 	</div>

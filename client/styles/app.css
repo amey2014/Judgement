@@ -388,6 +388,10 @@ body{
 	margin-top: 20px;
 }
 
+#board-screen .current-trick-card-container .playing-card.is-trump-card{
+	background-color: #3bffbd; 
+}
+
 #board-screen .current-trick-card-container .playing-card span.rankName{
 	top: 2px; 
 	left: 2px; 

@@ -56,7 +56,7 @@
 		<div class="col-xs-3 col-sm-2 col-md-2"></div>
 		<div class="col-xs-4 col-xs-offset-1 col-sm-4 col-sm-offset-1 col-md-2 col-md-offset-2 current-trick-card-container">
 			<div class="playing-card" data-ng-if="board.playerCards[2].card"
-				data-ng-class="board.playerCards[2].card.suitName">
+				data-ng-class="[board.playerCards[2].card.suitName, {'is-trump-card': board.round.trumpSuit === board.playerCards[2].card.suitName}]">
 				<span class="rankName">{{board.playerCards[2].card.rankShortName
 					}}</span> <span class="suitSymbolSmall"
 					data-ng-bind-html="board.cardSymbol[board.playerCards[2].card.suitName]"></span>
@@ -76,7 +76,7 @@
 		</div>
 		<div class="col-xs-1 col-sm-2 col-md-1 col-md-offset-1 current-trick-card-container">
 			<div class="playing-card" data-ng-if="board.playerCards[1].card"
-				data-ng-class="board.playerCards[1].card.suitName">
+				data-ng-class="[board.playerCards[1].card.suitName, {'is-trump-card': board.round.trumpSuit === board.playerCards[1].card.suitName}]">
 				<span class="rankName">{{board.playerCards[1].card.rankShortName
 					}}</span> <span class="suitSymbolSmall"
 					data-ng-bind-html="board.cardSymbol[board.playerCards[1].card.suitName]"></span>
@@ -95,7 +95,7 @@
 		</div>
 		<div class="col-xs-1 col-sm-2 col-md-2 col-md-offset-1 current-trick-card-container">
 			<div class="playing-card" data-ng-if="board.playerCards[3].card"
-				data-ng-class="board.playerCards[3].card.suitName">
+				data-ng-class="[board.playerCards[3].card.suitName, {'is-trump-card': board.round.trumpSuit === board.playerCards[3].card.suitName}]">
 				<span class="rankName">{{board.playerCards[3].card.rankShortName
 					}}</span> <span class="suitSymbolSmall"
 					data-ng-bind-html="board.cardSymbol[board.playerCards[3].card.suitName]"></span>
@@ -121,7 +121,7 @@
 				</div>
 			</div> -->
 			<div class="playing-card" data-ng-if="board.playerCards[0].card"
-				data-ng-class="board.playerCards[0].card.suitName">
+				data-ng-class="[board.playerCards[0].card.suitName, {'is-trump-card': board.round.trumpSuit === board.playerCards[0].card.suitName}]">
 				<span class="rankName">{{board.playerCards[0].card.rankShortName
 					}}</span> <span class="suitSymbolSmall"
 					data-ng-bind-html="board.cardSymbol[board.playerCards[0].card.suitName]"></span>

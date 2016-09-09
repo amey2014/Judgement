@@ -63,7 +63,7 @@
 			</div> -->
 		</div>
 		<div class="col-xs-3 col-sm-offset-2 col-sm-2 current-trick-card-container" >
-			<div class="playing-card" data-ng-if="[board.playerCards[3].card.suitName, {'is-trump-card': board.round.trumpSuit === board.playerCards[3].card.suitName}]">
+			<div class="playing-card" data-ng-if="board.playerCards[3].card" data-ng-class="[board.playerCards[3].card.suitName, {'is-trump-card': board.round.trumpSuit === board.playerCards[3].card.suitName}]">
 				<span class="rankName">{{board.playerCards[3].card.rankShortName }}</span>
 				<span class="suitSymbolSmall" data-ng-bind-html="board.cardSymbol[board.playerCards[3].card.suitName]"></span>
 				<span class="suitSymbolBig" data-ng-bind-html="board.cardSymbol[board.playerCards[3].card.suitName]"></span>

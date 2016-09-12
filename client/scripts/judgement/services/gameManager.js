@@ -24,7 +24,8 @@ define(['../module'], function(module){
 					'NEXT_PLAYER': 10,
 					'ROUND_COMPLETED': 11,
 					'TRICK_COMPLETED': 12,
-					'DISCONNECTED': 13
+					'DISCONNECTED': 13,
+					'GAME_COMPLETED': 14
 				},
 
 				initialize: initialize,
@@ -71,10 +72,16 @@ define(['../module'], function(module){
 					
 					socket.on('disconnect', disconnected);
 					
+					socket.on('game-completed', gameCompleted);
+					
 				}
 				
 			}
 			
+			function gameCompleted(response){
+				
+				notificationHandler(service.MESSAGE_KEYS.GAME_COMPLETED, response);
+			}
 			
 			function showPoints(callback){
 				

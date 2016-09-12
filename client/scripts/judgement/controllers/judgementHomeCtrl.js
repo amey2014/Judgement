@@ -10,6 +10,8 @@ define(['../module'], function(module){
 		$scope.home.isAdmin = false;
 		$scope.home.username = null;
 		$scope.home.rooms = [];
+		$scope.home.selectedRoom = null;
+		$scope.home.roomName = '';
 		$scope.home.joinRoom = joinRoom;
 		var socket = null;
 		
@@ -110,10 +112,12 @@ define(['../module'], function(module){
 					$location.url('/board_4');
 			});
 		}
+		
 		function roomAvailable(response){
-			console.log(response);
+			console.log('Rooms available: ', response);
 			$scope.home.rooms = response.rooms;
-			$scope.home.roomName = $scope.home.rooms[0].name;
+			$scope.home.selectedRoom = $scope.home.rooms[0];
+			// $scope.home.roomName = $scope.home.rooms[0].name;
 			$scope.home.totalPlayers = response.totalPlayersRequired;
 			// 	GameManager.goToRoom($scope.home.isAdmin, $scope.home.username, $scope.home.roomName);
 			$scope.$apply();

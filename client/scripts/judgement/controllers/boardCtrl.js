@@ -19,14 +19,20 @@ define(['../module'], function(module){
 		$scope.board.showPoints = showPoints;
 		$scope.board.hidePoints =  hidePoints;
 		$scope.board.showPointsTable = false;
+		$scope.board.startTheGame = startTheGame;
 		$scope.board.cardSymbol = {
 				Spade: '&spades;',
 				Diamond: '&diams;',
 				Club: '&clubs;',
 				Heart: '&hearts;'
 			}
+		$scope.board.winners = [];
 		
 		initialize();
+		
+		function startTheGame(){
+			$scope.board.GameManager.startTheGame();
+		}
 		
 		function initialize(){
 			if(!UserManager.user){
@@ -102,9 +108,36 @@ define(['../module'], function(module){
 				case GameManager.MESSAGE_KEYS.DISCONNECTED:
 					disconnected(data);
 					break;
+				case GameManager.MESSAGE_KEYS.GAME_COMPLETED:
+					gameCompleted(data);
+					break;
 				default:
 					break;
 			}
+		}
+		
+		function gameCompleted(response){
+			// getAllPlayersCallback(response);
+			var players = [];
+			response.players.forEach(function(p){ 
+				if(players.length === 0){
+					players.push(p);
+					return;
+				}
+
+				if(p.points > players[0].points){
+					players[0] = p;
+				}
+				else if(p.points === players[0].points){
+					players.push(p);
+				}
+				else{
+					// dont do anything
+				}
+			});
+			
+			$scope.board.winners = players.map(function(p){ return p.name });
+			$scope.board.message = "Winners: " + $scope.board.winners.join();
 		}
 		
 		function disconnected(data){
@@ -113,24 +146,23 @@ define(['../module'], function(module){
 		    	$scope.board.message = "You are disconnected! Please refresh";
 		    })
 		}
+		
 		function selectBid(bid){
-			if(bid <= $scope.board.round.totalTricks &&  bid !== $scope.board.invalidBid) {
+			if(bid <= $scope.board.round.totalTricks && bid !== $scope.board.invalidBid) {
 				$scope.board._bid = bid;
 			}
-			
 		}
 		
 		function startGame(data){
 		    console.log("ADMIN START GAME", data);
 		    $scope.$apply(function(){
 		    	GameManager.canStartGame = true;
-		    })
-		    
+		    });
 		}
 		
 		function nextPlayer(response){
 		    console.log("NEXT PLAYER", response);
-		    
+		    $scope.board.winners = [];
 		    getAllPlayersCallback(response);
 		    $scope.board.baseCard = response.baseCard;
 		    
@@ -203,7 +235,7 @@ define(['../module'], function(module){
 		    $scope.board.baseCard = null;
 		    
 		    $scope.board.message = $scope.board.players[winnerIndex].name + " won this trick."
-		    	
+		    $scope.board.winners = [$scope.board.players[winnerIndex].name];
 		    $scope.$apply(function(){
 		    	var index = getPlayerIndex(response.previousPlayerCard.id);
 				$scope.board.playerCards.splice(index, 1, response.previousPlayerCard);
@@ -249,8 +281,8 @@ define(['../module'], function(module){
 		}
 		
 		function startBidding(data){
+			$scope.board.winners = [];
 			$scope.board.invalidBid = -1;
-			
 			
 			if(data.playerBids !== null){
 				var sum_of_bids = -1;
@@ -337,6 +369,8 @@ define(['../module'], function(module){
 
 		function playerLeft(data){
 		    console.log("Player Left:", data);
+		    $scope.board.message = data.playerName + " is disconnected.";
+		    $scope.$apply();
 		    getAllPlayersCallback(data);
 		}
 		

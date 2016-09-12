@@ -210,7 +210,7 @@ body{
 
 #board-screen div.player-card{
 	background-color: rgba(236, 248, 251, 1);
-	height: 100%;
+	/*height: 100%;*/
 	border: 1px Solid #8e1919;
 	border-radius: 2px;
 	box-shadow: 3px 3px 3px #330101;
@@ -531,7 +531,51 @@ body{
 #board-screen div.player-card .player-card-footer {
 	text-align: center;
 	font-weight: bold;
-	
+}
+
+@keyframes blink {
+    from {
+           background-color: #ff0000;
+    }
+    to {
+           background-color: #ffd600;
+    }
+}
+@-webkit-keyframes blink {
+    from {
+           background-color: #ff0000;
+    }
+    to {
+           background-color: #ffd600;
+    }
+}
+@-ms-keyframes blink {
+    from {
+           background-color: #ff0000;
+    }
+    to {
+           background-color: #ffd600;
+    }
+}
+@-moz-keyframes blink {
+    from {
+           background-color: #ff0000;
+    }
+    to {
+           background-color: #ffd600;
+    }
+}
+
+#board-screen .winner div.player-card{
+	border: 1px Solid #ffd600;
+}
+
+#board-screen .winner div.player-card .player-card-footer {
+	background-color: #ffd600;
+	-moz-animation:blink 1s 5 linear;
+    -webkit-animation: blink 1s 5; /* Chrome, Safari, Opera */
+    -ms-animation: blink 1s 5 linear;
+    animation: blink 1s 5 linear;
 }
 
 #board-screen div.player-card .player-card-footer .apply-margin-10{

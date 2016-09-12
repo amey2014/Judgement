@@ -55,11 +55,7 @@ var RANK_INDEX = [12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 function Game(totalPlayers){
 	this.totalPlayersRequired = totalPlayers;
 	this.players = [];
-	this.rounds = [];
-	this.currentRoundIndex = 0; // starts with 0
-	this.currentRound = null;
-	this.deck = new Deck();
-	this.pointsTable = [];
+	this.initialize();
 }
 
 Game.prototype.setBid = function(data){
@@ -130,6 +126,21 @@ Game.prototype.removePlayer = function(id, name){
 	
 }
 
+Game.prototype.initialize = function(){
+	this.players.forEach(function(player){
+		player.points = 0;
+		player.cards = [];
+		player.tricksBidded = 0;
+		player.tricksWon = 0;
+	});
+
+	this.rounds = [];
+	this.currentRoundIndex = 0; // starts with 0
+	this.currentRound = null;
+	this.deck = new Deck();
+	this.pointsTable = [];
+};
+
 Game.prototype.initializeRounds = function(){
 	if(this.players === null)
 		throw 'No players added yet';
@@ -137,8 +148,9 @@ Game.prototype.initializeRounds = function(){
 		throw 'Minimum 4 players required.'
 	
 	var playersCount = this.players.length;
-	var div = Math.floor(TOTAL_CARDS / playersCount)
+	var div = Math.floor(TOTAL_CARDS / playersCount);
 	var totalRounds = div - (div % playersCount);
+	//totalRounds = 2;
 	console.log('total players:', playersCount, ', Total Rounds:', totalRounds);
 	setupRounds.call(this, totalRounds);
 	

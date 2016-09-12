@@ -224,9 +224,9 @@ function playCard(data, callback) {
 				console.log("SocketModule.js: Game completed");
 				
 				//setTimeout(function(){
-					console.log("SocketModule.js: Sending game completed event" );
-					
-					nsp.emit('game-completed');
+				console.log("SocketModule.js: Sending game completed event" );
+				
+				nsp.emit('game-completed', { players: gameManager.room.getPlayers() });
 					
 				// }, 2000);
 			}
@@ -282,11 +282,11 @@ function removePlayer(name){
 }
 
 function leaveRoom(data, fn) {
-	var socket =this;
+	var socket = this;
 	console.log("SocketModule.js: Leaving room: " + socket.id);
 	socket.leave(data.room, fn);
 	gameManager.room.removePlayer(socket.id, function(){
-		nsp.emit('player-left', { players: gameManager.room.getPlayers(), id: socket.id });
+		nsp.emit('player-left', { players: gameManager.room.getPlayers(), id: socket.id, playerName: socket.playerName });
 	});
 }
 
@@ -298,6 +298,7 @@ function pingRoom(data, fn) {
 }
 
 function startTheGame(){
+	gameManager.room.game.initialize();
 	console.log("SocketModule.js: startTheGame() is invoked.");
 	console.log("SocketModule.js: Initializing all rounds.");
 	gameManager.room.game.initializeRounds();

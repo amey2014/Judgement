@@ -20,6 +20,7 @@ define(['../module'], function(module){
 		$scope.board.hidePoints =  hidePoints;
 		$scope.board.showPointsTable = false;
 		$scope.board.startTheGame = startTheGame;
+		$scope.board.enableBidContainerDrag = false;
 		$scope.board.cardSymbol = {
 				Spade: '&spades;',
 				Diamond: '&diams;',
@@ -41,6 +42,14 @@ define(['../module'], function(module){
 			else{
 				userDetailsCallback(UserManager.user);
 			}
+			angular.element('body').mouseup(function(event){
+				console.log(event);
+				angular.element('.bidContainerOverlay:visible .bidContainer.enable-drag').css('top', event.clientY);
+			});
+			angular.element('.bidContainerOverlay .bidContainer').mouseup(function(event){
+				event.preventDefault();
+				event.stopPropagation();
+			})
 		}
 		
 		function showPoints(){
@@ -360,6 +369,7 @@ define(['../module'], function(module){
 		
 		function playerJoined(data){
 		    console.log("Player Joined:", data);
+		    $scope.board.message = data.playerName + " joined.";
 		    getAllPlayersCallback(data);
 		    if(data.round){
 		    	$scope.board.round = data.round;
@@ -369,6 +379,9 @@ define(['../module'], function(module){
 
 		function playerLeft(data){
 		    console.log("Player Left:", data);
+		    if(typeof data.playerName === 'undefined')
+		    	return;
+		    
 		    $scope.board.message = data.playerName + " is disconnected.";
 		    $scope.$apply();
 		    getAllPlayersCallback(data);

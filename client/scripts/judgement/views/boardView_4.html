@@ -164,26 +164,26 @@
 		data-ng-click="board.hidePoints()">
 		<div class="points-table">
 			<div class="row header-row">
-				<div class="col-sm-2">#</div>
-				<div class="col-sm-3">{{ board.pointsTable.players[0].name }}</div>
-				<div class="col-sm-2">{{ board.pointsTable.players[1].name }}</div>
-				<div class="col-sm-3">{{ board.pointsTable.players[2].name }}</div>
-				<div class="col-sm-2">{{ board.pointsTable.players[3].name }}</div>
+				<div class="col-xs-2 col-sm-2">#</div>
+				<div class="col-xs-3 col-sm-3">{{ board.pointsTable.players[0].name }}</div>
+				<div class="col-xs-2 col-sm-2">{{ board.pointsTable.players[1].name }}</div>
+				<div class="col-xs-3 col-sm-3">{{ board.pointsTable.players[2].name }}</div>
+				<div class="col-xs-2 col-sm-2">{{ board.pointsTable.players[3].name }}</div>
 			</div>
 			<div class="row"
 				data-ng-repeat="row in board.pointsTable.roundPoints">
-				<div class="col-sm-2">{{ row.round }}</div>
-				<div class="col-sm-3">{{ row.points[0].points }}</div>
-				<div class="col-sm-2">{{ row.points[1].points }}</div>
-				<div class="col-sm-3">{{ row.points[2].points }}</div>
-				<div class="col-sm-2">{{ row.points[3].points }}</div>
+				<div class="col-xs-2 col-sm-2">{{ row.round }}</div>
+				<div class="col-xs-3 col-sm-3">{{ row.points[0].points }}</div>
+				<div class="col-xs-2 col-sm-2">{{ row.points[1].points }}</div>
+				<div class="col-xs-3 col-sm-3">{{ row.points[2].points }}</div>
+				<div class="col-xs-2 col-sm-2">{{ row.points[3].points }}</div>
 			</div>
 			<div class="row total-row">
-				<div class="col-sm-2">Total</div>
-				<div class="col-sm-3">{{ board.pointsTable.players[0].total }}</div>
-				<div class="col-sm-2">{{ board.pointsTable.players[1].total }}</div>
-				<div class="col-sm-3">{{ board.pointsTable.players[2].total }}</div>
-				<div class="col-sm-2">{{ board.pointsTable.players[3].total }}</div>
+				<div class="col-xs-2 col-sm-2">Total</div>
+				<div class="col-xs-3 col-sm-3">{{ board.pointsTable.players[0].total }}</div>
+				<div class="col-xs-2 col-sm-2">{{ board.pointsTable.players[1].total }}</div>
+				<div class="col-xs-3 col-sm-3">{{ board.pointsTable.players[2].total }}</div>
+				<div class="col-xs-2 col-sm-2">{{ board.pointsTable.players[3].total }}</div>
 			</div>
 		</div>
 	</div>
@@ -191,8 +191,8 @@
 </div>
 
 <div class="bidContainerOverlay  no-select" ng-show="!board.round.inProgress && board.currentPlayer === board.players[0].id">
-	<div class="bidContainer">
-		<div class="bidHeader">Bid your tricks</div>
+	<div class="bidContainer" data-ng-class="{'enable-drag': board.enableBidContainerDrag}">
+		<div class="bidHeader">Bid your tricks <span class="glyphicon glyphicon-move drag-icon pull-right" data-ng-click="board.enableBidContainerDrag = !board.enableBidContainerDrag" ></span></div>
 		<span class="badge bids" data-ng-init="board._bid = -1"
 			data-ng-click="board.selectBid(i)"
 			data-ng-class="{'bid-not-valid': i > board.round.totalTricks || i === board.invalidBid, 'bid-selected': board._bid === i}"

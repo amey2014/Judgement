@@ -378,7 +378,7 @@ function joinRoom(data, fn) {
 			
 			gameManager.room.addPlayer(socket.id, data.playerName, function(){
 				var allPlayers = gameManager.room.getPlayers();
-				socket.broadcast.to(data.room).emit('player-joined', { players: allPlayers });
+				socket.broadcast.to(data.room).emit('player-joined', { playerName: data.playerName, players: allPlayers });
 				
 				if(allPlayers.length === gameManager.room.game.totalPlayersRequired){
 					var key = allPlayers[0].id;

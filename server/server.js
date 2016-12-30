@@ -12,7 +12,8 @@ var express = require('express'),
 	io = require('socket.io')(http),
 	config = require('./config.js'),
 	funct = require('./functions.js'),
-	socketModule = require('./socketModule.js');
+	socketModule = require('./socketModule.js'),
+	socketManager = require('./socketManager.js');
 
 //===============EXPRESS================
 //Configure Express
@@ -33,12 +34,12 @@ app.use('/i18n.js', express.static('i18n.js'));
 
 //Passport session setup.
 passport.serializeUser(function(user, done) {
-  console.log("serializing " + user.username);
+  //console.log("serializing " + user.username);
   done(null, user);
 });
 
 passport.deserializeUser(function(obj, done) {
-  console.log("deserializing " + obj);
+  //console.log("deserializing " + obj);
   done(null, obj);
 });
 
@@ -124,7 +125,7 @@ var map = {
 	
 }
 
-socketModule.initialize(io);
+socketManager.initialize();
 
 app.get('/', function (req, res) {
 	if(req.user && req.user.username && req.user.username !== ''){
@@ -160,6 +161,21 @@ app.post('/login', passport.authenticate('local-signin', {
 	  failureRedirect: '/signin'
 	  })
 	);
+
+app.post('/createRoom', function (req, res) {
+	if(req.user && req.user.username && req.user.username !== ''){
+		try{
+			socketManager.initializeRoom(req.roomName); //, function(){
+			res.json({ success: true });
+		}catch(error){
+			throw error;
+		}
+		
+	}else{
+		res.render('signin');
+	}
+  
+});
 
 //logs user out of site, deleting them from the session, and returns to homepage
 app.get('/logout', function(req, res){

@@ -20,7 +20,7 @@
 			<div class="player-cards-container">
 				<div style="width: 200%"  class="player-cards">		
 					<div class="playing-card" data-ng-class="[card.suitName, {'is-trump-card': round.trumpSuit === card.suitName}, {'card-selected': selectedCard === card}, {'card-is-not-valid': card.canPlay !== undefined && !card.canPlay}]" 
-						data-ng-repeat="card in player.cards"  data-ng-style="{'left': ((player.cards.length - ($index + 1)) * 18) + 'px'}" 
+						data-ng-repeat="card in cards"  data-ng-style="{'left': ((cards.length - ($index + 1)) * 18) + 'px'}" 
 						data-ng-click="cardClicked(card)" data-ng-dblclick="playCard(card); $event.stopPropagation();">
 						<span class="rankName">{{ card.rankShortName }}</span>
 						<span class="suitSymbolSmall" ng-bind-html="cardSymbol[card.suitName]"></span>

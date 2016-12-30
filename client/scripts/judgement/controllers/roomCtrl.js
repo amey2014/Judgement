@@ -1,7 +1,7 @@
 define(['../module'], function(module){
 	
 	return module
-	.controller('JudgementHomeCtrl', ['$scope', '$location', 'my.i18n', 'UserManager', 'GameManager',
+	.controller('RoomCtrl', ['$scope', '$location', 'my.i18n', 'UserManager', 'GameManager',
       function($scope, $location, i18n, UserManager, GameManager) {
 		console.log('JudgementHomeCtrl initialized...');
 		$scope.i18n = i18n;
@@ -13,6 +13,7 @@ define(['../module'], function(module){
 		$scope.home.selectedRoom = null;
 		$scope.home.roomName = '';
 		$scope.home.joinRoom = joinRoom;
+		$scope.home.createRoom = createRoom;
 		var socket = null;
 		
 		initialize();
@@ -86,6 +87,22 @@ define(['../module'], function(module){
 			socket = null;
 		}
 		*/
+		function createRoom(isAdmin, username, roomName){
+			
+			var totalPlayers = +$scope.home.totalPlayers;
+			
+			if(Number.NaN === totalPlayers || totalPlayers < 4){
+				console.log("Please select total players");
+				return;
+			}
+			if(!roomName || roomName === ""){
+				console.log("Please enter room name");
+				return;
+			}
+			
+			GameManager.createRoom(isAdmin, username, roomName, totalPlayers, joinRoomCallback);
+		}
+		
 		function joinRoom(isAdmin, username, roomName){
 			
 			var totalPlayers = +$scope.home.totalPlayers;
@@ -108,7 +125,7 @@ define(['../module'], function(module){
 				return;
 			}
 			
-			GameManager.players = response.players;
+			// GameManager.players = response.players;
 			enterRoom();
 			
 		}
@@ -122,9 +139,12 @@ define(['../module'], function(module){
 		function roomCreated(response){
 			console.log(response);
 			
-			GameManager.players = response.data.players;
-			
-			gotoRoom();
+			$scope.home.rooms = response.rooms;
+			$scope.home.selectedRoom = $scope.home.rooms[0];
+			// $scope.home.roomName = $scope.home.rooms[0].name;
+			$scope.home.totalPlayers = $scope.home.rooms[0].totalPlayersRequired;
+			// 	GameManager.goToRoom($scope.home.isAdmin, $scope.home.username, $scope.home.roomName);
+			$scope.$apply();
 		}
 		
 		function enterRoom(){

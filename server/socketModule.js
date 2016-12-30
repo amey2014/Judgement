@@ -6,9 +6,7 @@ exports.removePlayer = removePlayer;
 var namespace = '/judgement-group';
 var nsp = io.of(namespace);
 
-var current_clients = {
-	
-}
+var current_clients = {};
 
 function initializeSockets(io){
 	

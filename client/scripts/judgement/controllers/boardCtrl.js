@@ -10,6 +10,7 @@ define(['../module'], function(module){
 		$scope.board.leaveRoom = leaveRoom;
 		$scope.board.setMyBid = setMyBid;
 		$scope.board.players = [];
+		$scope.board.currentPlayerCards = [];
 		$scope.board.round = null;
 		$scope.board.currentPlayer = null;
 		$scope.board.message = null;
@@ -74,9 +75,8 @@ define(['../module'], function(module){
 				$scope.board.isAdmin = data.isAdmin;
 				$scope.board.username = data.username;
 				GameManager.initialize(notificationHandler);
-				GameManager.getAllPlayers(data.username, getAllPlayersCallback);
-				
-				
+				GameManager.enterGame(data.username, updatePlayers);
+				// GameManager.getAllPlayers(data.username, updatePlayers);
 			}else{
 				$location.url("/board_enter");
 			}
@@ -88,10 +88,10 @@ define(['../module'], function(module){
 					// roomAvailable(data);
 					break;
 				case GameManager.MESSAGE_KEYS.ROOM_CREATED:
-					// roomCreated(data);
+					//roomCreated(data);
 					break;
-				case GameManager.MESSAGE_KEYS.PLAYER_JOINED:
-					playerJoined(data);
+				case GameManager.MESSAGE_KEYS.PLAYER_ENTERED:
+					playerEntered(data);
 					break;
 				case GameManager.MESSAGE_KEYS.PLAYER_LEFT:
 					playerLeft(data);
@@ -120,13 +120,16 @@ define(['../module'], function(module){
 				case GameManager.MESSAGE_KEYS.GAME_COMPLETED:
 					gameCompleted(data);
 					break;
+				case GameManager.MESSAGE_KEYS.PLAYER_DISCONNECTED:
+					playerDisconnectedHandler(data);
+					break;
 				default:
 					break;
 			}
 		}
 		
 		function gameCompleted(response){
-			// getAllPlayersCallback(response);
+			// updatePlayers(response);
 			var players = [];
 			response.players.forEach(function(p){ 
 				if(players.length === 0){
@@ -151,7 +154,9 @@ define(['../module'], function(module){
 		
 		function disconnected(data){
 			console.log("Disconnected", data);
+
 		    $scope.$apply(function(){
+				$scope.board.disconnected = true;
 		    	$scope.board.message = "You are disconnected! Please refresh";
 		    })
 		}
@@ -172,7 +177,7 @@ define(['../module'], function(module){
 		function nextPlayer(response){
 		    console.log("NEXT PLAYER", response);
 		    $scope.board.winners = [];
-		    getAllPlayersCallback(response);
+		    updatePlayers(response);
 		    $scope.board.baseCard = response.baseCard;
 		    
 		    $scope.board.currentPlayer = response.player.id;
@@ -181,8 +186,9 @@ define(['../module'], function(module){
 		    	return p.id === response.player.id && response.player.name === p.name && response.player.name === $scope.board.username;
 		    });
 			 
-			$scope.board.round = response.round;
+			// $scope.board.round = response.round;
 			
+			// insert previous players card in the right position
 			if(response.previousPlayerCard){
 				var index = getPlayerIndex(response.previousPlayerCard.id);
 				$scope.board.playerCards.splice(index, 1, response.previousPlayerCard);
@@ -239,7 +245,8 @@ define(['../module'], function(module){
 
 		function trickCompleted(response){
 		    console.log("TRICK COMPLETED", response);
-		    getAllPlayersCallback(response);
+		    $scope.board.currentPlayer = null;
+		    updatePlayers(response);
 		    var winnerIndex = getPlayerIndex(response.previousTrickWinner);
 		    $scope.board.baseCard = null;
 		    
@@ -259,10 +266,15 @@ define(['../module'], function(module){
 		function roundCompleted(data){
 			
 			console.log("RoUND COMPLETED");
+			$scope.board.currentPlayer = null;
+			var winnerIndex = getPlayerIndex(data.previousTrickWinner);
+			var winnerName = $scope.board.players[winnerIndex].name
+		    $scope.board.baseCard = null;
 			$scope.board._bid = 0;
-			$scope.board.baseCard = null;
+			$scope.board.winners = [winnerName];
+			
 			console.log(data);
-			$scope.board.message = 'Next round will begin in 5 secs...';
+			$scope.board.message = winnerName + ' won this trick. Next round will begin in 5 secs...';
 			$scope.board.myTurn = false;
 			if(data.previousPlayerCard){
 				var index = getPlayerIndex(data.previousPlayerCard.id);
@@ -272,7 +284,7 @@ define(['../module'], function(module){
 	    		$scope.board.playerCards.splice(0, $scope.board.playerCards.length, {}, {}, {}, {});
 	    	}, 2000);
 
-	    	getAllPlayersCallback(data);
+	    	updatePlayers(data);
 			$scope.$apply();
 		}
 		
@@ -280,9 +292,11 @@ define(['../module'], function(module){
 			if($scope.board.currentPlayer === $scope.board.players[0].id){
 			    console.log("Play card", card);
 			    $scope.board.currentPlayer = null;
-			    GameManager.playCard($scope.board.round.currentTrick, $scope.board.players[0].id, card.card, function(data){
+			    GameManager.playCard($scope.board.round.currentTrick, $scope.board.players[0].id, card.card, function(error, data){
 					console.log("played card", data);
-					GameManager.setCurrentCards(data);
+					updateCards($scope.board.players[0].id, data.cards);
+					$scope.$apply();
+					// GameManager.setCurrentCards(data);
 				});
 			}else{
 				console.log("boardCtrl: Already Played");
@@ -321,6 +335,9 @@ define(['../module'], function(module){
 				$scope.board.round = data.round;
 				
 				if(!data.startPlaying){
+					if(!data.playerBids){
+						$scope.board.players.forEach(function(p){ p.tricksBidded = 0; p.tricksWon = 0; });
+					}
 					if(currentPlayer.length > 0){
 						// start bidding for this player
 						$scope.board.message = 'Please set your bid...';
@@ -355,44 +372,54 @@ define(['../module'], function(module){
 		}
 		
 		function gameStarted(response){
-		    console.log("START THE GAME", response);
-		    var currentPlayer = $scope.board.players.filter(function(p){
-		    	return p.id === response.data.id && response.data.name === p.name && response.data.name === $scope.board.username;
-		    });
+		    console.log("Game Started", response);
 		    
 		    $scope.$apply(function(){
 		    	$scope.board.round = response.round;
-		    	currentPlayer[0].cards = response.data.cards;
+		    	$scope.board.currentPlayerCards = response.cards;
 		    });
 		    
 		}
 		
-		function playerJoined(data){
-		    console.log("Player Joined:", data);
-		    $scope.board.message = data.playerName + " joined.";
-		    getAllPlayersCallback(data);
-		    if(data.round){
-		    	$scope.board.round = data.round;
+		// gets called when new player enters the room
+		function playerEntered(response){
+			if(response.newPlayer.name === $scope.board.username){
+				return;
+			}
+			console.log(response.newPlayer.name,  "entered the game room.");
+			$scope.board.message = response.newPlayer.name + " entered the room.";
+		    updatePlayers(response);
+		    updateRound(response);
+		}
+		
+		function playerLeft(response){
+		    console.log("Player Left:", response);
+		    if(typeof response.oldPlayer.name === 'undefined')
+		    	return;
+		    
+		    $scope.board.message = response.oldPlayer.name + " left the room.";
+		    $scope.$apply();
+		    updatePlayers(response);
+		}
+		
+		function updateRound(response){
+			if(response.round){
+		    	$scope.board.round = response.round;
 		    	$scope.$apply();
 		    }
 		}
 
-		function playerLeft(data){
-		    console.log("Player Left:", data);
-		    if(typeof data.playerName === 'undefined')
-		    	return;
-		    
-		    $scope.board.message = data.playerName + " is disconnected.";
-		    $scope.$apply();
-		    getAllPlayersCallback(data);
-		}
-		
 		function leaveRoom(){
-		    GameManager.leaveRoom($scope.board.username, function(){
-		    	console.log("LEFT ROOM BY ME");
-		    	$scope.$apply(function(){
-		    		$location.url("/board_enter");
-		    	});
+		    GameManager.exitGame($scope.board.username, function(error, response){
+		    	if(error){
+		    		console.log(error)
+		    	}else{
+		    		console.log("LEFT ROOM BY ME");
+			    	$scope.$apply(function(){
+			    		$location.url("/board_enter");
+			    	});
+		    	}
+		    	
 		    });
 		}
 		
@@ -407,46 +434,40 @@ define(['../module'], function(module){
 		    return index;
 		}
 
-		function getAllPlayersCallback(response){
-			console.log("GetAllPlayers callback", response);
-			var players = response.players;
-			var loggedInPlayers = players.filter(function(player){
-	    		return player.name === $scope.board.username;
-	    	});
-			
-			var index = players.indexOf(loggedInPlayers[0]);
-			if(index > 0){
-				var slicedArray = players.splice(0, index);
-				players = players.concat(slicedArray);
-			}
-		    
+		function updatePlayers(response){
+
 		    $scope.$apply(function(){
-	    		$scope.board.players = players;
-	    		
-	    		/*var cards = [];
-	    		for(var i = 0; i < 12; i++){
-	    			cards.push({
-						
-				        	id:i,
-							rankIndex:6,
-							rankLongName:"8",
-							rankShortName:"8",
-							suitIndex:0,
-							suitName:"Spade"
-						
-					})
+		    	if(response.players){
+		    		$scope.board.players = response.players;
+		    	}
+	    		if(response.round){
+	    			$scope.board.round = response.round;
 	    		}
-	    		$scope.board.players = [{
-					id: "/judgement-group#qg8KHnTZOYkPSocyAABa",
-					name: "amey",
-					pic:"",
-					points:-20,
-					tricksBidded:0,
-					tricksWon:0,
-					cards: cards
-				}];*/
+	    		
+	    		updateCards(response.playerId, response.cards);
 		    });
 		    
+		}
+		function updateCards(id, cards){
+
+    		var currentPlayer = $scope.board.players.filter(function(p){
+		    	return p.id === id;
+		    });
+    		
+    		if(cards && currentPlayer.length > 0){
+    			$scope.board.currentPlayerCards = cards;
+    			// currentPlayer[0].cards = response.cards;
+    		}
+		    
+		    
+		}
+		
+		function playerDisconnectedHandler(response){
+			console.log("Player Disconnected:", response);
+		    if(response.oldPlayer){
+		    	$scope.board.message = response.oldPlayer.name + " disconnected.";
+			    $scope.$apply();
+		    }
 		}
 		/*var newGame = new Game();
 		newGame.addPlayers();

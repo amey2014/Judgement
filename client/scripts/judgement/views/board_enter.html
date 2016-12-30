@@ -15,12 +15,12 @@
 		    Room Name: <input type="text" class="form-control" 
 		    	id="inputName" placeholder="Room Name"
 		    	data-ng-model="home.roomName" data-ng-hide="!home.isAdmin">
-			<button type="button" class="btn" data-ng-click="home.joinRoom(home.isAdmin, home.username, home.roomName, home.totalPlayers)" ng-hide="!home.isAdmin">Create</button>
+			<button type="button" class="btn" data-ng-click="home.createRoom(home.isAdmin, home.username, home.roomName, home.totalPlayers)" ng-hide="!home.isAdmin">Create</button>
 			
 			<select ng-model="home.selectedRoom" ng-options="room.name for room in home.rooms">
 				
 			</select>
-		  	<button type="submit" class="btn btn-primary" ng-click="home.joinRoom(false, home.username, home.selectedRoom.name)" >Join</button>
+		  	<button type="submit" class="btn btn-primary" ng-click="home.joinRoom(home.isAdmin, home.username, home.selectedRoom.name)" >Join</button>
 			  
 			<button ng-click="home.GameManager.ping(home.username)">Ping</button>
 			<a href="/logout">Logout</a>

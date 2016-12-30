@@ -6,7 +6,7 @@ define(['angular', 'ngRoute', 'ngSanitize', 'static/scripts/language'], function
 				$routeProvider.
 			      when('/board_enter', {
 					templateUrl: 'static/scripts/judgement/views/board_enter.html',
-					controller: 'JudgementHomeCtrl'
+					controller: 'RoomCtrl'
 				  })/*.when('/ju_home_entry', {
 					templateUrl: 'static/scripts/judgement/views/home_entry.html',
 					controller: 'JudgementHomeCtrl'

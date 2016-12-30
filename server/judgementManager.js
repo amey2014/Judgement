@@ -1,3 +1,73 @@
+exports.getGameByRoomName = function(roomName){
+	return RoomCollection.getGameByRoomName(roomName);
+}
+
+exports.getRoomByRoomName = function(roomName){
+	return RoomCollection.getGameByRoomName(roomName);
+}
+
+
+exports.createNewRoom = function(data){
+	if(RoomCollection.isRoomAvailable(data.roomName)){
+		return RoomCollection.addRoom(data.adminId, data.roomName, +data.totalPlayers);
+	}else{
+		throw { message: 'Room already exists: ' + data.roomName };
+	}
+}
+
+exports.removePlayer = function(data, callback){
+	console.log("Get game:", data.roomName);
+	var game = this.getGameByRoomName(data.roomName);
+	try{
+		console.log("Remove Player:", data.playerName);
+		var oldPlayer = game.removePlayer(data.id, data.playerName);
+		if(callback){
+			callback(null, { oldPlayer: oldPlayer, players: game.getPlayers() });
+		}
+	}catch(error){
+		console.log("Error:", error);
+		callback(error, null);
+	}
+}
+
+/* Room constructor function */
+function Room(adminId, name, totalPlayers){
+	this.name = name;
+	this.game = new Game(totalPlayers, adminId);
+}
+
+Room.prototype = {
+	getGame: getGame,
+	addPlayer: addPlayer,
+	removePlayer: removePlayer,
+	getPlayers: getPlayers,
+	getPlayersCount: getPlayersCount,
+	setBid: setBid
+}
+
+var RoomCollection = {
+	// Mapped object of rooms
+	_rooms: {},
+	//add room to the collection
+	addRoom: function(adminId, roomName, totalPlayers){
+		var room = new Room(adminId, roomName, totalPlayers);
+		this._rooms[roomName] = room;
+		return room;
+	},
+	// get room by room name
+	getRoomByRoomName: function(roomName){
+		return this._rooms[roomName];
+	},
+	// get room by room name
+	getGameByRoomName: function(roomName){
+		return this._rooms[roomName].game;
+	},
+	// Returns false, if room object is present for a give room name else returns true. 
+	isRoomAvailable: function(roomName){
+		return typeof this._rooms[roomName] === 'undefined';
+	}
+};
+
 exports.room = {
 	name: null,
 	game: null,
@@ -49,17 +119,23 @@ function getPlayersCount(){
 
 var TOTAL_CARDS = 52;
 var SUIT = ['Spade', 'Diamond', 'Club', 'Heart'];
-var RANK_NAME = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'];
-var RANK_INDEX = [12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+var RANK_NAME = [ '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'];
+var RANK_INDEX = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-function Game(totalPlayers){
+function Game(totalPlayers, adminId){
+	this.adminId = adminId;
 	this.totalPlayersRequired = totalPlayers;
 	this.players = [];
+	this.playerCardsMap = {};
 	this.initialize();
 }
 
+Game.prototype.getPlayers = function(){
+	return this.players;
+}
+
 Game.prototype.setBid = function(data){
-	var index = getPlayerIndex(this.players, data.id);
+	var index = this.getPlayerIndex(data.id);
 
 	if(index > -1){
 		console.log('Index: ' + index);
@@ -80,18 +156,40 @@ Game.prototype.addPlayers = function(){
 }
 
 Game.prototype.addPlayer = function(id, name){
-	if(this.players.length < this.totalPlayersRequired){
-		this.players.push(new Player(id, name, 0));
+	var index = this.getEmptySeat();
+	if(index >= 0){
+		var player = new Player(id, name, 0);
+		this.players[index] = player;
+		return player;
 	}
 	else{
-		console.log("Game.prototype.addPlayer: Cannot add more players.");
+		throw { message: 'Game.prototype.addPlayer: Cannot add more players.'};
 	}
 }
 
-function getPlayerIndex(players, id){
+Game.prototype.getEmptySeat = function(){
+	var index = this.players.indexOf(null);
+	if(index < 0 && this.players.length < this.totalPlayersRequired){
+		index = this.players.length;
+	}
+	return index;
+}
+
+Game.prototype.canStart = function(){
+	return this.getEmptySeat() < 0;
+}
+
+Game.prototype.getPlayerById = function(id){
+	var player = this.players.filter(function(p){
+		return (p && p.id === id);
+	});
+	return player.length > 0 ? player[0] : null;
+}
+
+Game.prototype.getPlayerIndex = function(id){
 	var index = -1;
-	players.some(function(p, i){
-		if(p.id === id){
+	this.players.some(function(p, i){
+		if(p && p.id === id){
 			index = i;
 			return true;
 		}
@@ -104,24 +202,14 @@ function getPlayerIndex(players, id){
 }
 Game.prototype.removePlayer = function(id, name){
 	console.log("Game.prototype.removePlayer", id, name);
-	var index = getPlayerIndex(this.players, id);
-	/*this.players.some(function(p, i){
-		if(p.id === id){
-			index = i;
-			return true;
-		}
-		else{
-			return false;
-		}
-			
-	});*/
+	var index = this.getPlayerIndex(id);
 	if(index > -1){
-		console.log(this.players);
-		console.log('Index: ' + index);
-		this.players.splice(index, 1);
+		var player = this.players.splice(index, 1, null)[0];
+		return player;
 	}
 	else{
 		console.log('Game.prototype.removePlayer: Cannot remove player, Index is ' + index);
+		throw { message: 'Game.prototype.removePlayer: Cannot remove player, Index is ' + index };
 	}
 	
 }
@@ -129,7 +217,7 @@ Game.prototype.removePlayer = function(id, name){
 Game.prototype.initialize = function(){
 	this.players.forEach(function(player){
 		player.points = 0;
-		player.cards = [];
+		// player.cards = [];
 		player.tricksBidded = 0;
 		player.tricksWon = 0;
 	});
@@ -169,6 +257,7 @@ Game.prototype.setupNewRound = function(){
 	}
 	console.log(this.currentRoundIndex);
 	this.currentRound = this.rounds[this.currentRoundIndex];
+	this.playerCardsMap = {}; 
 	console.log(this.currentRound);
 }
 
@@ -196,13 +285,37 @@ Game.prototype.distributeCards = function(){
 	var startPlayerIndex = this.currentRound.startPlayerIndex;
 	var totalCards = this.currentRound.totalTricks * this.players.length;
 	for(var i = 0; i < totalCards; i++, startPlayerIndex++){
-		console.log(startPlayerIndex, "-----------------", this.players.length);
-		console.log(startPlayerIndex % this.players.length);
-		this.players[startPlayerIndex % this.players.length].cards.push(this.deck.cards[i]);
+		//console.log(startPlayerIndex, "-----------------", this.players.length);
+		//console.log(startPlayerIndex % this.players.length);
+		
+		// this.players[startPlayerIndex % this.players.length].cards.push(this.deck.cards[i]);
+		
+		if(this.playerCardsMap[this.players[startPlayerIndex % this.players.length].id]){
+			this.playerCardsMap[this.players[startPlayerIndex % this.players.length].id].push(this.deck.cards[i]);
+		}
+		else{
+			this.playerCardsMap[this.players[startPlayerIndex % this.players.length].id] = [ this.deck.cards[i] ];
+		}
 	}
 
-	for(var i = 0; i < this.players.length; i++){
+	// sort cards
+	/*for(var i = 0; i < this.players.length; i++){
 		this.players[i].cards.sort(function(a, b){
+			if(a.id < b.id){
+				return -1;
+			}
+			else if (a.id > b.id){
+				return 1
+			}
+			else{
+				return 0;
+			}
+		});
+	}*/
+	
+	// sort map
+	for(var i = 0; i < this.players.length; i++){
+		this.playerCardsMap[this.players[i].id].sort(function(a, b){
 			if(a.id < b.id){
 				return -1;
 			}
@@ -260,19 +373,21 @@ Game.prototype.playCard = function(data){
 	var continueCurrentRound = true;
 	var continueCurrentTrick = true;
 	var winningPlayerId = null;
-	var index = getPlayerIndex(this.players, data.id);
+	var index = this.getPlayerIndex(data.id);
 	var player = this.players[index];
 	
-	var cardIndex = player.cards.indexOf(data.card);
-	for(var i = 0; i < player.cards.length; i++ ){
+	var cardIndex = -1;
+	var playerCards = this.playerCardsMap[data.id];
+	
+	for(var i = 0; i < playerCards.length; i++ ){
 		cardIndex = i;
-		if( data.card.suitIndex === player.cards[i].suitIndex && data.card.rankIndex === player.cards[i].rankIndex ){
+		if( data.card.suitIndex === playerCards[i].suitIndex && data.card.rankIndex === playerCards[i].rankIndex ){
 			break;
 		}
 	}
 	
-	console.log(player.name + ' player ' + player.cards[cardIndex].suitName);
-	player.cards.splice(cardIndex, 1);
+	console.log(player.name + ' player ' + playerCards[cardIndex].suitName);
+	playerCards.splice(cardIndex, 1);
 
 	var count = this.currentRound.playCard(data);
 	var playersCount = this.players.length;
@@ -280,7 +395,7 @@ Game.prototype.playCard = function(data){
 		console.log('Next trick');
 		
 		winningPlayerId = this.currentRound.whoWonThisTrick(data.currentTrick);
-		var nextPlayerIndex = getPlayerIndex(this.players, winningPlayerId);
+		var nextPlayerIndex = this.getPlayerIndex(winningPlayerId);
 		var winner = this.players[nextPlayerIndex];
 		winner.tricksWon++;
 			
@@ -402,23 +517,23 @@ function Player(id, name){
 	this.name = name;
 	this.pic = '';
 	this.points = 0;
-	this.cards = [];
+	// this.cards = [];
 	this.tricksBidded = 0;
 	this.tricksWon = 0;
 }
 	
-Player.prototype.getCards = function(){
+/*Player.prototype.getCards = function(){
 	return this.cards.map(function(c){
 		return c.toString();
 	});
-}
+}*/
 
 function Card(id, suit, rank){
 	this.id = id;
 	this.suitIndex = suit;
 	this.rankIndex = RANK_INDEX[rank];
 	this.suitName = SUIT[suit];
-	this.rankShortName = rank > 0 && rank < 10 ? RANK_NAME[rank] : RANK_NAME[rank].charAt(0);
+	this.rankShortName = rank > 0 && rank < 9 ? RANK_NAME[rank] : RANK_NAME[rank].charAt(0);
 	this.rankLongName = RANK_NAME[rank];
 }
 
@@ -434,5 +549,10 @@ function Deck(){
 			this.cards.push(new Card(count, i, j));
 		}
 	}
+}
+
+function PlayerCards(){
+	this.round = null;
+	this.cardsMap = {};
 }
 

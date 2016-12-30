@@ -40,14 +40,14 @@ define(['../module'], function(module){
 					if($scope.turn === $scope.player.id){
 						var hasCard = false;
 						if($scope.baseCard){
-							$scope.player.cards.forEach(function(card){
+							$scope.cards.forEach(function(card){
 								card.canPlay = false;
 							});
 							
 							console.log("Start");
 
 							if($scope.baseCard){
-								$scope.player.cards.forEach(function(card){
+								$scope.cards.forEach(function(card){
 									if(card.suitIndex === $scope.baseCard.card.suitIndex){
 										card.canPlay = true;
 										hasCard = true;
@@ -61,14 +61,14 @@ define(['../module'], function(module){
 						
 						console.log("hasCard", hasCard);
 						if(!hasCard){
-							$scope.player.cards.forEach(function(card){
+							$scope.cards.forEach(function(card){
 								card.canPlay = true;	
 							});
 						}
 					}else{
 						console.log("not your turn 1");
-						if($scope.player && $scope.player.cards){
-							$scope.player.cards.forEach(function(card){
+						if($scope.player && $scope.cards){
+							$scope.cards.forEach(function(card){
 								card.canPlay = true;	
 							});
 						}
@@ -76,8 +76,8 @@ define(['../module'], function(module){
 					}
 				}else{
 					console.log("not your turn 2");
-					if($scope.player && $scope.player.cards){
-						$scope.player.cards.forEach(function(card){
+					if($scope.player && $scope.cards){
+						$scope.cards.forEach(function(card){
 							card.canPlay = true;	
 						});
 					}
@@ -91,6 +91,7 @@ define(['../module'], function(module){
 			templateUrl: 'static/scripts/judgement/directives/loggedInPlayerScoreCard.tmpl.html',
 			scope: {
 				player: '=',
+				cards: '=',
 				round: '=',
 				turn: '=',
 				baseCard: '=',
@@ -111,7 +112,7 @@ define(['../module'], function(module){
 				function cardClicked(card){
 					var hasCard = false;
 					if($scope.baseCard){
-						hasCard = $scope.player.cards.some(function(c){
+						hasCard = $scope.cards.some(function(c){
 							return c.suitIndex === $scope.baseCard.card.suitIndex;
 						});
 					}
@@ -133,7 +134,7 @@ define(['../module'], function(module){
 								inProcess = true;
 								var hasCard = false;
 								if($scope.baseCard){
-									hasCard = $scope.player.cards.some(function(c){
+									hasCard = $scope.cards.some(function(c){
 										return c.suitIndex === $scope.baseCard.card.suitIndex;
 									});
 								};

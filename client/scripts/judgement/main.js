@@ -1,5 +1,5 @@
 define([
-        './controllers/judgementHomeCtrl.js',
+        './controllers/roomCtrl.js',
         './controllers/boardCtrl.js',
 		'./services/userManager.js',
 		'./services/gameManager.js',

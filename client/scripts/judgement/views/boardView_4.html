@@ -1,4 +1,4 @@
-<div id="board-screen" class="board-screen  no-select" >
+<div id="board-screen" class="board-screen  no-select" data-ng-class="{ disconnected: board.disconnected }">
 
 	<div class="row header-row less-padding">
 		<div class="col-xs-4 col-sm-4 divRoomDetails">
@@ -54,8 +54,9 @@
 		<div class="col-xs-1 col-sm-1 col-md-3"></div>
 	</div>
 	<div class="row flexible-row">
-		<div class="col-xs-3 col-sm-2 col-md-2"></div>
-		<div class="col-xs-4 col-xs-offset-1 col-sm-4 col-sm-offset-1 col-md-2 col-md-offset-2 current-trick-card-container">
+		<div class="col-xs-1 col-sm-2"></div><!-- col-xs-3 col-sm-2 col-md-2 -->
+		<!-- col-xs-4 col-xs-offset-1 col-sm-4 col-sm-offset-1 col-md-2 col-md-offset-2 current-trick-card-container -->
+		<div class="col-xs-10 col-sm-8 col-md-6 col-md-offset-1 current-trick-card-container">
 			
 			<div class="playing-card" data-ng-if="board.playerCards[2].card"
 				data-ng-class="[board.playerCards[2].card.suitName, {'is-trump-card': board.round.trumpSuit === board.playerCards[2].card.suitName}]">
@@ -72,8 +73,8 @@
 				<span class="suitSymbolBig" >&spades;</span>
 			</div>-->
 		</div>
-		<div class="col-xs-1 col-sm-2 col-md-2"></div>
-		<div class="col-xs-1 col-sm-1 col-md-3"></div>
+		<div class="col-xs-1 col-sm-2"></div> <!-- col-xs-1 col-sm-2 col-md-2 -->
+		<!--  <div class="col-xs-1 col-sm-1 col-md-3"></div> -->
 	</div>
 	<div class="row">
 		<div class="col-xs-3 col-sm-3 col-md-2" data-ng-class="{winner: board.winners.indexOf(board.players[1].name) > -1}" >
@@ -142,7 +143,7 @@
 	<div class="row logged-in-player-row">
 		<div class="col-xs-1 col-sm-2"></div>
 		<div class="col-xs-10 col-sm-8 col-md-6 col-md-offset-1" data-ng-class="{winner: board.winners.indexOf(board.players[0].name) > -1}" >
-			<logged-in-player-score-card player="board.players[0]"
+			<logged-in-player-score-card player="board.players[0]" cards="board.currentPlayerCards"
 				round="board.round" turn="board.currentPlayer"
 				base-card="board.baseCard"
 				card-selected="board.cardSelected({ card: card })"></logged-in-player-score-card>
@@ -190,9 +191,9 @@
 
 </div>
 
-<div class="bidContainerOverlay  no-select" ng-show="!board.round.inProgress && board.currentPlayer === board.players[0].id">
-	<div class="bidContainer" data-ng-class="{'enable-drag': board.enableBidContainerDrag}">
-		<div class="bidHeader">Bid your tricks <span class="glyphicon glyphicon-move drag-icon pull-right" data-ng-click="board.enableBidContainerDrag = !board.enableBidContainerDrag" ></span></div>
+<div class="dialogOverlay bidContainerOverlay no-select" ng-show="!board.round.inProgress && board.currentPlayer === board.players[0].id">
+	<div class="dialogContainer bidContainer" data-ng-class="{'enable-drag': board.enableBidContainerDrag}">
+		<div class="dialogHeader bidHeader">Bid your tricks <span class="glyphicon glyphicon-move drag-icon pull-right" data-ng-click="board.enableBidContainerDrag = !board.enableBidContainerDrag" ></span></div>
 		<span class="badge bids" data-ng-init="board._bid = -1"
 			data-ng-click="board.selectBid(i)"
 			data-ng-class="{'bid-not-valid': i > board.round.totalTricks || i === board.invalidBid, 'bid-selected': board._bid === i}"
@@ -204,5 +205,11 @@
 				<span  ng-class="board.round.trumpSuit" class="suitSymbolBig" data-ng-bind-html="board.cardSymbol[board.round.trumpSuit]"></span>&nbsp;&nbsp;BID
 			</div>
 		</div>
+	</div>
+</div>
+<div class="dialogOverlay no-select" ng-show="board.disconnected">
+	<div class="dialogContainer">
+		<header class="dialogHeader">You are disconnected. Please refresh</header>
+		<footer class="dialogFooter"></footer>
 	</div>
 </div>

@@ -121,20 +121,13 @@ body{
 	
 }
 
-#board-screen .bidContainer .bidHeader{
-	padding: 5px 10px 5px 10px;
-	background-color: #00008b; 
-	color: #fff;
-	font-weight: bold;
-}
-
 #board-screen .col-xs-4 .bidContainer {
 	position: absolute;
 	top: 92px;
 	margin: auto;
 }
 
-.bidContainerOverlay{
+.dialogOverlay{
 	position: fixed;
 	top: 0px;
 	left: 0px;
@@ -142,22 +135,40 @@ body{
 	height: 100%;
 	background-color: rgba(0,0,0,0.4);
 }
+
+.bidContainerOverlay{
+}
  
-.bidContainerOverlay .bidContainer {
+.dialogOverlay .dialogContainer{
+	border-radius: 5px;
 	position: relative;
 	top: 130px;
 	width: 50%;
 	margin: auto;
-	background-color: #b7d7ea;
-    box-shadow: 0px 0px 40px #02a8da;
+	padding: 2px;
+	box-shadow: 0px 0px 40px #d03d5f;
 	max-width: 380px;
+	background-color: #50b7e8;
+}
+
+.dialogOverlay .dialogContainer .dialogHeader,
+.dialogOverlay .dialogContainer .dialogFooter{
+	border-radius: 2px;
+	padding: 4px;
+}
+
+.bidContainerOverlay .bidContainer {
+	background-color: #b7d7ea;
 }
 
 .bidContainerOverlay .bidContainer .bidHeader{
-	padding: 5px 10px 5px 10px;
 	background-color: #00008b; 
 	color: #fff;
 	font-weight: bold;
+}
+
+.dialogOverlay .dialogContainer .dialogFooter{
+	margin: 5px;
 }
 
 .bidContainerOverlay .bidContainer .drag-icon{
@@ -189,7 +200,6 @@ body{
 
 .bidContainerOverlay .bidContainer .bidButtonContainer{
 	padding: 5px 5px 5px 5px;
-	text-align: right;
 	text-align: center;
 }
 
@@ -227,6 +237,11 @@ body{
 
 #board-screen div.player-card.current-turn{
    border: 3px Solid #ffa604;
+   -moz-animation: blink-border 0.2s linear alternate infinite;
+    -webkit-animation: blink-border 0.2s linear alternate infinite; /* Chrome, Safari, Opera */
+    -ms-animation: blink-border 0.2s linear alternate infinite;
+    animation: blink-border 0.2s linear alternate infinite;
+   
 }
 
 #board-screen div.player-card .player-details{
@@ -541,6 +556,7 @@ body{
 }
 
 #board-screen div.player-card .player-card-footer {
+	background-color: #f0f7b6;
 	text-align: center;
 	font-weight: bold;
 }
@@ -578,16 +594,49 @@ body{
     }
 }
 
+@keyframes blink-border {
+    from {
+           border: 3px Solid #8e1919;
+    }
+    to {
+           border: 3px Solid #ffd600;
+    }
+}
+@-webkit-keyframes blink-border {
+    from {
+           border: 3px Solid #8e1919;
+    }
+    to {
+           border: 3px Solid #ffd600;
+    }
+}
+@-ms-keyframes blink-border {
+    from {
+           border: 3px Solid #8e1919;
+    }
+    to {
+           border: 3px Solid #ffd600;
+    }
+}
+@-moz-keyframes blink-border {
+    from {
+           border: 3px Solid #8e1919;
+    }
+    to {
+           border: 3px Solid #ffd600;
+    }
+}
+
 #board-screen .winner div.player-card{
 	border: 1px Solid #ffd600;
 }
 
 #board-screen .winner div.player-card .player-card-footer {
 	background-color: #ffd600;
-	-moz-animation:blink 1s 5 linear;
-    -webkit-animation: blink 1s 5; /* Chrome, Safari, Opera */
-    -ms-animation: blink 1s 5 linear;
-    animation: blink 1s 5 linear;
+	-moz-animation:blink 0.3s linear alternate 5;
+    -webkit-animation: blink 0.3s linear alternate 5; /* Chrome, Safari, Opera */
+    -ms-animation: blink 0.3s linear alternate 5;
+    animation: blink 0.3s linear alternate 5;
 }
 
 #board-screen div.player-card .player-card-footer .apply-margin-10{
@@ -648,6 +697,22 @@ body{
     left: 7px;
 }
 
+
+#board-screen div.trumpCardContainer.overlay .playing-card {
+	cursor: default;
+}
+
+div.loggedin-player-card .play-card-button-container {
+	text-align: center;
+	position: relative;
+}
+
+div.loggedin-player-card .play-card-button-container .play-card-button{
+	background-color: #ffe203;
+    position: absolute;
+    top: -32px;
+}
+
 @media (max-width: 684px) {
 	.hide-trump{
    		display: none !important;
@@ -676,7 +741,51 @@ body{
    .less-padding{
    		padding: 5px 10px 5px 10px !important;
    }
+   
+   #board-screen div.player-card.loggedin-player-card .playing-card{
+   		font-size: 10px;
+   }
+   
+   #board-screen div.player-card.loggedin-player-card .playing-card span.suitSymbolSmall{
+   		font-size: 8px;
+		top: 14px;
+    	
+	}
+   #board-screen div.player-card.loggedin-player-card .playing-card span.suitSymbolBig{
+		font-size: 18px;
+		top: 17px;
+    	left: 7px;
+	}
+	
+	#board-screen .current-trick-card-container .playing-card span.suitSymbolSmall{
+		font-size: 7px;
+		top: 15px;
+		left: 3px; 
+	}
+	
+	#board-screen .current-trick-card-container .playing-card span.suitSymbolBig{
+		font-size: 5px;
+		left: 20px; 
+		position: absolute;
+	}
+	#board-screen .current-trick-card-container.col-xs-1 .playing-card span.suitSymbolBig,
+	#board-screen .current-trick-card-container.col-xs-2 .playing-card span.suitSymbolBig,
+	#board-screen .current-trick-card-container.col-xs-3 .playing-card span.suitSymbolBig,
+	#board-screen .current-trick-card-container.col-xs-4 .playing-card span.suitSymbolBig,
+	#board-screen .current-trick-card-container.col-xs-10 .playing-card span.suitSymbolBig{
+		font-size: 14px;
+		left: 10px;
+	}
+	
+	#board-screen div.trumpCardContainer.overlay .playing-card span.suitSymbolBig{
+		font-size: 4em;
+		text-shadow: 0px 0px 12px #ffe203;
+		top: 4px;
+		
+	}
 }
+
+
 /* -------------- card vertical view -----------*/
 /*
 @media screen and (max-width: 500px) {

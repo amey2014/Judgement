@@ -1,7 +1,7 @@
 define(['../module'], function(module){
 	
 	return module
-		.factory('GameManager', ['$http', '$location', function($http, $location) {
+		.factory('GameManager', ['$http', '$location', 'UserManager', function($http, $location, UserManager) {
 			console.log('GameManager Service initialized...');
 			
 			var socket = null;
@@ -12,7 +12,7 @@ define(['../module'], function(module){
 				roomName: '',
 				currentRoundCards: [],
 				MESSAGE_KEYS: {
-					'PLAYER_JOINED': 1,
+					'PLAYER_ENTERED': 1,
 					'PLAYER_LEFT': 2,
 					'ROOM_AVAILABLE': 3,
 					'ROOM_CLOSED': 4,
@@ -25,12 +25,15 @@ define(['../module'], function(module){
 					'ROUND_COMPLETED': 11,
 					'TRICK_COMPLETED': 12,
 					'DISCONNECTED': 13,
-					'GAME_COMPLETED': 14
+					'GAME_COMPLETED': 14,
+					'PLAYER_DISCONNECTED': 15
 				},
 
-				initialize: initialize,
-				goToRoom: goToRoom,
-				leaveRoom: leaveRoom,
+				initialize: initializeClientSocket,
+				joinRoom: joinRoom,
+				createRoom: createRoom,
+				enterGame: enterGame,
+				exitGame: exitGame,
 				ping: ping,
 				getAllPlayers: getAllPlayers,
 				getAllRooms: getAllRooms,
@@ -44,19 +47,21 @@ define(['../module'], function(module){
 			
 			return service;
 			
-			function initialize(callback){
+			function initializeClientSocket(callback){
 				notificationHandler = callback;
 				if(socket === null){
 					
-					socket = io('/judgement-group');
+					socket = io('/games-for-entertainment');
 					
 					console.log(socket);
 					
-					socket.on('player-joined', playerJoinedCallback);
+					socket.on('player-entered', playerEnteredHandler);
 					
-					socket.on('room-available', roomAvailableCallback);
+					socket.on('room-created', roomCreatedHandler);
 					
-					socket.on('player-left', playerLeftCallback);
+					socket.on('player-left', playerLeftHandler);
+					
+					socket.on('player-disconnected', playerDisconnectedHandler);
 					
 					socket.on('game-can-start', startGame);
 					
@@ -72,46 +77,16 @@ define(['../module'], function(module){
 					
 					socket.on('disconnect', disconnected);
 					
-					socket.on('game-completed', gameCompleted);
-					
+					socket.on('game-completed', gameCompleted);					
 				}
 				
 			}
-			
-			function gameCompleted(response){
-				
-				notificationHandler(service.MESSAGE_KEYS.GAME_COMPLETED, response);
-			}
-			
+
 			function showPoints(callback){
 				
 				if(socket !== null){
 					socket.emit('ping-room', null, callback );
 				}
-			}
-			
-			function trickCompleted(response){
-				notificationHandler(service.MESSAGE_KEYS.TRICK_COMPLETED, response);
-			}
-			
-			function nextPlayer(response){
-				notificationHandler(service.MESSAGE_KEYS.NEXT_PLAYER, response);
-			}
-
-			function setBid(id, bid, callback){
-				if(socket !== null){
-					socket.emit('set-bid', { id: id, bid: bid }, callback);
-				}
-			}
-			
-			function playCard(currentTrick, id, card, callback){
-				if(socket !== null){
-					socket.emit('play-card', { id: id, currentTrick: currentTrick, card: card }, callback);
-				}
-			}
-			
-			function startBidding(response){
-				notificationHandler(service.MESSAGE_KEYS.START_BIDDING, response);
 			}
 			
 			function startGame(data){
@@ -128,20 +103,58 @@ define(['../module'], function(module){
 				notificationHandler(service.MESSAGE_KEYS.GAME_STARTED, data);
 			}
 			
-			function roundCompleted(data){
-				notificationHandler(service.MESSAGE_KEYS.ROUND_COMPLETED, data);
+			function startBidding(response){
+				notificationHandler(service.MESSAGE_KEYS.START_BIDDING, response);
 			}
 			
-			function getAllRooms(username){
+			function setBid(id, bid, callback){
 				if(socket !== null){
-					socket.emit('get-all-rooms', { playerName: username });
+					socket.emit('set-bid', { id: id, bid: bid }, callback);
+				}
+			}
+
+			function playCard(currentTrick, id, card, callback){
+				if(socket !== null){
+					socket.emit('play-card', { id: id, currentTrick: currentTrick, card: card }, callback);
 				}
 			}
 			
-			function leaveRoom(username, callback){
+			function nextPlayer(response){
+				//if(error){
+				//	console.log(error);
+				//}else{
+					arrangePlayers(UserManager.user.username, response);
+					notificationHandler(service.MESSAGE_KEYS.NEXT_PLAYER, response);
+				//}
+				
+			}
+
+			function trickCompleted(response){
+				arrangePlayers(UserManager.user.username, response);
+				notificationHandler(service.MESSAGE_KEYS.TRICK_COMPLETED, response);
+			}
+			
+			function roundCompleted(response){
+				arrangePlayers(UserManager.user.username, response);
+				notificationHandler(service.MESSAGE_KEYS.ROUND_COMPLETED, response);
+			}
+
+			function gameCompleted(response){
+				arrangePlayers(UserManager.user.username, response);
+				notificationHandler(service.MESSAGE_KEYS.GAME_COMPLETED, response);
+			}
+			
+			
+			
+			function getAllRooms(callback){
 				if(socket !== null){
-					socket.emit('leave-room', { playerName: username, room: service.roomName }, callback);
-					// socket = null;
+					socket.emit('get-rooms', callback);
+				}
+			}
+			
+			function exitGame(username, callback){
+				if(socket !== null){
+					socket.emit('exit-game', { playerName: username, roomName: service.roomName }, callback);
 				}
 			}
 			
@@ -152,22 +165,72 @@ define(['../module'], function(module){
 				}
 			}
 			
-			function getAllPlayers(username, getAllPlayersCallback){
+			function getAllPlayers(username, callback){
 				if(socket !== null){
-					socket.emit('get-all-players', { playerName: username }, getAllPlayersCallback);
+					socket.emit('get-all-details', { roomName: service.roomName, playerName: username }, function(response){
+						arrangePlayers(username, response);
+						callback(response);
+					});
 				}
 			}
 			
-			
-			function goToRoom(isAdmin, username, roomName, totalPlayers){
-				if(isAdmin){
-					socket.emit('create-room', { playerName: username, room: roomName, totalPlayers:  totalPlayers}, roomCreatedCallback);
+			function playerEnteredHandler(error, response){
+				if(error){
+					console.log(error);
+				}else{
+					arrangePlayers(UserManager.user.username, response);
+					notificationHandler(service.MESSAGE_KEYS.PLAYER_ENTERED, response);
 				}
-				else{
-					socket.emit('join-room', { playerName: username, room: roomName }, joinRoomCallback);
+				
+			}
+			
+			// arrange players in an order where current player is at index 0
+			function arrangePlayers(username, response){
+				if(response.players){
+					var loggedInPlayers = response.players.filter(function(player){
+			    		return player && player.name === username;
+			    	});
 					
+					var index = response.players.indexOf(loggedInPlayers[0]);
+					
+					if(index > 0){
+						var slicedArray = response.players.splice(0, index);
+						response.players = response.players.concat(slicedArray);
+					}
+				}
+			}
+			
+			function joinRoom(isAdmin, username, roomName, totalPlayers, callback){
+				
+				socket.emit('join-room', { playerName: username, roomName: roomName, isAdmin: isAdmin }, callback);
+				service.roomName = roomName;
+			}
+			
+			function createRoom(isAdmin, username, roomName, totalPlayers, callback){
+				if(isAdmin){
+					createGame(username, roomName, totalPlayers, callback);
 				}
 				service.roomName = roomName;
+			}
+			
+			function enterGame( username, callback){
+				//if(isAdmin){
+				//	createGame(username, roomName, totalPlayers, callback);
+				//}
+				//else{
+					socket.emit('enter-game', { playerName: username, roomName: service.roomName }, function(error, response){
+						arrangePlayers(username, response);
+						callback(response);
+					});
+					
+				//}
+				// service.roomName = roomName;
+			}
+			
+			function createGame(playerName, roomName, totalPlayers, callback){
+				if(socket !== null){
+					socket.emit('create-game', { playerName: playerName, roomName: roomName, totalPlayers: totalPlayers, isAdmin: true }, callback);
+				}
 			}
 			
 			function disconnected(response){
@@ -180,16 +243,24 @@ define(['../module'], function(module){
 				notificationHandler(service.MESSAGE_KEYS.PLAYER_JOINED, response);
 			}
 			
-			function playerJoinedCallback(data){
-				notificationHandler(service.MESSAGE_KEYS.PLAYER_JOINED, data);
+			function playerDisconnectedHandler(response){
+				notificationHandler(service.MESSAGE_KEYS.PLAYER_DISCONNECTED, response);
 			}
 			
-			function playerLeftCallback(data){
-				notificationHandler(service.MESSAGE_KEYS.PLAYER_LEFT, data);
+			
+			function playerLeftHandler(response){
+				arrangePlayers(UserManager.user.username, response);
+				notificationHandler(service.MESSAGE_KEYS.PLAYER_LEFT, response);
 			}
 			
-			function roomCreatedCallback(response){
-				notificationHandler(service.MESSAGE_KEYS.ROOM_CREATED, response);
+			function roomCreatedHandler(error, response){
+				if(error){
+					console.log(error);
+				}else{
+					// arrangePlayers(UserManager.user.username, response);
+					notificationHandler(service.MESSAGE_KEYS.ROOM_CREATED, response);
+				}
+				
 			}
 			
 			function roomAvailableCallback(response){

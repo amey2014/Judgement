@@ -27,8 +27,13 @@ body{
 }
 
 /* ---- Home ----- */
-.ju-home-screen .header-row{
-	background-color: #f0f0f0;
+
+.ju-home-screen {
+	padding: 0px 5px;
+}
+
+#ju-home-screen .body-row {
+	width: 50%;
 }
 
 /* -------------- board view -----------*/
@@ -63,7 +68,7 @@ body{
 #board-screen{
 	background-image: url('/static/images/5629396-hd-background-design-images.jpg')
 }
-#board-screen .header-row{
+.header-row{
 	padding: 10px 10px 10px 10px;
 	background-color: #00008b;
 }
@@ -77,7 +82,7 @@ body{
 	height: auto;
 }
 
-#board-screen .header-row{
+.header-row{
 	color: #ffe203;
 }
 
@@ -722,8 +727,12 @@ div.loggedin-player-card .play-card-button-container .play-card-button{
    		display: none;
    }
    
-   .small-header-font-size{
-   		font-size: 0.6em;
+   #ju-home-screen .body-row {
+   		width: 98%;
+   }
+   
+   #board-screen .header-row div.divGameName{
+   		font-size: 1.4em;
    }
    
    .small-font-size{

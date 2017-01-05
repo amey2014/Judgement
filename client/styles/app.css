@@ -28,12 +28,12 @@ body{
 
 /* ---- Home ----- */
 
-.ju-home-screen {
+.ju-room-screen {
 	padding: 0px 5px;
 }
 
-#ju-home-screen .body-row {
-	width: 50%;
+#ju-room-screen .body-row .row {
+	margin: 5px 0px;
 }
 
 /* -------------- board view -----------*/
@@ -727,7 +727,7 @@ div.loggedin-player-card .play-card-button-container .play-card-button{
    		display: none;
    }
    
-   #ju-home-screen .body-row {
+   #ju-room-screen .body-row {
    		width: 98%;
    }
    
@@ -792,6 +792,23 @@ div.loggedin-player-card .play-card-button-container .play-card-button{
 		top: 4px;
 		
 	}
+}
+
+@media (max-width: 480px) {
+	#board-screen div.player-card .player-card-footer .player-name {
+		display: block;
+	}
+}
+
+@media (max-width: 320px) {
+	#ju-room-screen .body-row .row {
+		margin: 0px 0px;
+	}
+	
+	#ju-room-screen .body-row .row div[class^=col-] {
+   		width: 100%;
+   		margin: 5px 0px 0px 0px;
+   }
 }
 
 

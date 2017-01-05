@@ -136,6 +136,10 @@ app.get('/', function (req, res) {
   
 });
 
+app.get('/test', function (req, res) {
+	res.sendFile( __dirname + "/" + "responsiveTest.html" );
+});
+
 app.get('/userDetails', function(req, res){
 	if(req.user && req.user.username && req.user.username !== ''){
 		res.send( { username: req.user.username, isAdmin: req.user.isAdmin } );

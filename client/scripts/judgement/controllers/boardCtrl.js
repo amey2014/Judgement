@@ -12,6 +12,7 @@ define(['../module'], function(module){
 		$scope.board.players = [];
 		$scope.board.currentPlayerCards = [];
 		$scope.board.round = null;
+		$scope.board.rounds = GameManager.rounds;
 		$scope.board.currentPlayer = null;
 		$scope.board.message = null;
 		$scope.board.cardSelected = cardSelected;
@@ -376,6 +377,7 @@ define(['../module'], function(module){
 		    
 		    $scope.$apply(function(){
 		    	$scope.board.round = response.round;
+		    	$scope.board.rounds = response.rounds;
 		    	$scope.board.currentPlayerCards = response.cards;
 		    });
 		    
@@ -443,7 +445,7 @@ define(['../module'], function(module){
 	    		if(response.round){
 	    			$scope.board.round = response.round;
 	    		}
-	    		
+	    		$scope.board.rounds = response.rounds;
 	    		updateCards(response.playerId, response.cards);
 		    });
 		    

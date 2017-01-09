@@ -10,6 +10,7 @@ define(['../module'], function(module){
 			var service = {
 				players: [],
 				roomName: '',
+				rounds: null,
 				currentRoundCards: [],
 				MESSAGE_KEYS: {
 					'PLAYER_ENTERED': 1,
@@ -85,7 +86,7 @@ define(['../module'], function(module){
 			function showPoints(callback){
 				
 				if(socket !== null){
-					socket.emit('ping-room', null, callback );
+					socket.emit('get-score', null, callback );
 				}
 			}
 			

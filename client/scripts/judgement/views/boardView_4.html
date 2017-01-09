@@ -165,19 +165,19 @@
 		data-ng-click="board.hidePoints()">
 		<div class="points-table">
 			<div class="row header-row">
-				<div class="col-xs-2 col-sm-2">#</div>
+				<div class="col-xs-2 col-sm-2">Round</div>
 				<div class="col-xs-3 col-sm-3">{{ board.pointsTable.players[0].name }}</div>
 				<div class="col-xs-2 col-sm-2">{{ board.pointsTable.players[1].name }}</div>
 				<div class="col-xs-3 col-sm-3">{{ board.pointsTable.players[2].name }}</div>
 				<div class="col-xs-2 col-sm-2">{{ board.pointsTable.players[3].name }}</div>
 			</div>
 			<div class="row"
-				data-ng-repeat="row in board.pointsTable.roundPoints">
-				<div class="col-xs-2 col-sm-2">{{ row.round }}</div>
-				<div class="col-xs-3 col-sm-3">{{ row.points[0].points }}</div>
-				<div class="col-xs-2 col-sm-2">{{ row.points[1].points }}</div>
-				<div class="col-xs-3 col-sm-3">{{ row.points[2].points }}</div>
-				<div class="col-xs-2 col-sm-2">{{ row.points[3].points }}</div>
+				data-ng-repeat="round in board.rounds">
+				<div class="col-xs-2 col-sm-2">{{ round.totalTricks }}</div>
+				<div class="col-xs-3 col-sm-3">{{ board.pointsTable.roundPoints[round.totalTricks].points[0].points }}</div>
+				<div class="col-xs-2 col-sm-2">{{ board.pointsTable.roundPoints[round.totalTricks].points[1].points }}</div>
+				<div class="col-xs-3 col-sm-3">{{ board.pointsTable.roundPoints[round.totalTricks].points[2].points }}</div>
+				<div class="col-xs-2 col-sm-2">{{ board.pointsTable.roundPoints[round.totalTricks].points[3].points }}</div>
 			</div>
 			<div class="row total-row">
 				<div class="col-xs-2 col-sm-2">Total</div>

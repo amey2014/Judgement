@@ -541,18 +541,21 @@ body{
 }
 
 #board-screen .points-table-container .points-table .row{
-	background-color: #e6e6fa;
+	padding: 5px 0px 0px 0px;
+	background-color: #faf9e6;
 	border-bottom: 1px Solid #dcdcdc;
+	color: #00008b;
 }
 
 #board-screen .points-table-container .points-table .row.header-row,
 #board-screen .points-table-container .points-table .row.header-row div[class^=col-]{
 	background-color: #ff9900;
-	color: #00008b;
 }
 
 #board-screen .points-table-container .points-table .row.total-row{ 
-	font-weight: bold
+	font-weight: bold;
+	border-bottom: 0px Solid #dcdcdc;
+	color: #00008b;
 }
 
 #board-screen .points-table-container .points-table .row div[class^=col-]{

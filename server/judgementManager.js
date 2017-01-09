@@ -15,6 +15,65 @@ exports.createNewRoom = function(data){
 	}
 }
 
+exports.enterRoom = function(data, playerId, isAdmin){
+	console.log("SocketManager.enterRoom(): ", data.roomName);
+	var game = this.getGameByRoomName(data.roomName);
+	game.adminId = isAdmin ? playerId : game.adminId;
+	
+	var result = updatePlayerIfExists.call(this, playerId, data);
+	
+	var response = {};
+	if(result.playerUpdated) {
+		console.log("SocketManager.enterRoom(): Player already exists, Updating...:", data.playerName);
+		response = { playerUpdated: true, playerId: playerId, newPlayer: result.newPlayer, players: game.getPlayers(), oldPlayerId: result.oldPlayerId };
+	}else{
+		console.log("SocketManager.enterRoom(): Player not found, Creating...:", data.playerName);
+		var player = game.addPlayer(playerId, data.playerName); 
+		response = { playerUpdated: false, playerId: playerId, newPlayer: player, players: game.getPlayers() };
+	}
+
+	return response;
+}
+
+function updatePlayerIfExists(playerId, data){
+	console.log("SocketManager.updatePlayerIfExists(): Check if player already exists in the list: ", data.playerName);
+	var game = this.getGameByRoomName(data.roomName);
+	var hasNullEntry = false;
+	var playerUpdated = false;
+	var response = {};
+	var oldId = null;
+	
+	var existingPlayerEntries = game.getPlayers().filter(function(p){
+		if(p === null) {
+			hasEmptySpace = true;
+			return false;
+		}
+		return p.name === data.playerName;
+	});
+	
+	if(existingPlayerEntries.length > 0){
+		oldId = existingPlayerEntries[0].id;
+		playerUpdated = true;
+		
+		// if player has cards then map those cards to new id and delete the old map
+		if(oldId !== playerId ){
+			if(game.playerCardsMap[oldId]){
+				game.playerCardsMap[playerId] = game.playerCardsMap[oldId];
+				delete game.playerCardsMap[oldId];
+			}
+
+			existingPlayerEntries[0].id = playerId;
+		}
+
+		response.newPlayer = existingPlayerEntries[0];
+	}
+
+	response.hasNullEntry = hasNullEntry;
+	response.playerUpdated = playerUpdated;
+	response.oldPlayerId = oldId;
+	return response;
+}
+
 exports.removePlayer = function(data, callback){
 	console.log("Get game:", data.roomName);
 	var game = this.getGameByRoomName(data.roomName);
@@ -360,7 +419,7 @@ Game.prototype.assignPoints = function(){
 		currentRoundPoints.push({playerId: player.id, playerName: player.name, points: points});
 	});
 	
-	this.pointsTable.push({ round: round, points: currentRoundPoints});
+	this.pointsTable[round] = { trump: trump, points: currentRoundPoints};
 }
 
 Game.prototype.startNewRound = function(){

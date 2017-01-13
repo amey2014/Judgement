@@ -225,6 +225,11 @@ body{
 #board-screen .header-row div.divControlButtons{
 	text-align: right;
 }
+
+#board-screen .header-row div.divControlButtons{
+	text-align: right;
+}
+
 #board-screen .logged-in-player-row div[class^=col-]{
 	padding-left: 0px;
 	padding-right: 0px;
@@ -721,6 +726,18 @@ div.loggedin-player-card .play-card-button-container .play-card-button{
     top: -32px;
 }
 
+.invite-url-container {
+	position: absolute; 
+	right: 0px; 
+	padding: 5px; 
+	top: 0px; 
+	background-color: #00008b;
+}
+
+.invite-url-container .close-icon {
+	margin-top: 2px;
+}
+
 @media (max-width: 684px) {
 	.hide-trump{
    		display: none !important;
@@ -734,15 +751,15 @@ div.loggedin-player-card .play-card-button-container .play-card-button{
    		width: 98%;
    }
    
-   #board-screen .header-row div.divGameName{
+   #board-screen .header-row div.divGameName {
    		font-size: 1.4em;
    }
    
-   .small-font-size{
+   .small-font-size {
    		font-size: 12px;
    }
    
-   .small-image-height{
+   .small-image-height {
    		height: 62px !important;
    }
    

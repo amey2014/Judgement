@@ -3,7 +3,8 @@ define(['../module'], function(module){
 	return module
 	.controller('RoomCtrl', ['$scope', '$location', 'my.i18n', 'UserManager', 'GameManager',
       function($scope, $location, i18n, UserManager, GameManager) {
-		console.log('JudgementHomeCtrl initialized...');
+		console.log('RoomCtrl initialized...');
+
 		$scope.i18n = i18n;
 		$scope.home = {};
 
@@ -33,7 +34,14 @@ define(['../module'], function(module){
 			$scope.home.username = data.username;
 			
 			GameManager.initialize(notificationHandler);
-			GameManager.getAllRooms(getAllRoomsCallback);
+			if(window.room && window.room.name !== ''){
+				$scope.home.selectedRoom = window.room.name;
+				$scope.home.totalPlayers = window.room.total;
+				joinRoom(data.isAdmin, data.username, window.room.name);
+				window.room = null;
+			}else{
+				GameManager.getAllRooms(getAllRoomsCallback);
+			}	
 		}
 		
 		function getAllRoomsCallback(error, response){
@@ -122,6 +130,7 @@ define(['../module'], function(module){
 		function joinRoomCallback(error, response){
 			if(error){
 				console.log(error);
+				GameManager.getAllRooms(getAllRoomsCallback);
 				return;
 			}
 			

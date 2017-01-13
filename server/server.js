@@ -14,6 +14,7 @@ var express = require('express'),
 	funct = require('./functions.js'),
 	socketModule = require('./socketModule.js'),
 	socketManager = require('./socketManager.js');
+	storage = require('node-persist');
 
 //===============EXPRESS================
 //Configure Express
@@ -125,15 +126,87 @@ var map = {
 	
 }
 
+storage.init({
+    dir:'path/to/persist',
+    stringify: JSON.stringify,
+    parse: JSON.parse,
+    encoding: 'utf8',
+    logging: false,  // can also be custom logging function 
+    continuous: true,
+    interval: false, // milliseconds 
+    ttl: false // ttl* [NEW], can be true for 24h default or a number in MILLISECONDS 
+}).then(function(){
+	console.log('Successfully created the storage');
+	
+
+	/*var interval = setInterval(function(){
+		console.log('Interval'); 
+		storage.getItem('name', function (err, value) {
+			console.log('name', err, value); 
+			if(!value){
+				clearInterval(interval);
+			}
+		});
+	}, 1000);*/
+}, function(error){
+	console.log('Error while creating the storage', error);
+}); 
+
 socketManager.initialize();
+
+
 
 app.get('/', function (req, res) {
 	if(req.user && req.user.username && req.user.username !== ''){
-		res.sendFile( __dirname + "/" + "index.html", { user: req.user } );
+		//res.sendFile( __dirname + "/" + "index.html", { user: req.user, room: req.session.room } );
+		var value = undefined;
+		var error = undefined;
+		if(req.session.invitation){
+			value = storage.getItemSync(req.session.invitation.id);
+			if(!value){
+				error = "Sorry your invitation is either expired or invalid.";
+			}
+		}
+
+		res.render('index', { layout: '', user: req.user, room: value, error: error } );
+		req.session.invitation = null;
+		// res.render('index', { layout: '',  user: req.user, room: req.session.room  });
+		// req.session.room = null;
 	}else{
 		res.render('signin');
 	}
   
+});
+
+app.get('/invitation/:inviteId', function (req, res) {
+	if(req.user && req.user.username && req.user.username !== ''){
+		var value = storage.getItemSync(req.params.inviteId);		
+		res.render('index', { layout: '', user: req.user, room: value });
+	}else{
+		req.session.invitation = {
+			id: req.params.inviteId,
+		}
+		res.render('signin');
+	}
+});
+
+
+
+
+app.post('/invitation', function (req, res) {
+	if(req.user && req.user.username && req.user.username !== ''){
+		var invitation = {
+			name: req.body.room,
+			total: req.body.total
+		}
+
+		var date = Date.now();
+		storage.setItemSync(''+date, invitation, { ttl: 300000 });
+
+		res.send({ id: date });
+	}else{
+		res.render('signin');
+	}
 });
 
 app.get('/test', function (req, res) {

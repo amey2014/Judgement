@@ -96,8 +96,11 @@ function joinRoom(data, callback){
 	console.log("SocketManager.joinRoom(): Joining a roon");
 	var socket = this;
 	try{
-		updateSocketDetails(socket, data);
-		callback(null, {});
+		var game = gameManager.getGameByRoomName(data.roomName);
+		if(game){
+			updateSocketDetails(socket, data);
+			callback(null, {});
+		}
 	}catch(error){
 		console.log(error);
 		callback(error, null);
@@ -119,28 +122,32 @@ function updateSocketDetails(socket, data){
 // callback(error, response);
 function enterGame(data, callback){
 	console.log("SocketManager.enterGame(): Joinign the game:", data.playerName);
-	
-	// add player name to socket instance
-	var socket = this;
-	var game = gameManager.getGameByRoomName(data.roomName);
-	
-	var result = gameManager.enterRoom(data, socket.id, socket.isAdmin);
-	
-	if(result.playerUpdated){
-		notifyIfBiddingIsInProgress(socket, game, result.newPlayer);
-		notifyTurnToThePlayer(socket, game, result.newPlayer, result.oldPlayerId);
-	}
+	try{
+		// add player name to socket instance
+		var socket = this;
+		var game = gameManager.getGameByRoomName(data.roomName);
 		
-	notifyAdminToStartTheGameIfWeCan(game);
-	
-	console.log("SocketManager.enterGame(): Emitting 'player-entered' event to the namespace");
-	nsp.emit('player-entered', null, result);
-	
-	console.log("SocketManager.enterGame(): Invoking callback and passing cards and round details");
-	result.cards = (game.playerCardsMap[result.newPlayer.id]) ? game.playerCardsMap[result.newPlayer.id] : null;
-	result.round = game.currentRound;
-	result.rounds = game.rounds;
-	callback(null, result);
+		var result = gameManager.enterRoom(data, socket.id, socket.isAdmin);
+		
+		if(result.playerUpdated){
+			notifyIfBiddingIsInProgress(socket, game, result.newPlayer);
+			notifyTurnToThePlayer(socket, game, result.newPlayer, result.oldPlayerId);
+		}
+			
+		notifyAdminToStartTheGameIfWeCan(game);
+		
+		console.log("SocketManager.enterGame(): Emitting 'player-entered' event to the namespace");
+		nsp.emit('player-entered', null, result);
+		
+		console.log("SocketManager.enterGame(): Invoking callback and passing cards and round details");
+		result.cards = (game.playerCardsMap[result.newPlayer.id]) ? game.playerCardsMap[result.newPlayer.id] : null;
+		result.round = game.currentRound;
+		result.rounds = game.rounds;
+		callback(null, result);
+	}catch(error){
+		console.log(error);
+		callback(error, null);
+	}
 }
 
 function updatePlayerIfExists(data){

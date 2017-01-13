@@ -119,6 +119,11 @@ var RoomCollection = {
 	},
 	// get room by room name
 	getGameByRoomName: function(roomName){
+		var room = this._rooms[roomName];
+		if(!room){
+			throw { message: 'invalid room name: ' + roomName };
+		}
+			
 		return this._rooms[roomName].game;
 	},
 	// Returns false, if room object is present for a give room name else returns true. 

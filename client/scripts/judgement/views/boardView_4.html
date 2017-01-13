@@ -18,22 +18,28 @@
 			<span class="gameName small-header-font-size">JUDGEMENT</span>
 		</div>
 		<div class="col-xs-4 col-sm-4 divControlButtons">
-			<button data-ng-show="board.GameManager.canStartGame"
+			<button data-ng-show="board.isAdmin" title="Invite"
+				data-ng-click="board.invite()" type="button"
+				class="btn btn-default btn-sm no-padding">
+				<span class="glyphicon glyphicon-plus"></span>
+			</button>
+			<button data-ng-show="board.GameManager.canStartGame" title="Start"
 				data-ng-click="board.startTheGame()" type="button"
-				class="btn btn-default dropdown-toggle no-padding" data-toggle="dropdown"
-				aria-haspopup="true" aria-expanded="false">
-				<span class="hide-labels">Play</span><span class="glyphicon glyphicon-play"></span>
+				class="btn btn-default  btn-sm no-padding">
+				<span class="glyphicon glyphicon-play"></span>
 			</button>
-			<button data-ng-click="board.leaveRoom()" type="button"
-				class="btn btn-default dropdown-toggle no-padding" data-toggle="dropdown"
-				aria-haspopup="true" aria-expanded="false">
-				<span class="hide-labels">Leave</span><span class="glyphicon glyphicon-remove-sign"></span>
+			<button data-ng-click="board.leaveRoom()" type="button" title="Leave"
+				class="btn btn-default btn-sm no-padding">
+				<span class="glyphicon glyphicon-remove"></span>
 			</button>
-			<button data-ng-click="board.showPoints()" type="button"
-				class="btn btn-default dropdown-toggle no-padding" data-toggle="dropdown"
-				aria-haspopup="true" aria-expanded="false">
-				<span class="hide-labels">Points</span><span class="glyphicon glyphicon-star"></span>
+			<button data-ng-click="board.showPoints()" type="button" title="Score"
+				class="btn btn-default btn-sm no-padding" >
+				<span class="glyphicon glyphicon-star"></span>
 			</button>
+			<div style="" class="invite-url-container" data-ng-show="board.showInviteUrl">
+				<input type="text" class="invite-url" data-ng-model="board.inviteURL" />
+				<span class="close-icon glyphicon glyphicon-remove" data-ng-click="board.showInviteUrl = false"></span>
+			</div>
 		</div>
 	</div>
 	<div class="row">

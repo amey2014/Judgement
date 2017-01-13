@@ -1,7 +1,7 @@
 define(['../module'], function(module){
 	
 	return module
-	.controller('BoardCtrl', ['$scope', '$location', '$timeout', 'my.i18n', 'UserManager', 'GameManager', function($scope, $location, $timeout, i18n, UserManager, GameManager) {
+	.controller('BoardCtrl', ['$scope', '$location', '$timeout', '$http', 'my.i18n', 'UserManager', 'GameManager', function($scope, $location, $timeout, $http, i18n, UserManager, GameManager) {
 		console.log('Board controller initialized...');
 		$scope.i18n = i18n;
 		$scope.board = {};
@@ -20,6 +20,7 @@ define(['../module'], function(module){
 		$scope.board.selectBid = selectBid;
 		$scope.board.showPoints = showPoints;
 		$scope.board.hidePoints =  hidePoints;
+		$scope.board.invite = invite;
 		$scope.board.showPointsTable = false;
 		$scope.board.startTheGame = startTheGame;
 		$scope.board.enableBidContainerDrag = false;
@@ -30,6 +31,7 @@ define(['../module'], function(module){
 				Heart: '&hearts;'
 			}
 		$scope.board.winners = [];
+		$scope.board.showInviteUrl = false;
 		
 		initialize();
 		
@@ -470,6 +472,14 @@ define(['../module'], function(module){
 		    	$scope.board.message = response.oldPlayer.name + " disconnected.";
 			    $scope.$apply();
 		    }
+		}
+		
+		function invite(){
+			$http.post('invitation', { room: $scope.board.GameManager.roomName, total: 4 }).success(function(data){
+				console.log('Invitation:', data);
+				$scope.board.showInviteUrl = true;
+				$scope.board.inviteURL = '/invitation/' + data.id
+			});
 		}
 		/*var newGame = new Game();
 		newGame.addPlayers();

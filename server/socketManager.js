@@ -4,7 +4,7 @@ exports.removePlayer = removePlayer;
 
 var namespace = '/games-for-entertainment';
 var nsp = io.of(namespace);
-
+//var nsp = io;
 var namespaces = {}; 
 
 function initializeSockets(){
@@ -44,7 +44,7 @@ function initializeSockets(){
 			if(socket.roomName){
 				var game = gameManager.getGameByRoomName(socket.roomName);
 		  		var player = game.getPlayerById(socket.id);
-		  		nsp.emit('player-disconnected', { id: socket.id, oldPlayerName: socket.playerName, oldPlayer: player, players: game.getPlayers() });
+		  		nsp.to(socket.roomName).emit('player-disconnected', { id: socket.id, oldPlayerName: socket.playerName, oldPlayer: player, players: game.getPlayers() });
 			}
   		});
 	});
@@ -134,10 +134,10 @@ function enterGame(data, callback){
 			notifyTurnToThePlayer(socket, game, result.newPlayer, result.oldPlayerId);
 		}
 			
-		notifyAdminToStartTheGameIfWeCan(game);
+		notifyAdminToStartTheGameIfWeCan(game, data.roomName);
 		
 		console.log("SocketManager.enterGame(): Emitting 'player-entered' event to the namespace");
-		nsp.emit('player-entered', null, result);
+		nsp.to(data.roomName).emit('player-entered', null, result);
 		
 		console.log("SocketManager.enterGame(): Invoking callback and passing cards and round details");
 		result.cards = (game.playerCardsMap[result.newPlayer.id]) ? game.playerCardsMap[result.newPlayer.id] : null;
@@ -190,10 +190,10 @@ function updatePlayerIfExists(data){
 	return response;
 }
 
-function notifyAdminToStartTheGameIfWeCan(game){
+function notifyAdminToStartTheGameIfWeCan(game, roomName){
 	console.log("SocketManager.notifyAdminToStartTheGameIfWeCan(): Begin");
 	if(game.canStart()){
-		var adminSocket = nsp.sockets[game.adminId];
+		var adminSocket = nsp.to(roomName).sockets[game.adminId];
 
 		if(adminSocket){
 			console.log("SocketManager.notifyAdminToStartTheGameIfWeCan(): Emitting 'game-can-start' event to the admin socket");
@@ -291,13 +291,13 @@ function startTheGame(){
 	
 	var round = game.currentRound;
 	
-	sendIndividualNotification('game-started', game, players);
+	sendIndividualNotification('game-started', game, players, this.roomName);
 	
 	console.log("SocketManager.startTheGame(): Start Bidding for Round:", round.totalTricks);
 	console.log("SocketManager.startTheGame(): Player to bid:", players[round.startPlayerIndex].name);
 	
 	console.log("SocketManager.notifyTurnToThePlayer(): Emitting 'start-bidding' event to the namespace.");
-	nsp.emit('start-bidding', { 
+	nsp.to(this.roomName).emit('start-bidding', { 
 		round: round, 
 		playerBids: null, 
 		player: players[round.startPlayerIndex] }
@@ -388,7 +388,7 @@ function setBid(data, callback){
 	}
 	
 	console.log("SocketManager.setBid(): Emitting 'start-bidding' event to the namespace");
-	nsp.emit('start-bidding', { 
+	nsp.to(socket.roomName).emit('start-bidding', { 
 			round: game.currentRound, 
 			playerBids: bids, 
 			player: players[nextPlayerIndex],
@@ -409,13 +409,13 @@ function playCard(data, callback){
 	var players = game.getPlayers();
 	
 	if(result.continueCurrentRound){
-		continueCurrentRound(game, result, data);
+		continueCurrentRound(game, result, data, socket.roomName);
 	}else{
-		roundCompleted(game, result, data);
+		roundCompleted(game, result, data, socket.roomName);
 	}
 }
 
-function continueCurrentRound(game, result, data){
+function continueCurrentRound(game, result, data, roomName){
 	console.log("SocketManager.continueCurrentRound(): Continue Current Round:", result.continueCurrentRound);
 	
 	var round = game.currentRound;
@@ -429,16 +429,16 @@ function continueCurrentRound(game, result, data){
 		var baseCard = round.playerCards[round.currentTrick][0];
 		
 		console.log("SocketManager.continueCurrentRound(): Emitting '", eventName, "' event to the namespace" );
-		nsp.emit(eventName, { 
+		nsp.to(roomName).emit(eventName, { 
 			player: nextPlayer,
 			previousPlayerCard: data,
 			baseCard: baseCard
 		});
 	}else{
-		trickCompleted(game, result, data);
+		trickCompleted(game, result, data, roomName);
 		setTimeout(function(){
 			console.log("SocketManager.continueCurrentRound(): Emitting '", eventName, "' event to the namespace" );
-			nsp.emit(eventName, { 
+			nsp.to(roomName).emit(eventName, { 
 				player: nextPlayer,
 				previousPlayerCard: null,
 				baseCard: null
@@ -447,7 +447,7 @@ function continueCurrentRound(game, result, data){
 	}
 }
 
-function roundCompleted(game, result, data){
+function roundCompleted(game, result, data, roomName){
 	console.log("SocketManager.roundCompleted(): Round completed:", game.currentRound);
 	var round = game.currentRound;
 	var players = game.getPlayers();
@@ -457,7 +457,7 @@ function roundCompleted(game, result, data){
 	game.assignPoints();
 	
 	console.log("SocketManager.roundCompleted(): Emitting 'round-completed' event to the namespace");
-	nsp.emit('round-completed', { 
+	nsp.to(roomName).emit('round-completed', { 
 			players: players,
 			previousPlayerCard: data,
 			previousTrickWinner: result.winner.id
@@ -480,12 +480,12 @@ function roundCompleted(game, result, data){
 				game.shuffle(53);
 				game.distributeCards();
 
-				sendIndividualNotification('game-started', game, players);
+				sendIndividualNotification('game-started', game, players, roomName);
 				
 				console.log("SocketManager.roundCompleted(): Start bidding for new round: ", round.totalTricks );
 				console.log("SocketManager.roundCompleted(): Player to bid:", players[round.startPlayerIndex].name);
 				console.log("SocketManager.roundCompleted(): Emitting 'start-bidding' event to the namespace");
-				nsp.emit('start-bidding', { 
+				nsp.to(roomName).emit('start-bidding', { 
 					round: round, 
 					playerBids: null, 
 					player: players[round.startPlayerIndex] }
@@ -495,13 +495,13 @@ function roundCompleted(game, result, data){
 		}else{
 			console.log("SocketManager.roundCompleted(): Game completed");
 			console.log("SocketManager.roundCompleted(): Emitting 'game-completed' event to the namespace" );
-			nsp.emit('game-completed', { players: game.getPlayers() });
+			nsp.to(roomName).emit('game-completed', { players: game.getPlayers() });
 		}
 		
 	}, 1000);	
 }
 
-function trickCompleted(game, result, data){
+function trickCompleted(game, result, data, roomName){
 	console.log("SocketManager.trickCompleted(): Begin" );
 	var round = game.currentRound;
 	var players = game.getPlayers();
@@ -509,7 +509,7 @@ function trickCompleted(game, result, data){
 	console.log("SocketManager.trickCompleted(): Trick completed - Winner: ", result.winner.name );
 	
 	console.log("SocketManager.trickCompleted(): Emitting 'trick-completed' event to the namespace" );
-	nsp.emit('trick-completed', { 
+	nsp.to(roomName).emit('trick-completed', { 
 		round: round,
 		players: players,
 		previousPlayerCard: data,
@@ -523,14 +523,14 @@ function getCardDetails(card){
 }
 
 
-function sendIndividualNotification(eventName, game, players){
+function sendIndividualNotification(eventName, game, players, roomName){
 	console.log("SocketManager.sendIndividualNotification(): Begin" );
 	var key = null;
 	var cards = null;
 
 	for(var i = 0; i < players.length; i++){
 		key = players[i].id;
-		socket = io.nsps[namespace].sockets[key]; // console.log(io.nsps[namespace].sockets[key]);
+		socket = nsp.to(roomName).sockets[key];
 		cards = game.playerCardsMap[key];
 
 		if(socket){
@@ -562,7 +562,7 @@ function exitGame(data, callback){
 	
 	socket.leave(data.roomName, function(){
 		console.log("SocketManager.exitGame(): Emitting 'player-left' event to the namespace");
-		nsp.emit('player-left', response);
+		nsp.to(data.roomName).emit('player-left', response);
 		callback(null, response);
 	});
 	
@@ -579,12 +579,12 @@ function exitGame(data, callback){
 	});*/
 }
 
-function removePlayer(name){
+function removePlayer(name, roomName){
 	console.log("SocketManager.removePlayer(): Begin");
 	var socket = null;
 	var socketId = null;
 	
-	var sockets = io.nsps[namespace].sockets;
+	var sockets = nsp.to(roomName).sockets;
 	for(var id in sockets){
 		if(sockets[id].playerName === name){
 			socket = sockets[id];
@@ -614,11 +614,7 @@ function removePlayer(name){
 	
 }
 
-function sendNotification(event, data){
-	nsp.emit(null, event, data);
-}
-
-
+/*
 function broadcastRooms(socket){
 	// var rooms = io.nsps[namespace].adapter.rooms;
   	var roomKeys = Object.keys(nsp.adapter.rooms);
@@ -642,19 +638,19 @@ function broadcastRooms(socket){
   	else{
   		console.log("SocketManager.broadcastRooms(): No rooms available.");
   	}
-}
+}*/
 
 function getScore(data, fn) {
 	var socket = this;
 	var game = gameManager.getGameByRoomName(socket.roomName);
-	console.log("SocketManager.getScore(): Scroe requested by: " + socket.playerName);
+	console.log("SocketManager.getScore(): Score requested by: " + socket.playerName);
 	var players = game.getPlayers();
 	if(fn) fn({ players: players.map(function(p){ return { name: p.name, total: p.points } }), totalRounds: game.rounds.length, roundPoints: game.pointsTable });
 }
 
 function getPlayerIndex(id){
 	var index = -1;
-    for(var i =0; i < $scope.board.players.length; i++){
+    for(var i = 0; i < $scope.board.players.length; i++){
     	if( $scope.board.players[i].id === id){
     		index = i;
     		break;

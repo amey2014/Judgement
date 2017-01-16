@@ -6,29 +6,29 @@
 	</header>
 	<div class="row" >
 		<div class="col-xs-12 col-md-12"><h2>Welcome: {{ home.username }}</h2></div>
-		<div class="col-xs-12 col-md-12 body-row" data-ng-hide="!home.isAdmin">
+		<div class="col-xs-12 col-md-12 body-row" >
 			
 			<h4>Create Room</h4>
 			
 			<div class="row" >
-				<div class="col-xs-12 col-sm-2 col-md-2"><span data-ng-hide="!home.isAdmin">Total Players:</span></div>
+				<div class="col-xs-12 col-sm-2 col-md-2"><span>Total Players:</span></div>
 				<div class="col-xs-12 col-sm-10 col-md-10">
-					<select class="form-control" ng-model="home.totalPlayers" data-ng-hide="!home.isAdmin">
+					<select class="form-control" ng-model="home.totalPlayers" >
 					<option ng-repeat="count in [4, 5, 6, 7]">{{ count }}</option>
 					</select>
 				</div>
 			</div>
 			
 			<div class="row" >
-				<div class="col-xs-12 col-sm-2 col-md-2"><span data-ng-hide="!home.isAdmin">Room Name:</span></div>
+				<div class="col-xs-12 col-sm-2 col-md-2"><span>Room Name:</span></div>
 				<div class="col-xs-9 col-sm-6 col-md-6">
 					<input type="text" class="form-control" 
 				    	id="inputName" placeholder="Room Name"
-				    	data-ng-model="home.roomName" data-ng-hide="!home.isAdmin">
+				    	data-ng-model="home.roomName">
 					
 				</div>
 				<div class="col-xs-3 col-sm-4 col-md-4">
-					<button type="button" class="btn btn-primary" data-ng-click="home.createRoom(home.isAdmin, home.username, home.roomName, home.totalPlayers)" ng-hide="!home.isAdmin">Create</button>
+					<button type="button" class="btn btn-primary" data-ng-click="home.createRoom(home.isAdmin, home.username, home.roomName, home.totalPlayers)" >Create</button>
 				</div>
 			</div>
 		</div>

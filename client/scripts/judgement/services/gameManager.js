@@ -53,7 +53,7 @@ define(['../module'], function(module){
 				if(socket === null){
 					
 					socket = io('/games-for-entertainment');
-					
+					// socket = io();
 					console.log(socket);
 					
 					socket.on('player-entered', playerEnteredHandler);
@@ -208,9 +208,9 @@ define(['../module'], function(module){
 			}
 			
 			function createRoom(isAdmin, username, roomName, totalPlayers, callback){
-				if(isAdmin){
+				//if(isAdmin){
 					createGame(username, roomName, totalPlayers, callback);
-				}
+				//}
 				service.roomName = roomName;
 			}
 			

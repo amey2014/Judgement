@@ -201,13 +201,13 @@ define(['../module'], function(module){
 				}
 			}
 			
-			function joinRoom(isAdmin, username, roomName, totalPlayers, callback){
+			function joinRoom(username, roomName, totalPlayers, callback){
 				
-				socket.emit('join-room', { playerName: username, roomName: roomName, isAdmin: isAdmin }, callback);
+				socket.emit('join-room', { playerName: username, roomName: roomName }, callback);
 				service.roomName = roomName;
 			}
 			
-			function createRoom(isAdmin, username, roomName, totalPlayers, callback){
+			function createRoom(username, roomName, totalPlayers, callback){
 				//if(isAdmin){
 					createGame(username, roomName, totalPlayers, callback);
 				//}
@@ -230,7 +230,7 @@ define(['../module'], function(module){
 			
 			function createGame(playerName, roomName, totalPlayers, callback){
 				if(socket !== null){
-					socket.emit('create-game', { playerName: playerName, roomName: roomName, totalPlayers: totalPlayers, isAdmin: true }, callback);
+					socket.emit('create-game', { playerName: playerName, roomName: roomName, totalPlayers: totalPlayers }, callback);
 				}
 			}
 			

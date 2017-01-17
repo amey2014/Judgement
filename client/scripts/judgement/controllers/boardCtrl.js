@@ -75,7 +75,7 @@ define(['../module'], function(module){
 		
 		function userDetailsCallback(data){
 			if($scope.board.GameManager.roomName){
-				$scope.board.isAdmin = data.isAdmin;
+				//$scope.board.isAdmin = data.isAdmin;
 				$scope.board.username = data.username;
 				GameManager.initialize(notificationHandler);
 				GameManager.enterGame(data.username, updatePlayers);

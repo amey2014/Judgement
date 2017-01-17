@@ -28,7 +28,7 @@
 					
 				</div>
 				<div class="col-xs-3 col-sm-4 col-md-4">
-					<button type="button" class="btn btn-primary" data-ng-click="home.createRoom(home.isAdmin, home.username, home.roomName, home.totalPlayers)" >Create</button>
+					<button type="button" class="btn btn-primary" data-ng-click="home.createRoom(home.username, home.roomName, home.totalPlayers)" >Create</button>
 				</div>
 			</div>
 		</div>
@@ -39,7 +39,7 @@
 				<div class="col-xs-9 col-sm-6 col-md-6">
 					<select class="form-control" ng-model="home.selectedRoom" ng-options="room.name for room in home.rooms"></select>
 				</div>
-				<div class="col-xs-3 col-sm-4 col-md-4"><button type="submit" class="btn btn-primary" ng-click="home.joinRoom(home.isAdmin, home.username, home.selectedRoom.name)" >Join</button></div>
+				<div class="col-xs-3 col-sm-4 col-md-4"><button type="submit" class="btn btn-primary" ng-click="home.joinRoom(home.username, home.selectedRoom.name)" >Join</button></div>
 			</div>
 			<div class="row" >
 				<div class="col-xs-12 col-sm-12 col-md-12"><a href="/logout">Logout</a></div>

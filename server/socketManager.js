@@ -63,7 +63,10 @@ function createGame(data, callback){
 		// add total players to room instance
 		var socket = this;
 
-		data.adminId = socket.id;
+		//data.adminId = socket.id;
+		data.isOwner = true;
+		data.ownerId = socket.id;
+		
 		// create new room in game manager
 		var newRoom = gameManager.createNewRoom(data);
 
@@ -112,10 +115,10 @@ function updateSocketDetails(socket, data){
 	console.log("SocketManager.updateSocketDetails(): Adding playerName and roomName to the socket");
 	// add socket to the room
 	socket.join(data.roomName);
-	socket.isAdmin = data.isAdmin;
 	// add playerName and roomName to the socket
 	socket.playerName = data.playerName;
 	socket.roomName = data.roomName;
+	updateOwnerDetailsIfRequired(socket, data.isOwner);
 }
 
 //Event 'enter-game'
@@ -127,14 +130,15 @@ function enterGame(data, callback){
 		var socket = this;
 		var game = gameManager.getGameByRoomName(data.roomName);
 		
-		var result = gameManager.enterRoom(data, socket.id, socket.isAdmin);
+		var result = gameManager.enterRoom(data, socket.id, socket.isOwner);
 		
 		if(result.playerUpdated){
+			updateOwnerDetailsIfRequired(socket, result.newPlayer.isOwner);
 			notifyIfBiddingIsInProgress(socket, game, result.newPlayer);
 			notifyTurnToThePlayer(socket, game, result.newPlayer, result.oldPlayerId);
 		}
 			
-		notifyAdminToStartTheGameIfWeCan(game, data.roomName);
+		notifyOwnerToStartTheGameIfWeCan(game, data.roomName);
 		
 		console.log("SocketManager.enterGame(): Emitting 'player-entered' event to the namespace");
 		nsp.to(data.roomName).emit('player-entered', null, result);
@@ -148,6 +152,12 @@ function enterGame(data, callback){
 		console.log(error);
 		callback(error, null);
 	}
+}
+
+function updateOwnerDetailsIfRequired(socket, isOwner){
+	console.log("SocketManager.updateOwnerDetailsIfRequired(): Begin");
+	//socket.isAdmin = isOwner;
+	socket.isOwner = isOwner;
 }
 
 function updatePlayerIfExists(data){
@@ -190,16 +200,16 @@ function updatePlayerIfExists(data){
 	return response;
 }
 
-function notifyAdminToStartTheGameIfWeCan(game, roomName){
-	console.log("SocketManager.notifyAdminToStartTheGameIfWeCan(): Begin");
+function notifyOwnerToStartTheGameIfWeCan(game, roomName){
+	console.log("SocketManager.notifyOwnerToStartTheGameIfWeCan(): Begin");
 	if(game.canStart()){
-		var adminSocket = nsp.to(roomName).sockets[game.adminId];
+		var adminSocket = nsp.to(roomName).sockets[game.ownerId];
 
 		if(adminSocket){
-			console.log("SocketManager.notifyAdminToStartTheGameIfWeCan(): Emitting 'game-can-start' event to the admin socket");
+			console.log("SocketManager.notifyOwnerToStartTheGameIfWeCan(): Emitting 'game-can-start' event to the Owner socket");
 			adminSocket.emit('game-can-start');
 		}else{
-			console.log("SocketManager.notifyAdminToStartTheGameIfWeCan(): Cannot emit 'game-can-start' event. Admin socket not found. Param 'game.adminId':", game.adminId);
+			console.log("SocketManager.notifyOwnerToStartTheGameIfWeCan(): Cannot emit 'game-can-start' event. Owner socket not found. Param 'game.OwnerId':", game.ownerId);
 		}
 	}
 }

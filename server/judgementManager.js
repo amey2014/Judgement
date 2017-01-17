@@ -9,17 +9,16 @@ exports.getRoomByRoomName = function(roomName){
 
 exports.createNewRoom = function(data){
 	if(RoomCollection.isRoomAvailable(data.roomName)){
-		return RoomCollection.addRoom(data.adminId, data.roomName, +data.totalPlayers);
+		return RoomCollection.addRoom(data.ownerId, data.roomName, +data.totalPlayers);
 	}else{
 		throw { message: 'Room already exists: ' + data.roomName };
 	}
 }
 
-exports.enterRoom = function(data, playerId, isAdmin){
+exports.enterRoom = function(data, playerId, isOwner){
 	console.log("SocketManager.enterRoom(): ", data.roomName);
 	var game = this.getGameByRoomName(data.roomName);
-	game.adminId = isAdmin ? playerId : game.adminId;
-	
+
 	var result = updatePlayerIfExists.call(this, playerId, data);
 	
 	var response = {};
@@ -28,7 +27,8 @@ exports.enterRoom = function(data, playerId, isAdmin){
 		response = { playerUpdated: true, playerId: playerId, newPlayer: result.newPlayer, players: game.getPlayers(), oldPlayerId: result.oldPlayerId };
 	}else{
 		console.log("SocketManager.enterRoom(): Player not found, Creating...:", data.playerName);
-		var player = game.addPlayer(playerId, data.playerName); 
+		game.ownerId = isOwner ? playerId : game.ownerId;
+		var player = game.addPlayer(playerId, data.playerName, isOwner); 
 		response = { playerUpdated: false, playerId: playerId, newPlayer: player, players: game.getPlayers() };
 	}
 
@@ -57,9 +57,16 @@ function updatePlayerIfExists(playerId, data){
 		
 		// if player has cards then map those cards to new id and delete the old map
 		if(oldId !== playerId ){
+			// assign existing cards to this player
 			if(game.playerCardsMap[oldId]){
 				game.playerCardsMap[playerId] = game.playerCardsMap[oldId];
 				delete game.playerCardsMap[oldId];
+			}
+			
+			// change the ownerId if this player is owner
+			if(existingPlayerEntries[0].isOwner){
+				//game.adminId = playerId;
+				game.ownerId = playerId;
 			}
 
 			existingPlayerEntries[0].id = playerId;
@@ -90,9 +97,9 @@ exports.removePlayer = function(data, callback){
 }
 
 /* Room constructor function */
-function Room(adminId, name, totalPlayers){
+function Room(ownerId, name, totalPlayers){
 	this.name = name;
-	this.game = new Game(totalPlayers, adminId);
+	this.game = new Game(totalPlayers, ownerId);
 }
 
 Room.prototype = {
@@ -108,8 +115,8 @@ var RoomCollection = {
 	// Mapped object of rooms
 	_rooms: {},
 	//add room to the collection
-	addRoom: function(adminId, roomName, totalPlayers){
-		var room = new Room(adminId, roomName, totalPlayers);
+	addRoom: function(ownerId, roomName, totalPlayers){
+		var room = new Room(ownerId, roomName, totalPlayers);
 		this._rooms[roomName] = room;
 		return room;
 	},
@@ -186,8 +193,9 @@ var SUIT = ['Spade', 'Diamond', 'Club', 'Heart'];
 var RANK_NAME = [ '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'];
 var RANK_INDEX = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
-function Game(totalPlayers, adminId){
-	this.adminId = adminId;
+function Game(totalPlayers, ownerId){
+	// this.adminId = ownerId;
+	this.ownerId = ownerId;
 	this.totalPlayersRequired = totalPlayers;
 	this.players = [];
 	this.playerCardsMap = {};
@@ -219,10 +227,10 @@ Game.prototype.addPlayers = function(){
 	}
 }
 
-Game.prototype.addPlayer = function(id, name){
+Game.prototype.addPlayer = function(id, name, isOwner){
 	var index = this.getEmptySeat();
 	if(index >= 0){
-		var player = new Player(id, name, 0);
+		var player = new Player(id, name, isOwner);
 		this.players[index] = player;
 		return player;
 	}
@@ -576,12 +584,12 @@ Round.prototype.whoWonThisTrick = function(data){
 	return playerCards[0].id;
 }
 
-function Player(id, name){
+function Player(id, name, isOwner){
 	this.id = id;
 	this.name = name;
+	this.isOwner = isOwner;
 	this.pic = '';
 	this.points = 0;
-	// this.cards = [];
 	this.tricksBidded = 0;
 	this.tricksWon = 0;
 }

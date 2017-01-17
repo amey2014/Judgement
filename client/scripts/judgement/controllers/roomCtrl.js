@@ -37,7 +37,7 @@ define(['../module'], function(module){
 			if(window.room && window.room.name !== ''){
 				$scope.home.selectedRoom = window.room.name;
 				$scope.home.totalPlayers = window.room.total;
-				joinRoom(data.isAdmin, data.username, window.room.name);
+				joinRoom(data.username, window.room.name);
 				window.room = null;
 			}else{
 				GameManager.getAllRooms(getAllRoomsCallback);
@@ -95,7 +95,7 @@ define(['../module'], function(module){
 			socket = null;
 		}
 		*/
-		function createRoom(isAdmin, username, roomName){
+		function createRoom(username, roomName){
 			
 			var totalPlayers = +$scope.home.totalPlayers;
 			
@@ -108,10 +108,10 @@ define(['../module'], function(module){
 				return;
 			}
 			
-			GameManager.createRoom(isAdmin, username, roomName, totalPlayers, joinRoomCallback);
+			GameManager.createRoom(username, roomName, totalPlayers, joinRoomCallback);
 		}
 		
-		function joinRoom(isAdmin, username, roomName){
+		function joinRoom(username, roomName){
 			
 			var totalPlayers = +$scope.home.totalPlayers;
 			
@@ -124,7 +124,7 @@ define(['../module'], function(module){
 				return;
 			}
 			
-			GameManager.joinRoom(isAdmin, username, roomName, totalPlayers, joinRoomCallback);
+			GameManager.joinRoom(username, roomName, totalPlayers, joinRoomCallback);
 		}
 		
 		function joinRoomCallback(error, response){

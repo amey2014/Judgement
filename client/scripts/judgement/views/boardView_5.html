@@ -36,10 +36,6 @@
 				class="btn btn-default btn-sm no-padding" >
 				<span class="glyphicon glyphicon-star"></span>
 			</button>
-			<div style="" class="invite-url-container" data-ng-class="{ show: board.showInviteUrl }">
-				<input type="text" class="invite-url" data-ng-model="board.inviteURL" />
-				<span class="close-icon glyphicon glyphicon-remove" data-ng-click="board.showInviteUrl = false"></span>
-			</div>
 		</div>
 	</div>
 	<div class="row">
@@ -216,7 +212,22 @@
 </div>
 <div class="dialogOverlay no-select" ng-show="board.disconnected">
 	<div class="dialogContainer">
-		<header class="dialogHeader">You are disconnected. Please refresh</header>
-		<footer class="dialogFooter"></footer>
+		<header class="dialogHeader">Disconnected</header>
+		<div class="dialogBody" >
+			You are disconnected. Please refresh your browser.
+		</div>
+	</div>
+</div>
+<div class="dialogOverlay" ng-show="board.showInviteUrl">
+	<div class="dialogContainer">
+		<header class="dialogHeader">Share URL</header>
+		<div style="" class="invite-url-container">
+			<input id="invitationURL" type="text" class="invite-url" data-ng-model="board.inviteURL" />
+		</div>
+		<footer class="dialogFooter">
+			<button class="btn" data-ng-click="board.showInviteUrl = false">
+			    Close
+			</button>
+		</footer>
 	</div>
 </div>

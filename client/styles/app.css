@@ -163,9 +163,25 @@ body{
 }
 
 .dialogOverlay .dialogContainer .dialogHeader,
+.dialogOverlay .dialogContainer .dialogBody,
+.dialogOverlay .dialogContainer .dialogFooter{
+	padding: 4px;
+}
+
+.dialogOverlay .dialogContainer .dialogHeader,
 .dialogOverlay .dialogContainer .dialogFooter{
 	border-radius: 2px;
-	padding: 4px;
+}
+	
+
+.dialogOverlay .dialogContainer .dialogHeader {
+	font-weight: bold;
+	background-color: #00008b; 
+	color: #fff;
+}
+
+.dialogOverlay .dialogContainer .dialogFooter{
+	margin: 5px;
 }
 
 .bidContainerOverlay .bidContainer {
@@ -173,13 +189,7 @@ body{
 }
 
 .bidContainerOverlay .bidContainer .bidHeader{
-	background-color: #00008b; 
-	color: #fff;
-	font-weight: bold;
-}
-
-.dialogOverlay .dialogContainer .dialogFooter{
-	margin: 5px;
+	
 }
 
 .bidContainerOverlay .bidContainer .drag-icon{
@@ -189,7 +199,6 @@ body{
 .bidContainerOverlay .bidContainer.enable-drag .drag-icon{
 	color: #ffe203;
 }
-
 
 .bidContainerOverlay .bidContainer .bids{
 	margin: 3px 3px 0px 3px;
@@ -733,29 +742,14 @@ div.loggedin-player-card .play-card-button-container .play-card-button{
 }
 
 .invite-url-container {
-	transition: all .2s linear;
-	position: absolute; 
-	right: 0px; 
 	padding: 5px; 
-	border: 5px Solid rgba(119, 119, 119, 0.21);
-	border-radius: 2px;
-	background-color: #8e8e8e;
-	top: 0px; 
-	right: -100%;
 }
 
 .invite-url {
 	border: none;
 	padding: 5px;
 	background-color: rgba(0, 8, 255, 0);;
-}
-
-.invite-url-container.show {
-	right: 0%;
-}
-
-.invite-url-container .close-icon {
-	margin-top: 2px;
+	width: 100%;
 }
 
 @media (max-width: 684px) {

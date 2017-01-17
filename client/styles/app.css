@@ -13,6 +13,7 @@ body{
 }
 #books-screen .header-row{
 	font-weight: bold;
+	
 }
 
 #book-details-screen .book-details-container{
@@ -75,6 +76,7 @@ body{
 .header-row{
 	padding: 10px 10px 10px 10px;
 	background-color: #00008b;
+	overflow: hidden;
 }
 
 #board-screen .header-row div[class^=col-]{
@@ -731,11 +733,25 @@ div.loggedin-player-card .play-card-button-container .play-card-button{
 }
 
 .invite-url-container {
+	transition: all .2s linear;
 	position: absolute; 
 	right: 0px; 
 	padding: 5px; 
+	border: 5px Solid rgba(119, 119, 119, 0.21);
+	border-radius: 2px;
+	background-color: #8e8e8e;
 	top: 0px; 
-	background-color: #00008b;
+	right: -100%;
+}
+
+.invite-url {
+	border: none;
+	padding: 5px;
+	background-color: rgba(0, 8, 255, 0);;
+}
+
+.invite-url-container.show {
+	right: 0%;
 }
 
 .invite-url-container .close-icon {

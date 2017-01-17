@@ -450,10 +450,9 @@ define(['../module'], function(module){
 	    		$scope.board.rounds = response.rounds;
 	    		updateCards(response.playerId, response.cards);
 		    });
-		    
 		}
+		
 		function updateCards(id, cards){
-
     		var currentPlayer = $scope.board.players.filter(function(p){
 		    	return p.id === id;
 		    });
@@ -462,8 +461,6 @@ define(['../module'], function(module){
     			$scope.board.currentPlayerCards = cards;
     			// currentPlayer[0].cards = response.cards;
     		}
-		    
-		    
 		}
 		
 		function playerDisconnectedHandler(response){
@@ -478,17 +475,9 @@ define(['../module'], function(module){
 			$http.post('invitation', { room: $scope.board.GameManager.roomName, total: 4 }).success(function(data){
 				console.log('Invitation:', data);
 				$scope.board.showInviteUrl = true;
-				$scope.board.inviteURL = '/invitation/' + data.id
+				$scope.board.inviteURL = location.origin + '/invitation/' + data.id
 			});
 		}
-		/*var newGame = new Game();
-		newGame.addPlayers();
-		newGame.initializeRounds();
-		console.log(newGame);
-		newGame.setupCurrentRound();
-		newGame.shuffle(53);
-		newGame.distributeCards();
-		$scope.game = newGame;*/
 	}]);
 	
 });

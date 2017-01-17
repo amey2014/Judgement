@@ -36,7 +36,7 @@
 				class="btn btn-default btn-sm no-padding" >
 				<span class="glyphicon glyphicon-star"></span>
 			</button>
-			<div style="" class="invite-url-container" data-ng-show="board.showInviteUrl">
+			<div style="" class="invite-url-container" data-ng-class="{ show: board.showInviteUrl }">
 				<input type="text" class="invite-url" data-ng-model="board.inviteURL" />
 				<span class="close-icon glyphicon glyphicon-remove" data-ng-click="board.showInviteUrl = false"></span>
 			</div>

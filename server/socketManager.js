@@ -286,16 +286,9 @@ function notifyTurnToThePlayer(socket, game, player, oldPlayerId){
 
 function startTheGame(){
 	console.log("SocketManager.startTheGame(): Begin");
-	var game = gameManager.getGameByRoomName(this.roomName);
-	game.initialize();
-	console.log("SocketManager.startTheGame(): is invoked.");
-	console.log("SocketManager.startTheGame(): Initializing all rounds.");
-	game.initializeRounds();
-	console.log("SocketManager.startTheGame(): Set up new round.");
-	game.setupNewRound();
-	console.log("SocketManager.startTheGame(): Shuffle and distribute cards.");
-	game.shuffle(53);
-	game.distributeCards();
+	// var game = gameManager.getGameByRoomName(this.roomName);
+
+	var game = gameManager.startGame(this.roomName);
 	
 	var players = game.getPlayers();
 	

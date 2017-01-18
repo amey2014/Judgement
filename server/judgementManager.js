@@ -40,12 +40,12 @@ exports.startGame = function(roomName){
 	console.log("JudgementManager.startTheGame(): Begin");
 	var game = this.getGameByRoomName(roomName);
 	game.initialize();
-	console.log("SocketManager.startTheGame(): is invoked.");
-	console.log("SocketManager.startTheGame(): Initializing all rounds.");
+	console.log("JudgementManager.startTheGame(): is invoked.");
+	console.log("JudgementManager.startTheGame(): Initializing all rounds.");
 	game.initializeRounds();
-	console.log("SocketManager.startTheGame(): Set up new round.");
+	console.log("JudgementManager.startTheGame(): Set up new round.");
 	game.setupNewRound();
-	console.log("SocketManager.startTheGame(): Shuffle and distribute cards.");
+	console.log("JudgementManager.startTheGame(): Shuffle and distribute cards.");
 	game.shuffle(53);
 	game.distributeCards();
 	

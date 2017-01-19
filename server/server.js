@@ -179,19 +179,20 @@ app.get('/', function (req, res) {
 });
 
 app.get('/invitation/:inviteId', function (req, res) {
+	req.session.invitation = {
+		id: req.params.inviteId,
+	}
 	if(req.user && req.user.username && req.user.username !== ''){
-		var value = storage.getItemSync(req.params.inviteId);		
-		res.render('index', { layout: '', user: req.user, room: value });
+		// var value = storage.getItemSync(req.params.inviteId);		
+		// res.render('index', { layout: '', user: req.user, room: value });
+		res.redirect('/');
 	}else{
-		req.session.invitation = {
+		/*req.session.invitation = {
 			id: req.params.inviteId,
-		}
-		res.render('signin');
+		}*/
+		res.redirect('/signin');
 	}
 });
-
-
-
 
 app.post('/invitation', function (req, res) {
 	if(req.user && req.user.username && req.user.username !== ''){

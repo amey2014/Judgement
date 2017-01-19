@@ -15,8 +15,9 @@ require.config({
 	
 	shim: {
 		'angular' : {'exports' : 'angular'},
-		'angularRoute': ['angular'],
-		'angularLocale': ['angular']
+		'ngRoute': ['angular'],
+		'angularLocale': ['angular'],
+		'ngSanitize': ['angular']
 	},
 	
 	priority: [

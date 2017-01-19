@@ -71,11 +71,16 @@ body{
 }
 
 #board-screen{
-	background-image: url('/static/images/5629396-hd-background-design-images.jpg')
+	background-image: url('/static/images/5629396-hd-background-design-images.jpg');
+	background-position: 
 }
 .header-row{
 	padding: 10px 10px 10px 10px;
-	background-color: #00008b;
+	background: #00008b; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(#19008b, #1da6ad); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#19008b, #1da6ad); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#19008b, #1da6ad); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#19008b, #1da6ad); /* Standard syntax */
 	overflow: hidden;
 }
 
@@ -83,7 +88,6 @@ body{
 	padding-left: 0px;
 	padding-right: 0px;
 	border: 0px Solid #fbfbfb;
-	background-color: #00008b;
 	min-height: auto;
 	height: auto;
 }

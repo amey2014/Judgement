@@ -383,7 +383,7 @@ function setBid(data, callback){
 	
 	if(bidsCount === game.totalPlayersRequired){
 		console.log("SocketManager.setBid(): All players have completed bidding");
-		game.currentRound.startPlayerIndex = (game.currentRound.totalTricks - 1) % 4; // set this to 0 as bidding process increments it.
+		game.currentRound.startPlayerIndex = (game.currentRound.totalTricks - 1) % game.totalPlayersRequired; // set this to 0 as bidding process increments it.
 		game.currentRound.inProgress = true;
 		
 	}else{

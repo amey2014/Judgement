@@ -10,7 +10,7 @@ function Round(totalTricks, totalPlayers){
 	this.trumpSuit = SUIT[(totalTricks - 1) % 4];
 	//console.log(totalTricks, totalPlayers);
 	//console.log((totalTricks - 1) % totalPlayers);
-	this.startPlayerIndex = (totalTricks - 1) % + totalPlayers;
+	this.startPlayerIndex = (totalTricks - 1) % totalPlayers;
 	this.inProgress = false;
 	this.bids = 0;
 	this.currentTrick = 0;

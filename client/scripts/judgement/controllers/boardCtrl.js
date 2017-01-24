@@ -132,23 +132,27 @@ define(['../module'], function(module){
 		}
 		
 		function gameCompleted(response){
-			// updatePlayers(response);
 			var players = [];
 			response.players.forEach(function(p){ 
+				// add the first player in an array and return
 				if(players.length === 0){
 					players.push(p);
 					return;
 				}
+				
+				// if subsequent player has lesser points then return
+				if(p.points < players[0].points){
+					return;
+				}
 
+				// if subsequent player has more points then clear all the previous players added
 				if(p.points > players[0].points){
-					players[0] = p;
+					players = [];
 				}
-				else if(p.points === players[0].points){
-					players.push(p);
-				}
-				else{
-					// dont do anything
-				}
+				
+				// and add this player
+				players.push(p);
+				
 			});
 			
 			$scope.board.winners = players.map(function(p){ return p.name });

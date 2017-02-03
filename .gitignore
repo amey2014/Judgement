@@ -4,3 +4,4 @@
 .project
 npm-debug.log
 
+/dest

@@ -269,6 +269,10 @@ app.get('/logout', function(req, res){
   req.session.notice = "You have successfully been logged out " + name + "!";
 });
 
+app.post('/ping', function (req, res) {
+	res.send({ id: req.user });
+});
+
 var server = http.listen(process.env.PORT || 5000, function(){
 	var host = server.address().address;
 	var port = server.address().port;

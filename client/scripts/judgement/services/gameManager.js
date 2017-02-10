@@ -27,7 +27,8 @@ define(['../module'], function(module){
 					'TRICK_COMPLETED': 12,
 					'DISCONNECTED': 13,
 					'GAME_COMPLETED': 14,
-					'PLAYER_DISCONNECTED': 15
+					'PLAYER_DISCONNECTED': 15,
+					'PING_ME': 16
 				},
 
 				initialize: initializeClientSocket,
@@ -78,7 +79,9 @@ define(['../module'], function(module){
 					
 					socket.on('disconnect', disconnected);
 					
-					socket.on('game-completed', gameCompleted);					
+					socket.on('game-completed', gameCompleted);	
+					
+					socket.on('ping-me', pingMe);
 				}
 				
 			}
@@ -266,6 +269,10 @@ define(['../module'], function(module){
 			
 			function roomAvailableCallback(response){
 				notificationHandler(service.MESSAGE_KEYS.ROOM_AVAILABLE, response);
+			}
+			
+			function pingMe(){
+				notificationHandler(service.MESSAGE_KEYS.PING_ME);
 			}
 			
 		}]);

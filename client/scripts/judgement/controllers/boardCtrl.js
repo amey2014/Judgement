@@ -126,6 +126,9 @@ define(['../module'], function(module){
 				case GameManager.MESSAGE_KEYS.PLAYER_DISCONNECTED:
 					playerDisconnectedHandler(data);
 					break;
+				case GameManager.MESSAGE_KEYS.PING_ME:
+					pingTheServer();
+					break;
 				default:
 					break;
 			}
@@ -481,6 +484,14 @@ define(['../module'], function(module){
 				$scope.board.showInviteUrl = true;
 				$scope.board.inviteURL = location.origin + '/invitation/' + data.id
 			});
+		}
+		
+		function pingTheServer(){
+			if($scope.board.players[0].isOwner){
+				$http.post('ping', { user: UserManager.user }).success(function(data){
+					console.log('Ping Response:', data);
+				});
+			}
 		}
 	}]);
 	

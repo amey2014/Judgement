@@ -6,7 +6,8 @@ var namespace = '/games-for-entertainment';
 var nsp = io.of(namespace);
 //var nsp = io;
 var namespaces = {}; 
-
+var interval = null;
+	
 function initializeSockets(){
 	console.log('SocketManager: initializeSocket(): Begin');
 	var events = {
@@ -47,7 +48,20 @@ function initializeSockets(){
 		  		nsp.to(socket.roomName).emit('player-disconnected', { id: socket.id, oldPlayerName: socket.playerName, oldPlayer: player, players: game.getPlayers() });
 			}
   		});
+		
+		keepConnectionAlive();
 	});
+}
+
+function keepConnectionAlive(){
+	interval = setInterval(function(){
+		try{
+			console.log("SocketManager: keepConnectionAlive(): Emitting 'ping-me' to the namespace."); 
+			nsp.emit('ping-me');
+		}catch(ex){
+			console.log("SocketManager.keepConnectionAlive(): ", ex);
+		}
+	}, 600000);
 }
 
 // Event 'create-game'

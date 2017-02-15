@@ -48,9 +48,9 @@ function initializeSockets(){
 		  		nsp.to(socket.roomName).emit('player-disconnected', { id: socket.id, oldPlayerName: socket.playerName, oldPlayer: player, players: game.getPlayers() });
 			}
   		});
-		
-		keepConnectionAlive();
 	});
+	
+	keepConnectionAlive();
 }
 
 function keepConnectionAlive(){

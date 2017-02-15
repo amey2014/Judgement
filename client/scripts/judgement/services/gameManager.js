@@ -190,7 +190,7 @@ define(['../module'], function(module){
 			
 			// arrange players in an order where current player is at index 0
 			function arrangePlayers(username, response){
-				if(response.players){
+				if(response && response.players){
 					var loggedInPlayers = response.players.filter(function(player){
 			    		return player && player.name === username;
 			    	});
@@ -224,7 +224,7 @@ define(['../module'], function(module){
 				//else{
 					socket.emit('enter-game', { playerName: username, roomName: service.roomName }, function(error, response){
 						arrangePlayers(username, response);
-						callback(response);
+						callback(error, response);
 					});
 					
 				//}

@@ -31,13 +31,17 @@
 					<button type="button" class="btn btn-primary" data-ng-click="home.createRoom(home.username, home.roomName, home.totalPlayers)" >Create</button>
 				</div>
 			</div>
+			
+			<div class="row" ng-if="home.error && home.error !== ''">
+				<div class="col-xs-12 col-sm-12 col-md-12 room-creation-error"><span class="">{{ home.error }}</span></div>
+			</div>
 		</div>
 		<div class="col-xs-12 col-md-12 body-row" >
 			<h4>Enter Room</h4>
 			<div class="row" >
 				<div class="col-xs-12 col-sm-2 col-md-2"><span>Room:</span></div>
 				<div class="col-xs-9 col-sm-6 col-md-6">
-					<select class="form-control" ng-model="home.selectedRoom" ng-options="room.name for room in home.rooms"></select>
+					<select class="form-control" ng-model="home.selectedRoom" ng-options="room.name + (room.totalPlayersRequired == room.playerCount ? '(Full)' : '') for room in home.rooms"></select>
 				</div>
 				<div class="col-xs-3 col-sm-4 col-md-4"><button type="submit" class="btn btn-primary" ng-click="home.joinRoom(home.username, home.selectedRoom.name)" >Join</button></div>
 			</div>

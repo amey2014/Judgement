@@ -28,8 +28,8 @@ exports.enterRoom = function(data, playerId, isOwner){
 		response = { playerUpdated: true, playerId: playerId, newPlayer: result.newPlayer, players: game.getPlayers(), oldPlayerId: result.oldPlayerId };
 	}else{
 		console.log("SocketManager.enterRoom(): Player not found, Creating...:", data.playerName);
-		game.ownerId = isOwner ? playerId : game.ownerId;
 		var player = game.addPlayer(playerId, data.playerName, isOwner); 
+		game.ownerId = isOwner ? playerId : game.ownerId;
 		response = { playerUpdated: false, playerId: playerId, newPlayer: player, players: game.getPlayers() };
 	}
 

@@ -78,11 +78,21 @@ define(['../module'], function(module){
 				//$scope.board.isAdmin = data.isAdmin;
 				$scope.board.username = data.username;
 				GameManager.initialize(notificationHandler);
-				GameManager.enterGame(data.username, updatePlayers);
+				GameManager.enterGame(data.username, enterGameCallback);
 				// GameManager.getAllPlayers(data.username, updatePlayers);
 			}else{
 				$location.url("/board_enter");
 			}
+		}
+		
+		function enterGameCallback(error, response){
+			if(error){
+				console.log(error);
+				$scope.board.message = error.message;
+			}else{
+				updatePlayers(response);
+			}
+			
 		}
 		
 		function notificationHandler(messageKey, data){

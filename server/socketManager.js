@@ -115,8 +115,15 @@ function joinRoom(data, callback){
 	try{
 		var game = gameManager.getGameByRoomName(data.roomName);
 		if(game){
+			//var totalPlayers = Object.keys(nsp.adapter.rooms[data.roomName].sockets).length;
+			//var totalPlayersRequired = nsp.adapter.rooms[data.roomName].totalPlayers;
+			//if(totalPlayers < totalPlayersRequired){
 			updateSocketDetails(socket, data);
 			callback(null, {});
+			//}else{
+			//	console.log("");
+			//	callback(error, null);
+			//}
 		}
 	}catch(error){
 		console.log(error);
@@ -138,7 +145,7 @@ function updateSocketDetails(socket, data){
 //Event 'enter-game'
 // callback(error, response);
 function enterGame(data, callback){
-	console.log("SocketManager.enterGame(): Joinign the game:", data.playerName);
+	console.log("SocketManager.enterGame(): Joining the game:", data.playerName);
 	try{
 		// add player name to socket instance
 		var socket = this;

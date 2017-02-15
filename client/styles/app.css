@@ -38,6 +38,11 @@ body{
 	margin: 5px 0px;
 }
 
+#ju-room-screen .room-creation-error {
+	color: white;
+    background-color: #fe4a4a;
+}
+
 /* -------------- board view -----------*/
 
 #board-screen{

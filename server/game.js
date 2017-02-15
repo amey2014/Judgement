@@ -64,7 +64,7 @@ Game.prototype.addPlayer = function(id, name, isOwner){
 		return player;
 	}
 	else{
-		throw { message: 'Game.prototype.addPlayer: Cannot add more players.'};
+		throw { message: 'Cannot add more players to this game.'};
 	}
 }
 

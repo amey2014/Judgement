@@ -99,15 +99,18 @@ define(['../module'], function(module){
 			
 			var totalPlayers = +$scope.home.totalPlayers;
 			
-			if(Number.NaN === totalPlayers || totalPlayers < 4){
+			if(totalPlayers !== totalPlayers || totalPlayers < 4){
 				console.log("Please select total players");
+				$scope.home.error = "Please select total players";
 				return;
 			}
 			if(!roomName || roomName === ""){
 				console.log("Please enter room name");
+				$scope.home.error = "Please enter room name";
 				return;
 			}
 			
+			$scope.home.error = '';
 			GameManager.createRoom(username, roomName, totalPlayers, joinRoomCallback);
 		}
 		
@@ -115,21 +118,25 @@ define(['../module'], function(module){
 			
 			var totalPlayers = +$scope.home.totalPlayers;
 			
-			if(Number.NaN === totalPlayers || totalPlayers < 4){
+			if(totalPlayers !== totalPlayers || totalPlayers < 4){
 				console.log("Please select total players");
+				$scope.home.error = "Please select total players";
 				return;
 			}
 			if(!roomName || roomName === ""){
 				console.log("Please enter room name");
+				$scope.home.error = "Please enter room name";
 				return;
 			}
 			
+			$scope.home.error = '';
 			GameManager.joinRoom(username, roomName, totalPlayers, joinRoomCallback);
 		}
 		
 		function joinRoomCallback(error, response){
 			if(error){
 				console.log(error);
+				$scope.home.error = error.message;
 				GameManager.getAllRooms(getAllRoomsCallback);
 				return;
 			}

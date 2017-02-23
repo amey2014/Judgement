@@ -98,6 +98,7 @@ define(['../module'], function(module){
 		function createRoom(username, roomName){
 			
 			var totalPlayers = +$scope.home.totalPlayers;
+			var stakes = $scope.home.couponCode;
 			
 			if(totalPlayers !== totalPlayers || totalPlayers < 4){
 				console.log("Please select total players");
@@ -111,7 +112,7 @@ define(['../module'], function(module){
 			}
 			
 			$scope.home.error = '';
-			GameManager.createRoom(username, roomName, totalPlayers, joinRoomCallback);
+			GameManager.createRoom(username, roomName, totalPlayers, stakes, joinRoomCallback);
 		}
 		
 		function joinRoom(username, roomName){

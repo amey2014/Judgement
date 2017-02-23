@@ -28,7 +28,8 @@ define(['../module'], function(module){
 					'DISCONNECTED': 13,
 					'GAME_COMPLETED': 14,
 					'PLAYER_DISCONNECTED': 15,
-					'PING_ME': 16
+					'PING_ME': 16,
+					'YOU_ARE_A_WINNER': 17
 				},
 
 				initialize: initializeClientSocket,
@@ -80,6 +81,8 @@ define(['../module'], function(module){
 					socket.on('disconnect', disconnected);
 					
 					socket.on('game-completed', gameCompleted);	
+
+					socket.on('you-are-a-winner', notifyWinner);	
 					
 					socket.on('ping-me', pingMe);
 				}
@@ -210,9 +213,9 @@ define(['../module'], function(module){
 				service.roomName = roomName;
 			}
 			
-			function createRoom(username, roomName, totalPlayers, callback){
+			function createRoom(username, roomName, totalPlayers, stakes, callback){
 				//if(isAdmin){
-					createGame(username, roomName, totalPlayers, callback);
+					createGame(username, roomName, totalPlayers, stakes, callback);
 				//}
 				service.roomName = roomName;
 			}
@@ -231,9 +234,9 @@ define(['../module'], function(module){
 				// service.roomName = roomName;
 			}
 			
-			function createGame(playerName, roomName, totalPlayers, callback){
+			function createGame(playerName, roomName, totalPlayers, stakes, callback){
 				if(socket !== null){
-					socket.emit('create-game', { playerName: playerName, roomName: roomName, totalPlayers: totalPlayers }, callback);
+					socket.emit('create-game', { playerName: playerName, roomName: roomName, totalPlayers: totalPlayers, stakes: stakes }, callback);
 				}
 			}
 			
@@ -273,6 +276,11 @@ define(['../module'], function(module){
 			
 			function pingMe(){
 				notificationHandler(service.MESSAGE_KEYS.PING_ME);
+			}
+
+			function notifyWinner(data){
+				// console.log('Congratulation!!!', data.stakes);
+				notificationHandler(service.MESSAGE_KEYS.YOU_ARE_A_WINNER, data);
 			}
 			
 		}]);

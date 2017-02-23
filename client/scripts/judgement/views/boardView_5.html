@@ -231,3 +231,16 @@
 		</footer>
 	</div>
 </div>
+<div class="dialogOverlay" ng-show="board.showStakes">
+	<div class="dialogContainer">
+		<header class="dialogHeader">Congratulations!!!</header>
+		<div style="" class="invite-url-container">
+			<span id="stakes" class="stakes">{{ board.stakes }}</span>
+		</div>
+		<footer class="dialogFooter">
+			<button class="btn" data-ng-click="board.showStakes = false">
+			    Close
+			</button>
+		</footer>
+	</div>
+</div>

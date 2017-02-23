@@ -6,9 +6,10 @@ exports.Game = Game;
 
 var TOTAL_CARDS = 52;
 
-function Game(totalPlayers, ownerId){
+function Game(totalPlayers, ownerId, stakes){
 	// this.adminId = ownerId;
 	this.ownerId = ownerId;
+	this.stakes = stakes;
 	this.totalPlayersRequired = totalPlayers;
 	this.players = [];
 	this.playerCardsMap = {};
@@ -137,9 +138,12 @@ function setupRounds(totalRounds){
 	}
 }
 
-Game.prototype.setupNewRound = function(){
+Game.prototype.setupNewRound = function(roundIndex){
 	if(this.currentRound !== null){
 		this.currentRoundIndex++;
+	}
+	if(roundIndex){
+		this.currentRoundIndex = roundIndex - 1;
 	}
 	console.log(this.currentRoundIndex);
 	this.currentRound = this.rounds[this.currentRoundIndex];

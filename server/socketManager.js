@@ -519,10 +519,51 @@ function roundCompleted(game, result, data, roomName){
 		}else{
 			console.log("SocketManager.roundCompleted(): Game completed");
 			console.log("SocketManager.roundCompleted(): Emitting 'game-completed' event to the namespace" );
-			nsp.to(roomName).emit('game-completed', { players: game.getPlayers() });
+			//nsp.to(roomName).emit('game-completed', { players: game.getPlayers() });
+			notifyWinners(roomName, game);
 		}
 		
 	}, 1000);	
+}
+
+function notifyWinners(roomName, game){
+	var players = game.getPlayers();
+	var winners = [];
+	players.forEach(function(p){ 
+		// add the first player in an array and return
+		if(winners.length === 0){
+			winners.push(p);
+			return;
+		}
+		
+		// if subsequent player has lesser points then return
+		if(p.points < winners[0].points){
+			return;
+		}
+
+		// if subsequent player has more points then clear all the previous players added
+		if(p.points > winners[0].points){
+			winners = [];
+		}
+		
+		// and add this player
+		winners.push(p);
+		
+	});
+
+	var socket = null;
+	winners.forEach(function(winner){
+		socket = nsp.to(roomName).sockets[winner.id];
+		if(socket){
+			console.log("SocketManager.notifyWinners(): Emitting 'you-are-a-winner' event to the socket", socket.playerName);
+			socket.emit('you-are-a-winner', { stakes: game.stakes });
+		}else{
+			console.log("SocketManager.notifyWinners(): Cannot send 'you-are-a-winner' to", winner.name);
+		}
+
+	});
+
+	nsp.to(roomName).emit('game-completed', { winners: winners });
 }
 
 function trickCompleted(game, result, data, roomName){

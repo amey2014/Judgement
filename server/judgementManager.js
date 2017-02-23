@@ -10,7 +10,7 @@ exports.getRoomByRoomName = function(roomName){
 
 exports.createNewRoom = function(data){
 	if(RoomCollection.isRoomAvailable(data.roomName)){
-		return RoomCollection.addRoom(data.ownerId, data.roomName, +data.totalPlayers);
+		return RoomCollection.addRoom(data.ownerId, data.roomName, +data.totalPlayers, data.stakes);
 	}else{
 		throw { message: 'Room already exists: ' + data.roomName };
 	}
@@ -118,9 +118,9 @@ function updatePlayerIfExists(playerId, data){
 }
 
 /* Room constructor function */
-function Room(ownerId, name, totalPlayers){
+function Room(ownerId, name, totalPlayers, stakes){
 	this.name = name;
-	this.game = new Game(totalPlayers, ownerId);
+	this.game = new Game(totalPlayers, ownerId, stakes);
 }
 /*
 Room.prototype = {
@@ -136,8 +136,8 @@ var RoomCollection = {
 	// Mapped object of rooms
 	_rooms: {},
 	//add room to the collection
-	addRoom: function(ownerId, roomName, totalPlayers){
-		var room = new Room(ownerId, roomName, totalPlayers);
+	addRoom: function(ownerId, roomName, totalPlayers, stakes){
+		var room = new Room(ownerId, roomName, totalPlayers, stakes);
 		this._rooms[roomName] = room;
 		return room;
 	},

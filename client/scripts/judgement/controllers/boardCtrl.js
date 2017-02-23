@@ -32,6 +32,7 @@ define(['../module'], function(module){
 			}
 		$scope.board.winners = [];
 		$scope.board.showInviteUrl = false;
+		$scope.board.showStakes = false;
 		
 		initialize();
 		
@@ -139,13 +140,16 @@ define(['../module'], function(module){
 				case GameManager.MESSAGE_KEYS.PING_ME:
 					pingTheServer();
 					break;
+				case GameManager.MESSAGE_KEYS.YOU_ARE_A_WINNER:
+					youAreAWinner(data);
+					break;
 				default:
 					break;
 			}
 		}
 		
 		function gameCompleted(response){
-			var players = [];
+			/*var players = [];
 			response.players.forEach(function(p){ 
 				// add the first player in an array and return
 				if(players.length === 0){
@@ -166,9 +170,9 @@ define(['../module'], function(module){
 				// and add this player
 				players.push(p);
 				
-			});
+			});*/
 			
-			$scope.board.winners = players.map(function(p){ return p.name });
+			$scope.board.winners = response.winners.map(function(p){ return p.name });
 			$scope.board.message = "Winners: " + $scope.board.winners.join();
 		}
 		
@@ -502,6 +506,12 @@ define(['../module'], function(module){
 					console.log('Ping Response:', data);
 				});
 			}
+		}
+
+		function youAreAWinner(data){
+			$scope.board.stakes = data.stakes;
+			$scope.board.showStakes = true;
+			console.log('Congrats!!!', data.stakes);
 		}
 	}]);
 	

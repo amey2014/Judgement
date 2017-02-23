@@ -27,6 +27,16 @@
 				    	data-ng-model="home.roomName">
 					
 				</div>
+			</div>
+			
+			<div class="row" >
+				<div class="col-xs-12 col-sm-2 col-md-2"><span>Stakes:</span></div>
+				<div class="col-xs-9 col-sm-6 col-md-6">
+					<input type="text" class="form-control" 
+				    	id="inputName" placeholder="Coupon Code (Optional)"
+				    	data-ng-model="home.couponCode">
+					
+				</div>
 				<div class="col-xs-3 col-sm-4 col-md-4">
 					<button type="button" class="btn btn-primary" data-ng-click="home.createRoom(home.username, home.roomName, home.totalPlayers)" >Create</button>
 				</div>

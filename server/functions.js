@@ -3,6 +3,9 @@ var bcrypt = require('bcryptjs'),
     Q = require('q'),
     config = require('./config.js'), //config file contains all tokens and other private info
     db = require('orchestrate')(config.db); //config.db holds Orchestrate token
+  
+var mongodb = require('mongodb');
+var uri = 'mongodb://aparab:judgement12345@ds127391.mlab.com:27391/library';
 
 //used in local-signup strategy
 exports.localReg = function (username, password) {
@@ -21,28 +24,38 @@ exports.localReg = function (username, password) {
   else{
 	  user.isAdmin = false;
   }
-  //check if username is already assigned in our database
-  db.get('local-users', userDetails[0])
-  .then(function (result){ //case in which user already exists in db
-    console.log('username already exists');
-    deferred.resolve(false); //username already exists
-  })
-  .fail(function (result) {//case in which user does not already exist in db
-      // console.log(result.body);
-      if (result.body.message == 'The requested items could not be found.'){
-        //console.log('Username is free for use');
-        db.put('local-users', userDetails[0], user)
-        .then(function () {
-          console.log("USER: " + user);
-          deferred.resolve(user);
-        })
-        .fail(function (err) {
-          console.log("PUT FAIL:" + err.body);
-          deferred.reject(new Error(err.body));
-        });
-      } else {
-        deferred.reject(new Error(result.body));
+  
+  mongodb.MongoClient.connect(uri, function(err, db) {
+    if(err) throw err;
+    console.log('Connected to db');
+  
+    var users = db.collection('users');
+    //check if username is already assigned in our database
+    users.count({ username: userDetails[0] }, function(err, count) {
+      if (err) {
+        console.log('ERROR OCCURED WHILE CHECKING USER:', err);
+        db.close();
+        deferred.reject(new Error(err));
       }
+
+      if (count > 0) { //case in which user already exists in db
+        console.log('USERNAME ALREADY EXISTS:', userDetails[0]);
+        db.close();
+        deferred.resolve(false);
+      } else { //case in which user does not already exist in db
+        // insert new user into db
+        users.insert(user, function(err, data) {          
+          if (err) {
+            console.log("INSERT FAILED: " + err);
+            db.close();
+            deferred.reject(new Error(err));
+          } else {
+            db.close();
+            deferred.resolve(user);
+          }
+        });
+      }
+    });
   });
 
   return deferred.promise;
@@ -55,25 +68,34 @@ exports.localReg = function (username, password) {
 exports.localAuth = function (username, password) {
   var deferred = Q.defer();
 
-  db.get('local-users', username)
-  .then(function (result){
-    console.log("FOUND USER");
-    var hash = result.body.password;
-    //console.log(hash);
-    // console.log(bcrypt.compareSync(password, hash));
-    if (bcrypt.compareSync(password, hash)) {
-      deferred.resolve(result.body);
-    } else {
-      console.log("PASSWORDS NOT MATCH");
-      deferred.resolve(false);
-    }
-  }).fail(function (err){
-    if (err.body.message == 'The requested items could not be found.'){
-          console.log("COULD NOT FIND USER IN DB FOR SIGNIN");
+  mongodb.MongoClient.connect(uri, function(err, db) {
+    if(err) throw err;
+    console.log('Connected to db');
+  
+    var users = db.collection('users');
+    //check if username is already assigned in our database
+    users.findOne({ username: username }, function(err, user) {
+      if (err) {
+        console.log('ERROR OCCURED WHILE CHECKING USER:', err);
+        db.close();
+        deferred.reject(new Error(err));
+      }
+
+      if (user) { //case in which user already exists in db
+        console.log('USER FOUND:', user.username);
+        var hash = user.password;
+        if (bcrypt.compareSync(password, hash)) {
+          deferred.resolve(user);
+        } else {
+          console.log("PASSWORDS DO NOT MATCH");
           deferred.resolve(false);
-    } else {
-      deferred.reject(new Error(err));
-    }
+        }
+        db.close();
+      } else { //case in which user does not already exist in db
+        console.log("COULD NOT FIND USER IN DB FOR SIGNIN");
+        deferred.resolve(false);
+      }
+    });
   });
 
   return deferred.promise;
